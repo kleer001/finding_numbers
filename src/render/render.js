@@ -52,6 +52,11 @@ function renderHud(ctx, state, showCount) {
   ctx.font = `${Math.floor(HUD_H * 0.26)}px VT323, "Courier New", monospace`;
   ctx.textAlign = "center";
   ctx.fillText("ARROWS / WASD / HJKL MOVE  ·  C CRT  ·  P PREFS", CANVAS.W / 2, CANVAS.H - 10);
+
+  // Top-right preferences button (also a touch tap-target).
+  ctx.textAlign = "right";
+  ctx.font = `${Math.floor(HUD_H * 0.5)}px VT323, "Courier New", monospace`;
+  ctx.fillText("[P]", CANVAS.W - 16, 34);
 }
 
 // Full-screen TV-static wash used during a cell transition. `t` in [0,1].

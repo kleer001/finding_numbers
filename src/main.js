@@ -2,7 +2,7 @@
 
 import { CANVAS, CRT_CONFIG, TRANSITION_MS, LANGUAGES } from "./game/config.js";
 import { createState, tryMove, update } from "./game/state.js";
-import { installInput } from "./game/input.js";
+import { installInput, installTouch } from "./game/input.js";
 import { render, renderStatic } from "./render/render.js";
 import { renderMenu } from "./render/menu.js";
 import { CRTFilterWebGL } from "./lib/CRTFilter.js";
@@ -27,19 +27,21 @@ window.menu = menu;
 station.init(() => state.audibleDigits);
 station.setLanguage(prefs.language);
 
-installInput(
-  (dir) => {
-    station.arm();
-    if (menu.open) menuNav(dir);
-    else if (tryMove(state, dir) === "win") station.victory();
-  },
-  (code) => {
-    station.arm();
-    if (code === "KeyP") menu.open = !menu.open;
-    else if (code === "Escape") menu.open = false;
-    else if (code === "KeyC") { prefs.crt = !prefs.crt; applyCrt(); }
-  },
-);
+function handleMove(dir) {
+  station.arm();
+  if (menu.open) menuNav(dir);
+  else if (tryMove(state, dir) === "win") station.victory();
+}
+
+function handleKey(code) {
+  station.arm();
+  if (code === "KeyP") menu.open = !menu.open;
+  else if (code === "Escape") menu.open = false;
+  else if (code === "KeyC") { prefs.crt = !prefs.crt; applyCrt(); }
+}
+
+installInput(handleMove, handleKey);
+installTouch(handleMove, () => handleKey("KeyP"));
 
 function menuNav(dir) {
   if (dir === "N") menu.index = (menu.index + 2) % 3;

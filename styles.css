@@ -23,6 +23,7 @@ body {
   display: flex;
   align-items: center;
   justify-content: center;
+  touch-action: none; /* taps drive movement; suppress scroll/zoom gestures */
 }
 
 #game {
