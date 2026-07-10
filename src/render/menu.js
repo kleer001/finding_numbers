@@ -72,11 +72,12 @@ export function renderMenu(ctx, index, rows, mono) {
     const cy = r.y + r.h / 2;
     ctx.textAlign = "left";
     ctx.fillText(`${i === index ? ">" : " "} ${row.label}`, r.x + 8, cy);
-    // value strip: [<] value [>], each arrow a big tap zone
+    // value strip: [<] value [>], each arrow a big tap zone; arrows drawn at
+    // the outer edge of their zones so long values (SUSPENDED) don't collide
     ctx.textAlign = "center";
-    ctx.fillText("<", r.x + r.w - ARROW_W * 1.5, cy);
+    ctx.fillText("<", r.x + r.w - ARROW_W * 1.7, cy);
     ctx.fillText(row.value, r.x + r.w - ARROW_W, cy);
-    ctx.fillText(">", r.x + r.w - ARROW_W * 0.5, cy);
+    ctx.fillText(">", r.x + r.w - ARROW_W * 0.3, cy);
   });
 
   ctx.textAlign = "center";
