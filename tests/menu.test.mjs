@@ -10,7 +10,7 @@ test("panel snaps to the character grid", () => {
   const box = layout(ROWS);
   assert.equal(box.w, 19 * CHAR.W);
   assert.equal(box.x, 2 * CHAR.W);
-  assert.equal(box.y, 60); // whole rows above and below for any row count
+  assert.equal(box.y, CHAR.H); // snapped to a whole grid row
   assert.equal(box.h, 480);
   assert.ok(box.y + box.h <= 17 * CHAR.H, "panel stays out of the HUD band");
 });

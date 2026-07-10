@@ -1,39 +1,25 @@
-// Draws the current cell as a monospace glyph grid, the @ overlay, and the HUD.
-// Everything is one phosphor color at one brightness: a monochrome monitor.
+// Draws the whole screen as one monospace glyph grid — maze on top, HUD on
+// the bottom rows — every glyph the same CHAR.FONT size in one phosphor
+// color at one brightness: a character-mode monochrome monitor.
 
-import { GRID, CANVAS, PALETTE, GLYPH, PREFS_BTN } from "../game/config.js";
-
-const HUD_H = 96; // reserved band at the bottom for the waterfall + badges
-const cellW = CANVAS.W / GRID.W;
-const cellH = (CANVAS.H - HUD_H) / GRID.H;
-const fontPx = Math.floor(cellH * 0.95);
-
-// Bottom-strip waterfall (scrolling spectrogram): time on X, frequency on Y.
-const WATERFALL = { x: 132, y: 510, w: 496, h: 80 };
-let wfCanvas = null; // persists across frames so the spectrogram can scroll
-let wfCtx = null;
-
-function ensureWaterfall() {
-  if (wfCanvas) return;
-  wfCanvas = document.createElement("canvas");
-  wfCanvas.width = WATERFALL.w;
-  wfCanvas.height = WATERFALL.h;
-  wfCtx = wfCanvas.getContext("2d", { willReadFrequently: true });
-  wfCtx.fillStyle = PALETTE.bg;
-  wfCtx.fillRect(0, 0, WATERFALL.w, WATERFALL.h);
-}
+import { GRID, CANVAS, PALETTE, GLYPH, PREFS_BTN, CHAR, WATERFALL } from "../game/config.js";
+import { RAMP, stepWaterfall } from "./waterfall.js";
 
 function drawGlyph(ctx, ch, gx, gy) {
-  ctx.fillText(ch, gx * cellW + cellW / 2, gy * cellH + cellH / 2);
+  ctx.fillText(ch, gx * CHAR.W + CHAR.W / 2, gy * CHAR.H + CHAR.H / 2);
+}
+
+function drawText(ctx, str, col, row) {
+  for (let i = 0; i < str.length; i++) drawGlyph(ctx, str[i], col + i, row);
 }
 
 // `tint` is the current phosphor {fg, rgb}; `spectrum` is the live FFT bins.
-export function render(ctx, state, showCount, tint, spectrum) {
+export function render(ctx, state, showCount, tint, spectrum, now) {
   ctx.fillStyle = PALETTE.bg;
   ctx.fillRect(0, 0, CANVAS.W, CANVAS.H);
 
   ctx.fillStyle = tint.fg;
-  ctx.font = `${fontPx}px VT323, "Courier New", monospace`;
+  ctx.font = `${CHAR.FONT}px VT323, "Courier New", monospace`; // the ONE font
   ctx.textAlign = "center";
   ctx.textBaseline = "middle";
 
@@ -48,82 +34,63 @@ export function render(ctx, state, showCount, tint, spectrum) {
   }
   drawGlyph(ctx, GLYPH.PLAYER, state.player.x, state.player.y);
 
-  renderHud(ctx, state, showCount, tint, spectrum);
+  renderHud(ctx, state, showCount, tint, spectrum, now);
 }
 
-function renderHud(ctx, state, showCount, tint, spectrum) {
-  ctx.textBaseline = "alphabetic";
-
-  drawWaterfall(ctx, spectrum, tint);
+// HUD rows 17-19: status field cols 0-4, waterfall cols 5-17, PREFS 18-22.
+function renderHud(ctx, state, showCount, tint, spectrum, now) {
+  drawWaterfall(ctx, spectrum, tint, now);
   drawLevelBadge(ctx, state.level ?? 1, tint.fg);
 
-  // Numbers readout under the LVL badge (SHOW NUMBERS): revealed digits + count.
+  // Digits readout + count under the LVL badge (SHOW NUMBERS). Natural glyph
+  // advance instead of per-cell tracking: 23 columns is too few for prose.
   if (showCount) {
     ctx.fillStyle = tint.fg;
     ctx.textAlign = "left";
-    ctx.textBaseline = "alphabetic";
     const digits = (state.audibleDigits ?? []).map((e) => e.digit).join("");
-    ctx.font = `26px VT323, "Courier New", monospace`;
-    ctx.fillText(digits || "—", 14, 576);
-    ctx.font = `20px VT323, "Courier New", monospace`;
-    ctx.fillText(`${state.score ?? 0} / ${state.goal ?? "?"}`, 14, 596);
+    ctx.fillText(digits || "—", 6, 18.5 * CHAR.H);
+    ctx.fillText(`${state.score ?? 0} / ${state.goal ?? "?"}`, 6, 19.5 * CHAR.H);
+    ctx.textAlign = "center";
   }
 
   // Bottom-right preferences button: a bordered "PREFS" box that is also the
-  // touch tap-target (see PREFS_BTN / tapZone), easy to hit on a phone.
+  // touch tap-target (see PREFS_BTN / tapZone), one letter per cell.
   const b = PREFS_BTN;
   ctx.strokeStyle = tint.fg;
   ctx.lineWidth = 2;
   ctx.strokeRect(b.x, b.y, b.w, b.h);
   ctx.fillStyle = tint.fg;
-  ctx.textAlign = "center";
-  ctx.textBaseline = "middle";
-  ctx.font = `30px VT323, "Courier New", monospace`;
-  ctx.fillText("PREFS", b.x + b.w / 2, b.y + b.h / 2 + 2);
-  ctx.textBaseline = "alphabetic";
+  drawText(ctx, "PREFS", 18, 18);
 }
 
-// Scroll the spectrogram left one column and paint the newest spectrum slice at
-// the right edge, tinted to the phosphor; then blit it into the HUD strip.
-function drawWaterfall(ctx, spectrum, tint) {
-  ensureWaterfall();
-  const W = WATERFALL.w, H = WATERFALL.h;
-  const [r, g, b] = tint.rgb;
-  wfCtx.drawImage(wfCanvas, -1, 0);
-  const col = wfCtx.createImageData(1, H);
-  const bins = Math.floor(spectrum.length * 0.32); // voice band sits low in the FFT
-  for (let y = 0; y < H; y++) {
-    const m = (spectrum[Math.floor((1 - y / H) * bins)] || 0) / 255; // low freq at bottom
-    const o = y * 4;
-    col.data[o] = r * m;
-    col.data[o + 1] = g * m;
-    col.data[o + 2] = b * m;
-    col.data[o + 3] = 255;
+// Scrolling text-mode spectrogram in the middle of the HUD band.
+function drawWaterfall(ctx, spectrum, tint, now) {
+  const wf = stepWaterfall(spectrum, now);
+  ctx.fillStyle = tint.fg;
+  for (let c = 0; c < WATERFALL.cols; c++) {
+    for (let r = 0; r < WATERFALL.rows; r++) {
+      const lv = wf[c][WATERFALL.rows - 1 - r]; // low freq at the bottom row
+      if (lv > 0) drawGlyph(ctx, RAMP[lv], WATERFALL.col + c, WATERFALL.row + r);
+    }
   }
-  wfCtx.putImageData(col, W - 1, 0);
-
-  ctx.drawImage(wfCanvas, WATERFALL.x, WATERFALL.y);
   ctx.strokeStyle = tint.fg;
   ctx.lineWidth = 1;
-  ctx.strokeRect(WATERFALL.x - 0.5, WATERFALL.y - 0.5, W + 1, H + 1);
+  ctx.strokeRect(
+    WATERFALL.col * CHAR.W - 0.5,
+    WATERFALL.row * CHAR.H - 0.5,
+    WATERFALL.cols * CHAR.W + 1,
+    WATERFALL.rows * CHAR.H + 1,
+  );
 }
 
-// Reverse-video level badge, bottom-left: phosphor-filled box, dark letters.
+// Reverse-video level badge: phosphor-filled top HUD row of the status field,
+// dark letters, one per cell.
 function drawLevelBadge(ctx, level, mono) {
-  const label = `LVL ${level}`;
-  const h = 40;
-  const padX = 12;
-  ctx.font = `${Math.floor(h * 0.66)}px VT323, "Courier New", monospace`;
-  const w = Math.ceil(ctx.measureText(label).width) + padX * 2;
-  const x = 12;
-  const y = WATERFALL.y; // top-aligned with the waterfall strip
+  const label = `LV ${level}`;
   ctx.fillStyle = mono;
-  ctx.fillRect(x, y, w, h);
+  ctx.fillRect(0, GRID.H * CHAR.H, 5 * CHAR.W, CHAR.H);
   ctx.fillStyle = PALETTE.bg;
-  ctx.textAlign = "left";
-  ctx.textBaseline = "middle";
-  ctx.fillText(label, x + padX, y + h / 2 + 1);
-  ctx.textBaseline = "alphabetic";
+  drawText(ctx, label, Math.floor((5 - label.length) / 2), GRID.H);
 }
 
 // Full-screen TV-static wash used during a cell transition. `t` in [0,1].

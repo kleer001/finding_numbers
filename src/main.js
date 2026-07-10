@@ -195,7 +195,7 @@ function frame(now) {
   const tint = TINTS[prefs.tint];
   station.getSpectrum(spectrum);
   if (state.transition) renderStatic(ctx, Math.min(1, state.transition.t / TRANSITION_MS), tint.rgb);
-  else render(ctx, state, prefs.showCount, tint, spectrum);
+  else render(ctx, state, prefs.showCount, tint, spectrum, now);
   if (menu.open) renderMenu(ctx, menu.index, MENU_ROWS.map((r) => ({ label: r.label, value: r.value() })), tint.fg);
   requestAnimationFrame(frame);
 }
