@@ -94,18 +94,25 @@ function drawLevelBadge(ctx, level, mono) {
 }
 
 // Full-screen TV-static wash used during a cell transition. `t` in [0,1].
-// `rgb` tints the static to the current phosphor (amber/green).
+// `rgb` tints the static to the current phosphor (amber/green). Snow is
+// quantized into 2x2 blocks at 4 brightness levels — coarse, like the rest
+// of the constrained screen.
 export function renderStatic(ctx, t, rgb) {
   const rm = rgb[0] / 255, gm = rgb[1] / 255, bm = rgb[2] / 255;
   const img = ctx.createImageData(CANVAS.W, CANVAS.H);
   const d = img.data;
   const bias = 90 * (1 - Math.abs(0.5 - t) * 2); // brightest at mid-transition
-  for (let i = 0; i < d.length; i += 4) {
-    const v = Math.random() * 160 + bias;
-    d[i] = (v * rm) | 0;
-    d[i + 1] = (v * gm) | 0;
-    d[i + 2] = (v * bm) | 0;
-    d[i + 3] = 255;
+  for (let y = 0; y < CANVAS.H; y += 2) {
+    for (let x = 0; x < CANVAS.W; x += 2) {
+      const v = (((Math.random() * 160 + bias) / 64) | 0) * 64;
+      const r = (v * rm) | 0, g = (v * gm) | 0, b = (v * bm) | 0;
+      for (const o of [(y * CANVAS.W + x) * 4, (y * CANVAS.W + x + 1) * 4, ((y + 1) * CANVAS.W + x) * 4, ((y + 1) * CANVAS.W + x + 1) * 4]) {
+        d[o] = r;
+        d[o + 1] = g;
+        d[o + 2] = b;
+        d[o + 3] = 255;
+      }
+    }
   }
   ctx.putImageData(img, 0, 0);
 }
