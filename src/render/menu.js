@@ -1,22 +1,28 @@
 // Preferences overlay, drawn on the canvas (so the CRT shader treats it) in the
-// same monochrome phosphor as everything else. Rows are generic {label, value}
-// pairs supplied by main.js. Fully tappable: each row has < and > stepper
-// zones, [X] (or anywhere outside the panel) closes. Keyboard still works:
-// up/down select, left/right change, P closes.
+// same monochrome phosphor — and the same single character size — as everything
+// else. Rows are generic {label, value} pairs supplied by main.js. Fully
+// tappable: each row has < and > stepper zones, [X] (or anywhere outside the
+// panel) closes. Keyboard still works: up/down select, left/right change,
+// P closes.
 
-import { CANVAS, PALETTE } from "../game/config.js";
+import { CANVAS, PALETTE, CHAR, GRID, SCREEN } from "../game/config.js";
 
-const PANEL_W = 640;
-const ROW_H = 68;
+const PANEL_COLS = 19; // whole columns, so the panel snaps to the grid
+const PANEL_W = PANEL_COLS * CHAR.W;
+const ROW_H = 2 * CHAR.H;
 const PAD = 28;
-const TITLE_H = 96;
-const FOOTER_H = 52;
+const TITLE_H = 2 * CHAR.H;
+const FOOTER_H = 2 * CHAR.H;
 const ARROW_W = 96; // tap zone width for each < > stepper
 const CLOSE = 48; // [X] tap box edge
 
-function layout(rowCount) {
-  const h = TITLE_H + rowCount * ROW_H + FOOTER_H;
-  return { x: (CANVAS.W - PANEL_W) / 2, y: (CANVAS.H - h) / 2, w: PANEL_W, h };
+// Title + footer + 2-row pitch make the panel a whole number of grid rows,
+// centered over the maze band (never the HUD, which stays live underneath).
+export function layout(rowCount) {
+  const panelRows = 4 + 2 * rowCount;
+  const h = panelRows * CHAR.H;
+  const y = Math.round((GRID.H - panelRows) / 2) * CHAR.H;
+  return { x: ((SCREEN.COLS - PANEL_COLS) / 2) * CHAR.W, y, w: PANEL_W, h };
 }
 
 function rowRect(box, i) {
@@ -53,28 +59,27 @@ export function renderMenu(ctx, index, rows, mono) {
   ctx.strokeRect(box.x, box.y, box.w, box.h);
 
   ctx.fillStyle = mono;
-  ctx.textBaseline = "alphabetic";
+  ctx.font = `${CHAR.FONT}px VT323, "Courier New", monospace`; // same ONE size
+  ctx.textBaseline = "middle";
 
-  ctx.font = `40px VT323, "Courier New", monospace`;
   ctx.textAlign = "center";
-  ctx.fillText("PREFERENCES", CANVAS.W / 2, box.y + 58);
+  ctx.fillText("PREFERENCES", CANVAS.W / 2, box.y + TITLE_H / 2);
   ctx.textAlign = "right";
-  ctx.fillText("[X]", box.x + box.w - 18, box.y + 48);
+  ctx.fillText("[X]", box.x + box.w - 18, box.y + TITLE_H / 2);
 
-  ctx.font = `32px VT323, "Courier New", monospace`;
   rows.forEach((row, i) => {
     const r = rowRect(box, i);
-    const cy = r.y + r.h / 2 + 10; // baseline roughly vertically centered
+    const cy = r.y + r.h / 2;
     ctx.textAlign = "left";
     ctx.fillText(`${i === index ? ">" : " "} ${row.label}`, r.x + 8, cy);
-    // value strip: [<] value [>], each arrow a big tap zone
+    // value strip: [<] value [>], each arrow a big tap zone; arrows drawn at
+    // the outer edge of their zones so long values (SUSPENDED) don't collide
     ctx.textAlign = "center";
-    ctx.fillText("<", r.x + r.w - ARROW_W * 1.5, cy);
+    ctx.fillText("<", r.x + r.w - ARROW_W * 1.7, cy);
     ctx.fillText(row.value, r.x + r.w - ARROW_W, cy);
-    ctx.fillText(">", r.x + r.w - ARROW_W * 0.5, cy);
+    ctx.fillText(">", r.x + r.w - ARROW_W * 0.3, cy);
   });
 
-  ctx.font = `22px VT323, "Courier New", monospace`;
   ctx.textAlign = "center";
-  ctx.fillText("TAP < > OR ARROW KEYS CHANGE - TAP OUTSIDE OR P CLOSE", CANVAS.W / 2, box.y + box.h - 20);
+  ctx.fillText("< > CHANGE - P CLOSES", CANVAS.W / 2, box.y + box.h - FOOTER_H / 2);
 }

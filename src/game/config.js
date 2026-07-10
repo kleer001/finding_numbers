@@ -10,10 +10,24 @@ export const GRID = {
 
 export const CANVAS = { W: 800, H: 600 };
 
-// Bottom-right boxed "PREFS" button, in canvas space — also the touch
-// tap-target. Sized to line up with the top and bottom of the waterfall strip.
+// The whole screen is one uniform character grid, like text-mode hardware:
+// the maze occupies the top GRID.H rows, the HUD the bottom HUD_ROWS. Every
+// glyph on screen is CHAR.FONT px — one character size, no exceptions.
+export const HUD_ROWS = 3;
+export const SCREEN = { COLS: GRID.W, ROWS: GRID.H + HUD_ROWS }; // 23 x 20
+export const CHAR = {
+  W: CANVAS.W / SCREEN.COLS, // 34.78...
+  H: CANVAS.H / SCREEN.ROWS, // 30
+  FONT: Math.floor((CANVAS.H / SCREEN.ROWS) * 0.95), // 28
+};
+
+// HUD column budget: cols 0-4 status field (LVL / digits / count),
+// cols 5-17 waterfall, cols 18-22 PREFS — every box on whole cells.
+export const WATERFALL = { col: 5, row: GRID.H, cols: 13, rows: HUD_ROWS };
+
+// Bottom-right boxed "PREFS" button — also the touch tap-target.
 // Shared by input hit-testing and the HUD draw.
-export const PREFS_BTN = { x: 636, y: 510, w: 150, h: 80 };
+export const PREFS_BTN = { x: 18 * CHAR.W, y: 17 * CHAR.H, w: 5 * CHAR.W, h: 3 * CHAR.H };
 
 export const TRANSITION_MS = 260; // static-cut between cells (<= 300ms)
 
@@ -47,7 +61,8 @@ export const CRT_CONFIG = {
   chromaticAberration: 0.0009,
   staticNoise: 0.02,
   glowBloom: 0.004,
-  scanlineIntensity: 0.35,
+  scanlineIntensity: 0.45,
+  dotMask: true, // faint aperture grille over the mono phosphor
   desaturation: 0.15,
   flicker: 0.02,
   signalLoss: 0.04,
