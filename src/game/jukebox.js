@@ -5,7 +5,7 @@
 // each call (-> endless new digits). ORDERED is a 0..9 counting melody.
 
 import { makeRng } from "../core/rng.js";
-import { LANGUAGES } from "./config.js";
+import { LANGUAGES, DIAL_MAX } from "./config.js";
 import { CADENCES } from "./levels.js";
 
 const LEN = 25; // digits per loop pass; long enough to feel like a real message
@@ -23,7 +23,7 @@ export function buildDigits(rng, lang, coherence) {
 
 // STATIC dial 0..5 -> dread bed {wash, burst}, matching the range levels.js uses.
 export function staticToNoise(level) {
-  const t = Math.max(0, Math.min(5, level)) / 5;
+  const t = Math.max(0, Math.min(DIAL_MAX, level)) / DIAL_MAX;
   return { wash: t * 0.7, burst: t };
 }
 

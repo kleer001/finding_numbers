@@ -117,8 +117,11 @@ export const GLYPH = {
 // single-color CRT monitor (A_God_in_the_dark STYLE_GUIDE).
 export const PALETTE = {
   bg: "#000000",
-  mono: "#ffd257",
 };
+
+// Ceiling of the 0..N integer dials (CRT NOISE, jukebox STATIC): the stored
+// value, its clamp, and the 0..1 normalizers all read from here so they agree.
+export const DIAL_MAX = 5;
 
 // The two classic monochrome CRT phosphors. The TINT pref swaps the single
 // on-screen color; `rgb` drives the tinted TV-static wash. Keys are the stored

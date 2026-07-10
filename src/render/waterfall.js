@@ -9,7 +9,7 @@
 import { WATERFALL } from "../game/config.js";
 
 export const RAMP = " ░▒▓█"; // 5 levels
-export const VOICE_BAND = 0.32; // voice sits in the low FFT bins
+export const VOICE_BIN_FRACTION = 0.32; // voice sits in the low FFT bins
 export const SUB = 2; // sub-cells per character cell
 
 const COLS = WATERFALL.cols * SUB;
@@ -23,7 +23,7 @@ export function quantize(v) {
 // Split the voice band into `rows` bands and return each band's peak bin.
 // Index 0 is the lowest frequency.
 export function spectrumToColumn(spectrum, rows) {
-  const cut = Math.floor(spectrum.length * VOICE_BAND);
+  const cut = Math.floor(spectrum.length * VOICE_BIN_FRACTION);
   const col = [];
   for (let r = 0; r < rows; r++) {
     const a = Math.floor((cut * r) / rows);

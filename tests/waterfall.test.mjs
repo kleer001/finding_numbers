@@ -2,7 +2,7 @@ import test from "node:test";
 import assert from "node:assert/strict";
 
 import { WATERFALL } from "../src/game/config.js";
-import { RAMP, SUB, VOICE_BAND, quantize, spectrumToColumn, stepWaterfall } from "../src/render/waterfall.js";
+import { RAMP, SUB, VOICE_BIN_FRACTION, quantize, spectrumToColumn, stepWaterfall } from "../src/render/waterfall.js";
 
 test("brightness quantizes to the full block-gradient ramp", () => {
   assert.equal(RAMP, " ░▒▓█");
@@ -18,7 +18,7 @@ test("brightness quantizes to the full block-gradient ramp", () => {
 
 test("column samples band peaks across the low voice band only", () => {
   const spectrum = new Uint8Array(512);
-  const cut = Math.floor(512 * VOICE_BAND);
+  const cut = Math.floor(512 * VOICE_BIN_FRACTION);
   spectrum[0] = 40; // lowest band
   spectrum[cut - 1] = 200; // top of the voice band
   spectrum[cut] = 255; // just above the cut: must be ignored
@@ -36,7 +36,7 @@ test("waterfall runs on a half-cell sub-grid inside its strip", () => {
 
 test("band peaks pick the loudest bin in each band", () => {
   const spectrum = new Uint8Array(512);
-  const cut = Math.floor(512 * VOICE_BAND);
+  const cut = Math.floor(512 * VOICE_BIN_FRACTION);
   const mid = Math.floor(cut / 2);
   spectrum[mid] = 99;
   spectrum[mid + 1] = 150;

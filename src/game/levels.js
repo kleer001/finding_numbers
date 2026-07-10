@@ -14,6 +14,14 @@ const RAPID = { min: 600, max: 1800, step: 200 }; // long expert messages
 // Shared with the jukebox picker so both draw cadence from one source.
 export const CADENCES = { CALM, BRISK, RAPID };
 
+// Draw a random wait (ms) from a {min,max,step} cadence spec, quantized to
+// `step`. The station and the cold-open banner both call this so they stay in
+// lockstep — one spec change moves both.
+export function pickInterval({ min, max, step }) {
+  const steps = Math.floor((max - min) / step);
+  return min + step * ((Math.random() * (steps + 1)) | 0);
+}
+
 // Brown-noise dread: wash = slow swells intensity, burst = between-digit
 // stabs intensity (both 0..1). The noise threatens the voice but never touches
 // it — spectrally below the voice band and hard-ducked whenever a digit plays.

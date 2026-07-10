@@ -4,6 +4,7 @@
 
 import { GRID, CANVAS, GLYPH, PREFS_BTN, CHAR, WATERFALL, INTRO_MESSAGES, SIGNAL_LOST_MESSAGES } from "../game/config.js";
 import { RAMP, SUB, stepWaterfall } from "./waterfall.js";
+import { pickInterval } from "../game/levels.js";
 
 function drawGlyph(ctx, ch, gx, gy) {
   ctx.fillText(ch, gx * CHAR.W + CHAR.W / 2, gy * CHAR.H + CHAR.H / 2);
@@ -115,9 +116,7 @@ let introLines = null;
 let introSwitchAt = 0;
 
 function introHold(interval) {
-  const { min, max, step } = interval;
-  const steps = Math.floor((max - min) / step);
-  return min + step * ((Math.random() * (steps + 1)) | 0);
+  return pickInterval(interval);
 }
 
 function drawIntroBanner(ctx, tint, now, interval) {

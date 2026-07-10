@@ -1,6 +1,6 @@
 // Boot: wire canvas, input, update+render loop, the CRT filter, and prefs menu.
 
-import { CANVAS, CRT_CONFIG, CRT_NOISE_MAX, TRANSITION_MS, TINTS, PALETTE, LANGUAGES } from "./game/config.js";
+import { CANVAS, CRT_CONFIG, CRT_NOISE_MAX, TRANSITION_MS, TINTS, PALETTE, LANGUAGES, DIAL_MAX } from "./game/config.js";
 import { MAX_LEVEL } from "./game/levels.js";
 import { createState, setLevel, tryMove, update } from "./game/state.js";
 import { installInput, installTouch, tapZone } from "./game/input.js";
@@ -29,14 +29,14 @@ function loadSave() {
   }
   return {
     crt: typeof s.crt === "boolean" ? s.crt : true,
-    crtNoise: Number.isInteger(s.crtNoise) && s.crtNoise >= 0 && s.crtNoise <= 5 ? s.crtNoise : 0,
+    crtNoise: Number.isInteger(s.crtNoise) && s.crtNoise >= 0 && s.crtNoise <= DIAL_MAX ? s.crtNoise : 0,
     showCount: typeof s.showCount === "boolean" ? s.showCount : false,
     tint: s.tint === "green" ? "green" : "amber",
     dark: typeof s.dark === "boolean" ? s.dark : true,
     jbLang: [...LANGUAGES, "babel"].includes(s.jbLang) ? s.jbLang : "english",
     jbCoherence: ["LOOP", "RANDOM", "ORDERED"].includes(s.jbCoherence) ? s.jbCoherence : "LOOP",
     jbCadence: ["CALM", "BRISK", "RAPID"].includes(s.jbCadence) ? s.jbCadence : "CALM",
-    jbStatic: Number.isInteger(s.jbStatic) && s.jbStatic >= 0 && s.jbStatic <= 5 ? s.jbStatic : 2,
+    jbStatic: Number.isInteger(s.jbStatic) && s.jbStatic >= 0 && s.jbStatic <= DIAL_MAX ? s.jbStatic : 2,
     jbVoice: typeof s.jbVoice === "boolean" ? s.jbVoice : true,
     level: Number.isInteger(s.level) && s.level >= 1 && s.level <= MAX_LEVEL ? s.level : 1,
   };
@@ -50,12 +50,8 @@ function save() {
   }
 }
 
-const saved = loadSave();
-const prefs = {
-  crt: saved.crt, crtNoise: saved.crtNoise, showCount: saved.showCount, tint: saved.tint, dark: saved.dark,
-  jbLang: saved.jbLang, jbCoherence: saved.jbCoherence, jbCadence: saved.jbCadence, jbStatic: saved.jbStatic, jbVoice: saved.jbVoice,
-};
-const state = createState((performance.now() * 1000) | 0 || 1, saved.level);
+const { level: startLevel, ...prefs } = loadSave();
+const state = createState((performance.now() * 1000) | 0 || 1, startLevel);
 const menu = { open: false, index: 0 };
 const jukebox = { active: false, index: 0 };
 const jukeboxEngine = makeJukebox((performance.now() * 1000) | 0 || 7);
@@ -95,7 +91,7 @@ const MENU_ROWS = [
   {
     label: "CRT NOISE",
     value: () => String(prefs.crtNoise),
-    change: (d) => { prefs.crtNoise = clamp(prefs.crtNoise + d, 0, 5); applyCrtNoise(); },
+    change: (d) => { prefs.crtNoise = clamp(prefs.crtNoise + d, 0, DIAL_MAX); applyCrtNoise(); },
   },
   {
     label: "SHOW NUMBERS",
@@ -157,7 +153,7 @@ const JUKEBOX_ROWS = [
   {
     label: "STATIC",
     value: () => String(prefs.jbStatic),
-    change: (d) => { prefs.jbStatic = clamp(prefs.jbStatic + d, 0, 5); },
+    change: (d) => { prefs.jbStatic = clamp(prefs.jbStatic + d, 0, DIAL_MAX); },
   },
   {
     label: "NUMBERS",
@@ -238,7 +234,7 @@ installTouch(handleTap, handleHold);
 
 // NOISE dial: lerp each field from its base value (0) to CRT_NOISE_MAX (5).
 function crtNoiseConfig() {
-  const t = prefs.crtNoise / 5;
+  const t = prefs.crtNoise / DIAL_MAX;
   const cfg = { ...CRT_CONFIG };
   for (const k of Object.keys(CRT_NOISE_MAX)) {
     cfg[k] = CRT_CONFIG[k] + (CRT_NOISE_MAX[k] - CRT_CONFIG[k]) * t;

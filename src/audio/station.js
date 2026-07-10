@@ -4,6 +4,7 @@
 // saturation, slow irregular QSB fade on the voice only.
 
 import { LANGUAGES } from "../game/config.js";
+import { pickInterval } from "../game/levels.js";
 
 const VOICE_BAND = [300, 3000];
 
@@ -218,8 +219,8 @@ function duckFor(seconds) {
 }
 
 function buildVoiceBus() {
-  // STEP 2 — band-limit to the shortwave voice band (highpass 300, lowpass 2700)
-  // with a comms-speaker "mid honk": a presence peak ~1.2 kHz.
+  // Band-limit to the shortwave voice band (highpass 300, lowpass 2700) with a
+  // comms-speaker "mid honk": a presence peak ~1.2 kHz.
   const hp = ctx.createBiquadFilter();
   hp.type = "highpass";
   hp.frequency.value = VOICE_BAND[0];
@@ -232,7 +233,7 @@ function buildVoiceBus() {
   lp.type = "lowpass";
   lp.frequency.value = 2700;
 
-  // STEP 3 — dirty the voice: drive hard into a soft-clip for gritty overdriven
+  // Dirty the voice: drive hard into a soft-clip for gritty overdriven
   // transmitter distortion, then pull the level back down.
   const drive = ctx.createGain();
   drive.gain.value = 2.2;
@@ -295,9 +296,7 @@ function playDigit(entry) {
 }
 
 function scheduleNext() {
-  const { min, max, step } = getReadout().interval;
-  const steps = Math.floor((max - min) / step);
-  const wait = min + step * ((Math.random() * (steps + 1)) | 0);
+  const wait = pickInterval(getReadout().interval);
   scheduleBurst(wait);
   setTimeout(() => {
     const { digits, repeats } = getReadout();
