@@ -143,3 +143,50 @@ step**, so any static file server works too.
 - CRT effect: [CRTFilterWebGL](https://github.com/Ichiaka/CRTFilterWebGL) (MIT).
 
 MIT licensed.
+
+---
+
+<details>
+<summary>📻 <b>Further reading — the real number stations</b> (for the curious)</summary>
+
+<br>
+
+Number stations are real: shortwave broadcasts of spoken digit groups, widely
+believed to send one-time-pad messages to intelligence agents. The frequencies,
+voices, and dread in this game are drawn from documented ones. Start here:
+
+- **[Numbers station — Wikipedia](https://en.wikipedia.org/wiki/Numbers_station)** —
+  the overview: message format (groups of four or five, read twice or looped),
+  history, and the famous stations.
+- **[The Conet Project — Wikipedia](https://en.wikipedia.org/wiki/The_Conet_Project)** —
+  the canonical four-hour compilation of numbers-station recordings; the sound
+  this game is chasing. (Freely available on the Internet Archive.)
+
+**The stations on the dial** (the kHz values the frequency readout cycles through):
+
+- **The Buzzer — UVB-76** (4625 kHz) —
+  [Wikipedia](https://en.wikipedia.org/wiki/UVB-76) ·
+  [Priyom](https://priyom.org/military-stations/russia/the-buzzer)
+- **The Lincolnshire Poacher — E03** (11545 kHz), 5-figure groups with the fifth
+  digit pitched up —
+  [Wikipedia](https://en.wikipedia.org/wiki/Lincolnshire_Poacher_(numbers_station)) ·
+  [Priyom](https://priyom.org/number-stations/english/e03)
+- **The Cuban "Atención" — V02a → HM01** (7887 / 11530 kHz) —
+  [Priyom](https://priyom.org/number-stations/other/v02a)
+- **The Pip — S30** (5448 day / 3756 night kHz) —
+  [Wikipedia](https://en.wikipedia.org/wiki/The_Pip) ·
+  [Priyom](https://priyom.org/military-stations/russia/the-pip)
+- **The Squeaky Wheel — S32**, **The Goose**, and **Yosemite Sam** — indexed in
+  the databases below.
+
+**Databases, trackers & communities:**
+
+- **[Priyom.org](https://priyom.org/)** — the definitive live schedule, station
+  IDs (E-, S-, V-, HM- designators), and recordings.
+- **[Numbers & Oddities](https://www.numbersoddities.nl/)** — long-running
+  logs, profiles, and the ENIGMA station catalogue.
+- **[HFUnderground Wiki](https://www.hfunderground.com/wiki/)** — hobbyist notes
+  and identifications across the shortwave spectrum.
+
+</details>
+
