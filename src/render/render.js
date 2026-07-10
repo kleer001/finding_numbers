@@ -78,7 +78,7 @@ function renderHud(ctx, state, showCount, tint, spectrum) {
   ctx.fillStyle = tint.fg;
   ctx.textAlign = "center";
   ctx.textBaseline = "middle";
-  ctx.font = `40px VT323, "Courier New", monospace`;
+  ctx.font = `30px VT323, "Courier New", monospace`;
   ctx.fillText("PREFS", b.x + b.w / 2, b.y + b.h / 2 + 2);
   ctx.textBaseline = "alphabetic";
 }
