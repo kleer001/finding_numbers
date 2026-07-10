@@ -9,7 +9,17 @@ const VOICE_BAND = [300, 3000];
 
 let ctx = null;
 let master = null;
+let analyser = null; // taps the master bus for the bottom-strip waterfall
 let voiceIn = null; // input node of the voice chain (per-digit sources connect here)
+
+// FFT frequency-bin count exposed to the renderer (fftSize / 2).
+export const SPECTRUM_BINS = 512;
+
+// Fill `buf` (length SPECTRUM_BINS) with the current spectrum; zeros if silent.
+export function getSpectrum(buf) {
+  if (analyser) analyser.getByteFrequencyData(buf);
+  else buf.fill(0);
+}
 let buffers = {}; // lang -> [10 AudioBuffer]
 // getReadout() -> { digits: [{digit, lang}], repeats, interval, noise } (levels.js)
 let getReadout = () => ({
@@ -40,10 +50,40 @@ export function debug() {
   };
 }
 
-// Must be called from a user gesture (autoplay policy). Idempotent.
+// iOS silences WebAudio whenever the ringer/mute switch is on, but never
+// silences an <audio> element. Playing a looping silent clip on the unlock
+// gesture promotes the page's audio session to "playback", so the AudioContext
+// is heard through the loud channel too. No-op / harmless on desktop.
+function silentWavDataUri() {
+  const bytes = [
+    0x52, 0x49, 0x46, 0x46, 0x26, 0, 0, 0, 0x57, 0x41, 0x56, 0x45, // RIFF....WAVE
+    0x66, 0x6d, 0x74, 0x20, 0x10, 0, 0, 0, 1, 0, 1, 0, // fmt , PCM, mono
+    0x44, 0xac, 0, 0, 0x88, 0x58, 0x01, 0, 2, 0, 16, 0, // 44100 Hz, 16-bit
+    0x64, 0x61, 0x74, 0x61, 2, 0, 0, 0, 0, 0, // data, one silent sample
+  ];
+  return "data:audio/wav;base64," + btoa(String.fromCharCode(...bytes));
+}
+
+let silentEl = null; // held so the looping unlock clip is never garbage-collected
+
+function unmuteIOS() {
+  silentEl = document.createElement("audio");
+  silentEl.setAttribute("x-webkit-airplay", "deny");
+  silentEl.loop = true;
+  silentEl.src = silentWavDataUri();
+  silentEl.play().catch(() => {}); // autoplay boundary: benign if the browser declines
+}
+
+// Must be called from a user gesture (autoplay policy). Idempotent build, but
+// always re-resumes: mobile browsers suspend the context on background/idle, so
+// every gesture nudges it back to running.
 export async function arm() {
-  if (armed) return;
+  if (ctx) {
+    ctx.resume();
+    return;
+  }
   armed = true;
+  unmuteIOS();
   const AC = window.AudioContext || window.webkitAudioContext;
   if (!AC) return;
   ctx = new AC();
@@ -52,6 +92,11 @@ export async function arm() {
   master = ctx.createGain();
   master.gain.value = 0.9;
   master.connect(ctx.destination);
+
+  analyser = ctx.createAnalyser();
+  analyser.fftSize = SPECTRUM_BINS * 2;
+  analyser.smoothingTimeConstant = 0.55;
+  master.connect(analyser); // tap only; analysis runs without an onward connection
 
   buildHissBed();
   buildNoiseBed();
@@ -173,15 +218,28 @@ function duckFor(seconds) {
 }
 
 function buildVoiceBus() {
+  // STEP 2 — band-limit to the shortwave voice band (highpass 300, lowpass 2700)
+  // with a comms-speaker "mid honk": a presence peak ~1.2 kHz.
   const hp = ctx.createBiquadFilter();
   hp.type = "highpass";
   hp.frequency.value = VOICE_BAND[0];
+  const honk = ctx.createBiquadFilter();
+  honk.type = "peaking";
+  honk.frequency.value = 1200;
+  honk.Q.value = 1.1;
+  honk.gain.value = 5;
   const lp = ctx.createBiquadFilter();
   lp.type = "lowpass";
-  lp.frequency.value = VOICE_BAND[1];
+  lp.frequency.value = 2700;
 
+  // STEP 3 — dirty the voice: drive hard into a soft-clip for gritty overdriven
+  // transmitter distortion, then pull the level back down.
+  const drive = ctx.createGain();
+  drive.gain.value = 2.2;
   const shaper = ctx.createWaveShaper();
-  shaper.curve = saturationCurve(0.4);
+  shaper.curve = saturationCurve(0.85);
+  const postGain = ctx.createGain();
+  postGain.gain.value = 0.55;
 
   // QSB: slow irregular amplitude fade on the voice bus only.
   const qsb = ctx.createGain();
@@ -193,7 +251,7 @@ function buildVoiceBus() {
   lfo.connect(lfoDepth).connect(qsb.gain);
   lfo.start();
 
-  hp.connect(lp).connect(shaper).connect(qsb).connect(master);
+  hp.connect(honk).connect(lp).connect(drive).connect(shaper).connect(postGain).connect(qsb).connect(master);
   voiceIn = hp;
 }
 
@@ -259,6 +317,13 @@ function scheduleNext() {
 // Victory chime: a rising ten-note square-wave arpeggio (C major pentatonic),
 // short blips with a gain fade, kept quiet. Routed direct to master (no QSB).
 const VICTORY_NOTES = [523.25, 587.33, 659.25, 783.99, 880, 1046.5, 1174.66, 1318.51, 1567.98, 1760];
+
+// Prefs SOUND TEST: resume the context (mobile may have suspended it), then
+// play the winning tones once it is actually running.
+export function testTone() {
+  if (!ctx) return;
+  ctx.resume().then(victory);
+}
 
 export function victory() {
   if (!ctx || !master) return;

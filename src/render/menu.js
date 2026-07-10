@@ -6,8 +6,6 @@
 
 import { CANVAS, PALETTE } from "../game/config.js";
 
-const MONO = PALETTE.mono;
-
 const PANEL_W = 640;
 const ROW_H = 68;
 const PAD = 28;
@@ -45,16 +43,16 @@ export function menuHit(x, y, rowCount) {
   return null;
 }
 
-export function renderMenu(ctx, index, rows) {
+export function renderMenu(ctx, index, rows, mono) {
   const box = layout(rows.length);
 
   ctx.fillStyle = PALETTE.bg;
   ctx.fillRect(box.x, box.y, box.w, box.h);
-  ctx.strokeStyle = MONO;
+  ctx.strokeStyle = mono;
   ctx.lineWidth = 2;
   ctx.strokeRect(box.x, box.y, box.w, box.h);
 
-  ctx.fillStyle = MONO;
+  ctx.fillStyle = mono;
   ctx.textBaseline = "alphabetic";
 
   ctx.font = `40px VT323, "Courier New", monospace`;

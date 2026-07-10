@@ -10,6 +10,11 @@ export const GRID = {
 
 export const CANVAS = { W: 800, H: 600 };
 
+// Bottom-right boxed "PREFS" button, in canvas space — also the touch
+// tap-target. Sized to line up with the top and bottom of the waterfall strip.
+// Shared by input hit-testing and the HUD draw.
+export const PREFS_BTN = { x: 636, y: 510, w: 150, h: 80 };
+
 export const TRANSITION_MS = 260; // static-cut between cells (<= 300ms)
 
 export const LANGUAGES = ["english", "spanish", "italian", "chinese", "japanese", "hindi"];
@@ -21,11 +26,19 @@ export const GLYPH = {
   SOURCE: "*", // cycling win glyph slot in the source cell center
 };
 
-// Monochrome amber phosphor: one brightness for every glyph on screen, like a
+// Monochrome phosphor: one brightness for every glyph on screen, like a
 // single-color CRT monitor (A_God_in_the_dark STYLE_GUIDE).
 export const PALETTE = {
   bg: "#000000",
   mono: "#ffd257",
+};
+
+// The two classic monochrome CRT phosphors. The TINT pref swaps the single
+// on-screen color; `rgb` drives the tinted TV-static wash. Keys are the stored
+// pref values.
+export const TINTS = {
+  amber: { fg: "#ffd257", rgb: [255, 210, 87] },
+  green: { fg: "#5bf58a", rgb: [91, 245, 138] },
 };
 
 export const CRT_CONFIG = {

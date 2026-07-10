@@ -1,6 +1,6 @@
 // Boot: wire canvas, input, update+render loop, the CRT filter, and prefs menu.
 
-import { CANVAS, CRT_CONFIG, CRT_NOISE_MAX, TRANSITION_MS } from "./game/config.js";
+import { CANVAS, CRT_CONFIG, CRT_NOISE_MAX, TRANSITION_MS, TINTS } from "./game/config.js";
 import { MAX_LEVEL } from "./game/levels.js";
 import { createState, setLevel, tryMove, update } from "./game/state.js";
 import { installInput, installTouch, tapZone } from "./game/input.js";
@@ -30,6 +30,7 @@ function loadSave() {
     crt: typeof s.crt === "boolean" ? s.crt : true,
     crtNoise: Number.isInteger(s.crtNoise) && s.crtNoise >= 0 && s.crtNoise <= 5 ? s.crtNoise : 0,
     showCount: typeof s.showCount === "boolean" ? s.showCount : false,
+    tint: s.tint === "green" ? "green" : "amber",
     level: Number.isInteger(s.level) && s.level >= 1 && s.level <= MAX_LEVEL ? s.level : 1,
   };
 }
@@ -43,7 +44,7 @@ function save() {
 }
 
 const saved = loadSave();
-const prefs = { crt: saved.crt, crtNoise: saved.crtNoise, showCount: saved.showCount };
+const prefs = { crt: saved.crt, crtNoise: saved.crtNoise, showCount: saved.showCount, tint: saved.tint };
 const state = createState((performance.now() * 1000) | 0 || 1, saved.level);
 const menu = { open: false, index: 0 };
 window.game = state; // dev handles: inspect / drive from the console
@@ -81,9 +82,21 @@ const MENU_ROWS = [
     change: () => { prefs.showCount = !prefs.showCount; },
   },
   {
+    label: "TINT",
+    value: () => prefs.tint.toUpperCase(),
+    change: () => { prefs.tint = prefs.tint === "amber" ? "green" : "amber"; },
+  },
+  {
     label: "LEVEL",
     value: () => String(state.level),
     change: (d) => setLevel(state, clamp(state.level + d, 1, MAX_LEVEL)),
+  },
+  {
+    // Tap to play the winning tones; value shows the live audio state so a
+    // silent device tells us whether the context is running or suspended.
+    label: "SOUND TEST",
+    value: () => (station.debug().ctxState ?? "off").toUpperCase(),
+    change: () => station.testTone(),
   },
 ];
 
@@ -129,8 +142,15 @@ function handleTap(x, y) {
   else handleMove(zone.dir);
 }
 
+// Held finger auto-repeats movement only; menu steppers stay tap-only.
+function handleHold(x, y) {
+  if (menu.open) return;
+  const zone = tapZone(x, y);
+  if (zone.type === "move") handleMove(zone.dir);
+}
+
 installInput(handleMove, handleKey);
-installTouch(handleTap);
+installTouch(handleTap, handleHold);
 
 // --- CRT filter --------------------------------------------------------------
 
@@ -161,6 +181,7 @@ function applyCrtNoise() {
 
 // --- main loop ----------------------------------------------------------------
 
+const spectrum = new Uint8Array(station.SPECTRUM_BINS);
 let savedLevel = state.level;
 let last = performance.now();
 function frame(now) {
@@ -171,9 +192,11 @@ function frame(now) {
     savedLevel = state.level; // level advanced by a win: persist it
     save();
   }
-  if (state.transition) renderStatic(ctx, Math.min(1, state.transition.t / TRANSITION_MS));
-  else render(ctx, state, prefs.showCount);
-  if (menu.open) renderMenu(ctx, menu.index, MENU_ROWS.map((r) => ({ label: r.label, value: r.value() })));
+  const tint = TINTS[prefs.tint];
+  station.getSpectrum(spectrum);
+  if (state.transition) renderStatic(ctx, Math.min(1, state.transition.t / TRANSITION_MS), tint.rgb);
+  else render(ctx, state, prefs.showCount, tint, spectrum);
+  if (menu.open) renderMenu(ctx, menu.index, MENU_ROWS.map((r) => ({ label: r.label, value: r.value() })), tint.fg);
   requestAnimationFrame(frame);
 }
 requestAnimationFrame(frame);
