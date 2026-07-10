@@ -7,7 +7,7 @@ TODO: describe finding_numbers
 - Activate env: `source .venv/bin/activate`
 - Install deps: `pip install -e ".[dev]"`
 - Run: `python main.py`
-- Test: `pytest`
+- Test: `pytest` (python) and `npm test` (game logic, node --test)
 - Lint/format: `ruff check . && ruff format .`
 
 ## Project structure
@@ -19,7 +19,7 @@ TODO: describe finding_numbers
 
 ## Testing
 
-Run `pytest` from repo root. Tests live in `tests/`. New features need at least one test that fails before the change and passes after.
+Run `pytest` from repo root. Tests live in `tests/`. Game-logic (JS) tests are `tests/*.test.mjs`, run with `npm test`. New features need at least one test that fails before the change and passes after.
 
 ## Code style
 

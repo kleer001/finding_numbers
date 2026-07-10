@@ -1,11 +1,11 @@
 // Builds a cell's static ASCII tableau from which of its 4 sides have doors.
-// A cell is a char grid: '#' wall, ' ' floor. Corridors are 3 wide and meet at
-// the center junction. Start cells get a 4x4 open room; the source cell gets a
-// glyph marker at center.
+// A cell is a char grid: '#' wall, ' ' floor. Corridors are 2*half+1 wide and
+// meet at the center junction. Start cells get a 4x4 open room; the source
+// cell gets a glyph marker at center.
 
 import { GRID, GLYPH } from "../game/config.js";
 
-const { W, H, CX, CY, HALF } = GRID;
+const { W, H, CX, CY } = GRID;
 
 // Directional unit vectors + the door-opening column/row each carves toward.
 export const DIRS = {
@@ -25,16 +25,16 @@ function carve(grid, x, y) {
   if (y >= 0 && y < H && x >= 0 && x < W) grid[y][x] = GLYPH.FLOOR;
 }
 
-function carveJunction(grid) {
-  for (let y = CY - HALF; y <= CY + HALF; y++)
-    for (let x = CX - HALF; x <= CX + HALF; x++) carve(grid, x, y);
+function carveJunction(grid, half) {
+  for (let y = CY - half; y <= CY + half; y++)
+    for (let x = CX - half; x <= CX + half; x++) carve(grid, x, y);
 }
 
-function carveCorridor(grid, dir) {
-  if (dir === "N") for (let y = 0; y <= CY; y++) for (let x = CX - HALF; x <= CX + HALF; x++) carve(grid, x, y);
-  if (dir === "S") for (let y = CY; y < H; y++) for (let x = CX - HALF; x <= CX + HALF; x++) carve(grid, x, y);
-  if (dir === "E") for (let x = CX; x < W; x++) for (let y = CY - HALF; y <= CY + HALF; y++) carve(grid, x, y);
-  if (dir === "W") for (let x = 0; x <= CX; x++) for (let y = CY - HALF; y <= CY + HALF; y++) carve(grid, x, y);
+function carveCorridor(grid, dir, half) {
+  if (dir === "N") for (let y = 0; y <= CY; y++) for (let x = CX - half; x <= CX + half; x++) carve(grid, x, y);
+  if (dir === "S") for (let y = CY; y < H; y++) for (let x = CX - half; x <= CX + half; x++) carve(grid, x, y);
+  if (dir === "E") for (let x = CX; x < W; x++) for (let y = CY - half; y <= CY + half; y++) carve(grid, x, y);
+  if (dir === "W") for (let x = 0; x <= CX; x++) for (let y = CY - half; y <= CY + half; y++) carve(grid, x, y);
 }
 
 // The floor tile just inside a door opening (where the player stands on entry).
@@ -45,21 +45,23 @@ export function doorEntryTile(dir) {
   if (dir === "W") return { x: 0, y: CY };
 }
 
-// True if (x,y) sits in a door opening for `dir` (used to detect edge exits).
-export function atDoor(dir, x, y, doors) {
-  if (!doors[dir]) return false;
-  if (dir === "N") return y === 0 && x >= CX - HALF && x <= CX + HALF;
-  if (dir === "S") return y === H - 1 && x >= CX - HALF && x <= CX + HALF;
-  if (dir === "E") return x === W - 1 && y >= CY - HALF && y <= CY + HALF;
-  if (dir === "W") return x === 0 && y >= CY - HALF && y <= CY + HALF;
+// True if (x,y) sits in a door opening of `cell` for `dir` (edge exits).
+// Openings match the cell's corridor width.
+export function atDoor(dir, x, y, cell) {
+  if (!cell.doors[dir]) return false;
+  const half = cell.half;
+  if (dir === "N") return y === 0 && x >= CX - half && x <= CX + half;
+  if (dir === "S") return y === H - 1 && x >= CX - half && x <= CX + half;
+  if (dir === "E") return x === W - 1 && y >= CY - half && y <= CY + half;
+  if (dir === "W") return x === 0 && y >= CY - half && y <= CY + half;
   return false;
 }
 
-// doors: {N,S,E,W: bool}. kind: 'interior' | 'start' | 'source'.
-export function buildCell(doors, kind = "interior") {
+// doors: {N,S,E,W: bool}. kind: 'interior' | 'start' | 'source' | 'corridor'.
+export function buildCell(doors, kind = "interior", half = GRID.HALF) {
   const grid = blankGrid();
-  carveJunction(grid);
-  for (const dir of Object.keys(DIRS)) if (doors[dir]) carveCorridor(grid, dir);
+  carveJunction(grid, half);
+  for (const dir of Object.keys(DIRS)) if (doors[dir]) carveCorridor(grid, dir, half);
 
   if (kind === "start") {
     // 4x4 open room around center.
@@ -69,7 +71,7 @@ export function buildCell(doors, kind = "interior") {
   if (kind === "source") {
     grid[CY][CX] = GLYPH.SOURCE;
   }
-  return { grid, doors, kind };
+  return { grid, doors, kind, half };
 }
 
 export function isFloor(cell, x, y) {
@@ -81,13 +83,23 @@ const ALL_DIRS = ["N", "S", "E", "W"];
 
 // Generate a fresh cell as the player transitions into it. The maze is faked:
 // each cell is built on the fly from the door it was entered through.
-//   entryDir  - side the player enters from (the "back" door); null for start.
-//   kind      - 'start' | 'source' | 'interior'.
-//   frontier  - if true (and interior), one forward door is the correct one.
-export function makeCell(entryDir, kind, rng, frontier) {
+//   entryDir     - side the player enters from (the "back" door); null for start.
+//   kind         - 'start' | 'source' | 'interior' | 'corridor'.
+//   frontier     - if true (and interior), one forward door is the correct one.
+//   forwardDoors - forward choices per interior cell (2 or 3; 3 opens all sides).
+//   theme        - zone look: {wall, half}; array values are picked per cell.
+//                  Non-load-bearing: it never changes where the doors are.
+export function makeCell(entryDir, kind, rng, frontier, forwardDoors = 2, theme = {}) {
+  const half = pickThemed(theme.half, rng) ?? GRID.HALF;
+  const wallGlyph = pickThemed(theme.wall, rng) ?? GLYPH.WALL;
+  const dress = (cell) => {
+    cell.wallGlyph = wallGlyph;
+    return cell;
+  };
+
   if (kind === "start") {
     const exit = entryDir ?? rng.pick(ALL_DIRS); // one door; advances you onward
-    const cell = buildCell({ [exit]: true }, "start");
+    const cell = dress(buildCell({ [exit]: true }, "start", half));
     cell.entryDir = null;
     cell.backDir = null;
     cell.correctDir = exit;
@@ -95,21 +107,37 @@ export function makeCell(entryDir, kind, rng, frontier) {
   }
 
   if (kind === "source") {
-    const cell = buildCell({ [entryDir]: true }, "source");
+    const cell = dress(buildCell({ [entryDir]: true }, "source", half));
     cell.entryDir = entryDir;
     cell.backDir = entryDir;
     cell.correctDir = null;
     return cell;
   }
 
-  // interior: back door + two forward choices (3 doors total, no dead-ends).
-  const forwards = shuffle(ALL_DIRS.filter((d) => d !== entryDir), rng).slice(0, 2);
-  const doors = { [entryDir]: true, [forwards[0]]: true, [forwards[1]]: true };
-  const cell = buildCell(doors, "interior");
+  // corridor: an empty pass-through — one way in, one way onward (straight or a
+  // bend), no decision to make. Pure scenery between real junctions.
+  if (kind === "corridor") {
+    const exit = rng.pick(ALL_DIRS.filter((d) => d !== entryDir));
+    const cell = dress(buildCell({ [entryDir]: true, [exit]: true }, "corridor", half));
+    cell.entryDir = entryDir;
+    cell.backDir = entryDir;
+    cell.correctDir = null;
+    return cell;
+  }
+
+  // interior: back door + forward choices (no dead-ends).
+  const forwards = shuffle(ALL_DIRS.filter((d) => d !== entryDir), rng).slice(0, forwardDoors);
+  const doors = { [entryDir]: true };
+  for (const f of forwards) doors[f] = true;
+  const cell = dress(buildCell(doors, "interior", half));
   cell.entryDir = entryDir;
   cell.backDir = entryDir;
   cell.correctDir = frontier ? rng.pick(forwards) : null;
   return cell;
+}
+
+function pickThemed(value, rng) {
+  return Array.isArray(value) ? rng.pick(value) : value;
 }
 
 function shuffle(arr, rng) {

@@ -22,14 +22,11 @@ export function installInput(onMove, onKey) {
   });
 }
 
-// Touch/click tap-zones: the screen is split into four triangular regions by its
-// diagonals; a tap in a region steps that direction. A small top-right corner is
-// reserved as the preferences (P) button. Anchored to the screen, not the @, so
-// zones never clip. Listener is on window so it works whichever canvas the CRT
-// filter leaves visible.
-const PREFS_BTN = { w: 84, h: 60 };
-
-export function installTouch(onMove, onPrefs) {
+// Touch/click input. Taps are delivered in canvas space so main.js can route
+// them (menu hit-testing when prefs are open, movement zones otherwise).
+// Listener is on window so it works whichever canvas the CRT filter leaves
+// visible.
+export function installTouch(onTap) {
   window.addEventListener(
     "pointerdown",
     (e) => {
@@ -41,15 +38,22 @@ export function installTouch(onMove, onPrefs) {
       const y = ((e.clientY - rect.top) / rect.height) * CANVAS.H;
       if (x < 0 || y < 0 || x > CANVAS.W || y > CANVAS.H) return;
       e.preventDefault();
-      if (x > CANVAS.W - PREFS_BTN.w && y < PREFS_BTN.h) {
-        onPrefs();
-        return;
-      }
-      const dx = x - CANVAS.W / 2;
-      const dy = y - CANVAS.H / 2;
-      const dir = Math.abs(dx) > Math.abs(dy) ? (dx > 0 ? "E" : "W") : (dy > 0 ? "S" : "N");
-      onMove(dir);
+      onTap(x, y);
     },
     { passive: false },
   );
+}
+
+// Gameplay tap-zones: the screen is split into four triangular regions by its
+// diagonals; a tap in a region steps that direction. A small top-right corner
+// is reserved as the preferences (P) button. Anchored to the screen, not the @,
+// so zones never clip.
+const PREFS_BTN = { w: 84, h: 60 };
+
+export function tapZone(x, y) {
+  if (x > CANVAS.W - PREFS_BTN.w && y < PREFS_BTN.h) return { type: "prefs" };
+  const dx = x - CANVAS.W / 2;
+  const dy = y - CANVAS.H / 2;
+  const dir = Math.abs(dx) > Math.abs(dy) ? (dx > 0 ? "E" : "W") : (dy > 0 ? "S" : "N");
+  return { type: "move", dir };
 }
