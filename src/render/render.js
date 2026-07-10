@@ -3,7 +3,7 @@
 // color at one brightness: a character-mode monochrome monitor.
 
 import { GRID, CANVAS, PALETTE, GLYPH, PREFS_BTN, CHAR, WATERFALL } from "../game/config.js";
-import { RAMP, stepWaterfall } from "./waterfall.js";
+import { RAMP, SUB, stepWaterfall } from "./waterfall.js";
 
 function drawGlyph(ctx, ch, gx, gy) {
   ctx.fillText(ch, gx * CHAR.W + CHAR.W / 2, gy * CHAR.H + CHAR.H / 2);
@@ -63,16 +63,25 @@ function renderHud(ctx, state, showCount, tint, spectrum, now) {
   drawText(ctx, "PREFS", 18, 18);
 }
 
-// Scrolling text-mode spectrogram in the middle of the HUD band.
+// Scrolling text-mode spectrogram in the middle of the HUD band. Block glyphs
+// on a half-cell sub-grid: a graphics element, so it alone drops to half size.
 function drawWaterfall(ctx, spectrum, tint, now) {
   const wf = stepWaterfall(spectrum, now);
+  const rows = WATERFALL.rows * SUB;
   ctx.fillStyle = tint.fg;
-  for (let c = 0; c < WATERFALL.cols; c++) {
-    for (let r = 0; r < WATERFALL.rows; r++) {
-      const lv = wf[c][WATERFALL.rows - 1 - r]; // low freq at the bottom row
-      if (lv > 0) drawGlyph(ctx, RAMP[lv], WATERFALL.col + c, WATERFALL.row + r);
+  ctx.font = `${CHAR.FONT / 2}px VT323, "Courier New", monospace`;
+  for (let c = 0; c < wf.length; c++) {
+    for (let r = 0; r < rows; r++) {
+      const lv = wf[c][rows - 1 - r]; // low freq at the bottom row
+      if (lv === 0) continue;
+      ctx.fillText(
+        RAMP[lv],
+        (WATERFALL.col + (c + 0.5) / SUB) * CHAR.W,
+        (WATERFALL.row + (r + 0.5) / SUB) * CHAR.H,
+      );
     }
   }
+  ctx.font = `${CHAR.FONT}px VT323, "Courier New", monospace`;
   ctx.strokeStyle = tint.fg;
   ctx.lineWidth = 1;
   ctx.strokeRect(

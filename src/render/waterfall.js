@@ -1,14 +1,20 @@
-// Quantized text-mode spectrogram: the waterfall is character cells on the
-// same grid as the maze, not a raster. Time on X (one cell per ADVANCE_MS,
-// peak-held between advances so short utterances still register), frequency
-// on Y (one band per HUD row, low at the bottom), brightness on the RAMP.
+// Quantized text-mode spectrogram: the waterfall is glyph cells like the rest
+// of the screen, but on a half-cell sub-grid — a finer "graphics page" density
+// inside the same strip. Time on X (one sub-column per ADVANCE_MS, peak-held
+// between advances so short utterances still register), frequency on Y (low at
+// the bottom), brightness on the block-gradient RAMP. VT323 lacks the block
+// glyphs, but they're geometric fills, so the monospace fallback face renders
+// them indistinguishably.
 
 import { WATERFALL } from "../game/config.js";
 
-export const RAMP = " .:*#"; // 5 levels; VT323's latin subset has no block glyphs
+export const RAMP = " ░▒▓█"; // 5 levels
 export const VOICE_BAND = 0.32; // voice sits in the low FFT bins
+export const SUB = 2; // sub-cells per character cell
 
-const ADVANCE_MS = 130;
+const COLS = WATERFALL.cols * SUB;
+const ROWS = WATERFALL.rows * SUB;
+const ADVANCE_MS = 65; // half-width columns at twice the rate: same ~1.7s window
 
 export function quantize(v) {
   return Math.min(RAMP.length - 1, Math.floor((v / 256) * RAMP.length));
@@ -35,12 +41,12 @@ let lastAdvance = 0;
 
 export function stepWaterfall(spectrum, now) {
   if (!levels) {
-    levels = Array.from({ length: WATERFALL.cols }, () => Array(WATERFALL.rows).fill(0));
-    acc = Array(WATERFALL.rows).fill(0);
+    levels = Array.from({ length: COLS }, () => Array(ROWS).fill(0));
+    acc = Array(ROWS).fill(0);
     lastAdvance = now;
   }
-  const col = spectrumToColumn(spectrum, WATERFALL.rows);
-  for (let r = 0; r < WATERFALL.rows; r++) acc[r] = Math.max(acc[r], col[r]);
+  const col = spectrumToColumn(spectrum, ROWS);
+  for (let r = 0; r < ROWS; r++) acc[r] = Math.max(acc[r], col[r]);
   if (now - lastAdvance >= ADVANCE_MS) {
     levels.shift();
     levels.push(acc.map(quantize));
