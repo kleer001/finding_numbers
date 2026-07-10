@@ -13,6 +13,9 @@ message, and reach the source of the transmission — it will pull you somewhere
 Tap or press any key to start the audio, **put on headphones**, and listen. The
 voice is faint and buried in noise on purpose.
 
+Prefer to read first? The [station page](https://kleer001.github.io/finding_numbers/promo.html)
+has the full rundown.
+
 ---
 
 ## What's inside
