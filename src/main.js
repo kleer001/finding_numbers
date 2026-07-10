@@ -1,6 +1,6 @@
 // Boot: wire canvas, input, update+render loop, the CRT filter, and prefs menu.
 
-import { CANVAS, CRT_CONFIG, TRANSITION_MS, LANGUAGES } from "./game/config.js";
+import { CANVAS, CRT_CONFIG, TRANSITION_MS } from "./game/config.js";
 import { createState, tryMove, update } from "./game/state.js";
 import { installInput, installTouch } from "./game/input.js";
 import { render, renderStatic } from "./render/render.js";
@@ -18,14 +18,18 @@ const state = createState((performance.now() * 1000) | 0 || 1);
 window.game = state; // dev handle: inspect progression / drive from the console
 window.station = station;
 
-const prefs = { crt: true, showCount: false, language: "english" };
+const prefs = { crt: true, showCount: false };
 const menu = { open: false, index: 0 };
-const LANG_CYCLE = [...LANGUAGES, "mixed"];
 window.prefs = prefs; // dev handles
 window.menu = menu;
 
-station.init(() => state.audibleDigits);
-station.setLanguage(prefs.language);
+// The station reads whatever the current level says: audible entries, how many
+// times each is spoken, and the cadence between digits.
+station.init(() => ({
+  digits: state.audibleDigits,
+  repeats: state.spec.repeats,
+  interval: state.spec.interval,
+}));
 
 function handleMove(dir) {
   station.arm();
@@ -44,19 +48,14 @@ installInput(handleMove, handleKey);
 installTouch(handleMove, () => handleKey("KeyP"));
 
 function menuNav(dir) {
-  if (dir === "N") menu.index = (menu.index + 2) % 3;
-  else if (dir === "S") menu.index = (menu.index + 1) % 3;
-  else changeValue(dir === "E" ? 1 : -1);
+  if (dir === "N") menu.index = (menu.index + 1) % 2;
+  else if (dir === "S") menu.index = (menu.index + 1) % 2;
+  else changeValue();
 }
 
-function changeValue(delta) {
+function changeValue() {
   if (menu.index === 0) { prefs.crt = !prefs.crt; applyCrt(); }
-  else if (menu.index === 1) { prefs.showCount = !prefs.showCount; }
-  else {
-    const i = LANG_CYCLE.indexOf(prefs.language);
-    prefs.language = LANG_CYCLE[(i + delta + LANG_CYCLE.length) % LANG_CYCLE.length];
-    station.setLanguage(prefs.language);
-  }
+  else prefs.showCount = !prefs.showCount;
 }
 
 let crt = null;

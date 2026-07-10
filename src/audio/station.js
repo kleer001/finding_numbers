@@ -3,7 +3,7 @@
 // NUMBER_STATION_SOUND_DESIGN reference: mono, band-limited 300-3000 Hz, light
 // saturation, slow irregular QSB fade on the voice only.
 
-import { DIGIT_INTERVAL, LANGUAGES } from "../game/config.js";
+import { LANGUAGES } from "../game/config.js";
 
 const VOICE_BAND = [300, 3000];
 
@@ -11,18 +11,14 @@ let ctx = null;
 let master = null;
 let voiceIn = null; // input node of the voice chain (per-digit sources connect here)
 let buffers = {}; // lang -> [10 AudioBuffer]
-let getDigits = () => [];
+// getReadout() -> { digits: [{digit, lang}], repeats, interval } (see levels.js)
+let getReadout = () => ({ digits: [], repeats: 1, interval: { min: 1000, max: 4000, step: 250 } });
 let armed = false;
 let counter = 0; // total digits played (debug)
-let readIdx = 0; // position in the current in-order readout
-let language = "english"; // one of LANGUAGES, or "mixed"
+let readIdx = 0; // position in the current in-order readout (repeats expanded)
 
-export function init(digitsFn) {
-  getDigits = digitsFn;
-}
-
-export function setLanguage(lang) {
-  language = lang;
+export function init(readoutFn) {
+  getReadout = readoutFn;
 }
 
 export function debug() {
@@ -31,7 +27,6 @@ export function debug() {
     ctxState: ctx && ctx.state,
     langsLoaded: Object.keys(buffers).filter((l) => buffers[l].every(Boolean)).length,
     digitsPlayed: counter,
-    language,
   };
 }
 
@@ -127,9 +122,8 @@ async function loadDigits() {
   await Promise.all(jobs);
 }
 
-function playDigit(n) {
-  const lang = language === "mixed" ? LANGUAGES[(Math.random() * LANGUAGES.length) | 0] : language;
-  const buf = buffers[lang] && buffers[lang][n];
+function playDigit(entry) {
+  const buf = buffers[entry.lang] && buffers[entry.lang][entry.digit];
   if (!buf || !voiceIn) return;
   const src = ctx.createBufferSource();
   src.buffer = buf;
@@ -140,16 +134,17 @@ function playDigit(n) {
 }
 
 function scheduleNext() {
-  const { min, max, step } = DIGIT_INTERVAL;
+  const { min, max, step } = getReadout().interval;
   const steps = Math.floor((max - min) / step);
   const wait = min + step * ((Math.random() * (steps + 1)) | 0);
   setTimeout(() => {
-    const digits = getDigits();
-    if (digits.length > 0) {
-      // Read strictly in order and wrap, so the newest digit (last in the array)
-      // is always the last one spoken before the sequence repeats.
-      if (readIdx >= digits.length) readIdx = 0;
-      playDigit(digits[readIdx]);
+    const { digits, repeats } = getReadout();
+    const total = digits.length * repeats;
+    if (total > 0) {
+      // Read strictly in order (each digit spoken `repeats` times) and wrap, so
+      // the newest digit is always the last one spoken before the pass repeats.
+      if (readIdx >= total) readIdx = 0;
+      playDigit(digits[Math.floor(readIdx / repeats)]);
       readIdx++;
       counter++;
     }

@@ -6,12 +6,11 @@ import { CANVAS, PALETTE } from "../game/config.js";
 
 const MONO = PALETTE.mono;
 
-export const MENU_ROWS = ["CRT FX", "SHOW NUMBERS", "LANGUAGE"];
+export const MENU_ROWS = ["CRT FX", "SHOW NUMBERS"];
 
 export function menuValue(row, prefs) {
   if (row === 0) return prefs.crt ? "ON" : "OFF";
-  if (row === 1) return prefs.showCount ? "ON" : "OFF";
-  return prefs.language.toUpperCase();
+  return prefs.showCount ? "ON" : "OFF";
 }
 
 export function renderMenu(ctx, index, prefs) {

@@ -10,12 +10,7 @@ export const GRID = {
 
 export const CANVAS = { W: 800, H: 600 };
 
-export const GOLDEN_LEN = 10; // correct steps from start to source = 10 digits
-
 export const TRANSITION_MS = 260; // static-cut between cells (<= 300ms)
-
-// Number-station digit cadence: a random pause quantized to `step` ms chunks.
-export const DIGIT_INTERVAL = { min: 1000, max: 4000, step: 250 };
 
 export const LANGUAGES = ["english", "spanish", "italian", "chinese", "japanese", "hindi"];
 

@@ -3,27 +3,36 @@
 // state (progression.js); cells are just re-dressed scenery.
 
 import { GRID, TRANSITION_MS } from "./config.js";
+import { levelSpec, MAX_LEVEL } from "./levels.js";
 import { makeCell, doorRole, doorEntryTile, atDoor, isFloor, OPPOSITE } from "../maze/cell.js";
 import { makeRng } from "../core/rng.js";
 import {
-  createProgress, makeMessage, step, score, audibleDigits, atSource,
+  createProgress, makeMessage, step, score, audibleDigits,
 } from "./progression.js";
 
-export function createState(seed) {
+export function createState(seed, startLevel = 1) {
   const rng = makeRng(seed >>> 0);
-  const state = { rng, transition: null, sourceGlyph: null };
+  const state = { rng, level: startLevel, transition: null, sourceGlyph: null };
   newMaze(state);
   return state;
 }
 
+// Jump straight to a level (prefs level select). Rebuilds the maze immediately.
+export function setLevel(state, level) {
+  state.level = level;
+  state.transition = null;
+  newMaze(state);
+}
+
 function newMaze(state) {
-  state.progress = createProgress(makeMessage(state.rng, false));
+  state.spec = levelSpec(state.level);
+  state.progress = createProgress(makeMessage(state.rng, state.spec));
   enterCell(state, null, "start", false);
 }
 
 // Build the cell being entered and drop the player at its entry door / room.
 function enterCell(state, entryDir, kind, frontier) {
-  state.cell = makeCell(entryDir, kind, state.rng, frontier);
+  state.cell = makeCell(entryDir, kind, state.rng, frontier, state.spec.forwardDoors);
   if (kind === "start" || kind === "source") {
     state.player = { x: GRID.CX, y: GRID.CY };
     if (kind === "source") state.player = doorEntryTile(entryDir);
@@ -35,6 +44,7 @@ function enterCell(state, entryDir, kind, frontier) {
 
 function refresh(state) {
   state.score = score(state.progress);
+  state.goal = state.progress.message.length;
   state.audibleDigits = audibleDigits(state.progress);
 }
 
@@ -49,9 +59,9 @@ export function tryMove(state, dir) {
   if (isFloor(state.cell, nx, ny)) {
     state.player.x = nx;
     state.player.y = ny;
-    // Stepping onto the source glyph wins the level -> a fresh maze.
+    // Stepping onto the source glyph wins the level -> advance to the next.
     if (state.cell.kind === "source" && nx === GRID.CX && ny === GRID.CY) {
-      return beginTransition(state, { reset: true }, "reset");
+      return beginTransition(state, { reset: true, advance: true }, "reset");
     }
     return null;
   }
@@ -92,6 +102,10 @@ export function update(state, dtMs, nowMs) {
 
   const next = state.transition.next;
   state.transition = null;
-  if (next.reset) newMaze(state);
-  else enterCell(state, next.entryDir, next.kind, next.frontier);
+  if (next.reset) {
+    if (next.advance) state.level = Math.min(state.level + 1, MAX_LEVEL);
+    newMaze(state);
+  } else {
+    enterCell(state, next.entryDir, next.kind, next.frontier);
+  }
 }

@@ -81,10 +81,11 @@ const ALL_DIRS = ["N", "S", "E", "W"];
 
 // Generate a fresh cell as the player transitions into it. The maze is faked:
 // each cell is built on the fly from the door it was entered through.
-//   entryDir  - side the player enters from (the "back" door); null for start.
-//   kind      - 'start' | 'source' | 'interior'.
-//   frontier  - if true (and interior), one forward door is the correct one.
-export function makeCell(entryDir, kind, rng, frontier) {
+//   entryDir     - side the player enters from (the "back" door); null for start.
+//   kind         - 'start' | 'source' | 'interior'.
+//   frontier     - if true (and interior), one forward door is the correct one.
+//   forwardDoors - forward choices per interior cell (2 or 3; 3 opens all sides).
+export function makeCell(entryDir, kind, rng, frontier, forwardDoors = 2) {
   if (kind === "start") {
     const exit = entryDir ?? rng.pick(ALL_DIRS); // one door; advances you onward
     const cell = buildCell({ [exit]: true }, "start");
@@ -102,9 +103,10 @@ export function makeCell(entryDir, kind, rng, frontier) {
     return cell;
   }
 
-  // interior: back door + two forward choices (3 doors total, no dead-ends).
-  const forwards = shuffle(ALL_DIRS.filter((d) => d !== entryDir), rng).slice(0, 2);
-  const doors = { [entryDir]: true, [forwards[0]]: true, [forwards[1]]: true };
+  // interior: back door + forward choices (no dead-ends).
+  const forwards = shuffle(ALL_DIRS.filter((d) => d !== entryDir), rng).slice(0, forwardDoors);
+  const doors = { [entryDir]: true };
+  for (const f of forwards) doors[f] = true;
   const cell = buildCell(doors, "interior");
   cell.entryDir = entryDir;
   cell.backDir = entryDir;
