@@ -5,10 +5,8 @@ bleeding through the static, and a maze that rearranges itself the moment you
 stop listening.
 
 You are `@`, lost in a shifting maze of near-identical rooms, listening to a
-station read numbers through the noise. Walk toward the signal: take a turn and
-listen — if a new digit joins the broadcast, you chose right; if not, you're
-wandering, and the numbers start to slip away. Capture the full message to reach
-the source of the transmission, and it will pull you somewhere new.
+station read numbers through the noise. Walk toward the signal, capture the whole
+message, and reach the source of the transmission — it will pull you somewhere new.
 
 ## ▶ [Play it here](https://kleer001.github.io/finding_numbers/)
 
@@ -21,90 +19,71 @@ voice is faint and buried in noise on purpose.
 
 <table>
 <tr>
-<td width="50%" valign="top">
+<td width="34%" valign="top">
 
 ### Navigate by ear
 
-There is no map. Every room has doors, and one leads closer to the station.
-Closer means a **new** number fades into the broadcast; no new number means you
-went the wrong way. The count of audible digits is your only compass, and the
-rooms rebuild themselves as you move. The transmission never lies — no decoys,
-no dropped digits. Only the voice, the message, and the maze get harder.
+There is no map, and the rooms rebuild themselves the moment you look away. The
+station is your only compass — learn to read what changes when you turn.
 
 </td>
-<td width="50%" valign="top">
+<td width="66%" valign="top">
 
-<img src="docs/img/gameplay.png" width="440" alt="An amber character-mode screen: a maze of # walls with an @ player, a live spectrogram, and a station frequency on the dial">
+<img src="docs/img/gameplay.png" width="100%" alt="An amber character-mode screen: a maze of # walls with an @ player, a live spectrogram, and a station frequency on the dial">
 
 </td>
 </tr>
 
 <tr>
-<td width="50%" valign="top">
+<td width="34%" valign="top">
 
 ### A station that sounds real
 
-The whole game is a WebAudio number station built to unsettle:
+The whole game is a number station built in WebAudio — many voices, a
+brown-noise dread that circles the signal without ever swallowing it, and a dial
+tuned to frequencies that really broadcast into the dark.
 
-- **Six languages** of spoken digits — English, Spanish, Italian, Chinese,
-  Japanese, Hindi — plus a *babel* mode that picks a different language per digit.
-- A **brown-noise dread bed** that swells and stabs between digits but is
-  sidechain-ducked under the voice — it threatens the signal without masking it.
-- **Shortwave character** — band-limited voice, QSB fading, saturation, a hiss
-  floor; the numbers ride ~15 dB above the noise.
-- The dial reads a **real number-station frequency** in kHz (The Buzzer/UVB-76,
-  the Lincolnshire Poacher, the Cuban *Atención*, The Pip…), chosen per level.
+**Jukebox mode** plays it on its own, no maze: tune the transmitter and let it run.
 
 </td>
-<td width="50%" valign="top">
+<td width="66%" valign="top">
 
-<img src="docs/img/jukebox.png" width="440" alt="The jukebox picker — LANGUAGE, COHERENCE, CADENCE, STATIC, NUMBERS, EXIT — over a live spectrogram">
-
-**Jukebox mode** — just want a creepy station in the background? Open
-**Preferences → JUKEBOX** for a listen-only transmitter: pick a language,
-coherence (a looping message, endless random digits, or a 0–9 counting melody),
-cadence, static level, and numbers on/off (off = pure brown-noise ambience).
+<img src="docs/img/jukebox.png" width="100%" alt="The jukebox picker over a live spectrogram">
 
 </td>
 </tr>
 
 <tr>
-<td width="50%" valign="top">
+<td width="34%" valign="top">
 
 ### A character-mode CRT
 
-Everything is drawn as one monospace glyph grid — one font, one size, one
-phosphor color — like a text-mode monitor, then run through a WebGL CRT filter
-(scanlines, curvature, chromatic aberration, a 0–5 "dying monitor" noise dial).
-A **live waterfall spectrogram** of the signal scrolls in the HUD. Pick your
-phosphor (**amber** or **green**) and your **mode** — dark, or a light "amber
-paper" inversion.
+One font, one phosphor color, one glyph grid — a text-mode monitor bent through a
+WebGL CRT filter, the signal scrolling as a live spectrogram in the HUD. Dial the
+decay up until the picture barely holds.
 
 </td>
-<td width="50%" valign="top">
+<td width="66%" valign="top">
 
-<img src="docs/img/preferences.png" width="440" alt="The preferences panel — CRT FX, CRT NOISE, SHOW NUMBERS, TINT, MODE, JUKEBOX, LEVEL, SOUND TEST">
+<img src="docs/img/preferences.png" width="100%" alt="The preferences panel">
 
-<img src="docs/img/light-mode.png" width="440" alt="Light mode — black ink on an amber page">
+<img src="docs/img/light-mode.png" width="100%" alt="Light mode — black ink on an amber page">
 
 </td>
 </tr>
 
 <tr>
-<td width="50%" valign="top">
+<td width="34%" valign="top">
 
 ### Multilingual signal — and warnings
 
-Before your first move, a cold-open banner drifts through station patter and
-commands in many languages (accented Latin *and* Cyrillic), timed to the
-station's own digit cadence. And when the local server drops, a **SIGNAL LOST**
-bar flickers the warning across languages like a dying relay hunting for the
-carrier.
+The station greets you before your first step, and drifts between tongues as you
+play. When it loses you, it says so — in all of them.
 
 </td>
-<td width="50%" valign="top">
+<td width="66%" valign="top">
 
-<img src="docs/img/signal-lost.png" width="440" alt="A SIGNAL LOST warning in Russian — СИГНАЛ ПОТЕРЯН — flickering across the screen">
+<img src="docs/img/signal-lost.png" width="100%" alt="A SIGNAL LOST warning in Russian — СИГНАЛ ПОТЕРЯН">
 
 </td>
 </tr>
@@ -112,10 +91,8 @@ carrier.
 
 ### 32 levels of decay
 
-Early levels read a short English message. Later ones speak other languages,
-repeat every digit twice, and open extra doors at each junction. Past level 12
-the message grows one digit per level — random digits, each voiced in a random
-language — down to a claustrophobic, hissing "deep station." It goes to 32.
+It gets stranger the deeper you go — other tongues, more doors, the walls losing
+their nerve. Thirty-two levels down, the signal can barely hold itself together.
 
 ---
 
@@ -140,15 +117,9 @@ locally along with your current level.
 
 ## How to play
 
-- Every room has doors. One of them leads closer to the station.
-- Closer means a **new** number fades into the broadcast. No new number means
-  you went the wrong way — turn back the way you came.
-- The count of audible digits is your only compass; there is no map, and the
-  rooms rearrange themselves as you move.
-- Reach the source, then step onto the pulsing glyph to advance to the next
-  level.
-
-Headphones strongly recommended.
+Take a turn, then listen — the broadcast tells you whether you're getting warmer.
+Reach the source and step onto the pulse to go deeper. The rest is yours to work
+out. Headphones strongly recommended.
 
 ## Run locally
 
