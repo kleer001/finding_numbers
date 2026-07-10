@@ -29,7 +29,7 @@ station is your only compass — learn to read what changes when you turn.
 </td>
 <td width="66%" valign="top">
 
-<img src="docs/img/gameplay.png" width="100%" alt="An amber character-mode screen: a maze of # walls with an @ player, a live spectrogram, and a station frequency on the dial">
+<img src="docs/img/gameplay.png" width="600" alt="An amber character-mode screen: a maze of # walls with an @ player, a live spectrogram, and a station frequency on the dial">
 
 </td>
 </tr>
@@ -48,7 +48,7 @@ tuned to frequencies that really broadcast into the dark.
 </td>
 <td width="66%" valign="top">
 
-<img src="docs/img/jukebox.png" width="100%" alt="The jukebox picker over a live spectrogram">
+<img src="docs/img/jukebox.png" width="600" alt="The jukebox picker over a live spectrogram">
 
 </td>
 </tr>
@@ -65,9 +65,9 @@ decay up until the picture barely holds.
 </td>
 <td width="66%" valign="top">
 
-<img src="docs/img/preferences.png" width="100%" alt="The preferences panel">
+<img src="docs/img/preferences.png" width="600" alt="The preferences panel">
 
-<img src="docs/img/light-mode.png" width="100%" alt="Light mode — black ink on an amber page">
+<img src="docs/img/light-mode.png" width="600" alt="Light mode — black ink on an amber page">
 
 </td>
 </tr>
@@ -83,7 +83,7 @@ play. When it loses you, it says so — in all of them.
 </td>
 <td width="66%" valign="top">
 
-<img src="docs/img/signal-lost.png" width="100%" alt="A SIGNAL LOST warning in Russian — СИГНАЛ ПОТЕРЯН">
+<img src="docs/img/signal-lost.png" width="600" alt="A SIGNAL LOST warning in Russian — СИГНАЛ ПОТЕРЯН">
 
 </td>
 </tr>
@@ -136,7 +136,7 @@ step**, so any static file server works too.
 - **No build step** — vanilla ES modules, HTML, and CSS.
 - **WebAudio** for the station; a seeded mulberry32 RNG generates the maze, so
   every run is reproducible from its seed.
-- Tests: `pytest` for Python, `node --test` for the game logic (`npm test`).
+- Tests: `node --test` for the game logic (`npm test`).
 
 ## Credits
 
