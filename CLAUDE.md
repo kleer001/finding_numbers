@@ -4,28 +4,26 @@ TODO: describe finding_numbers
 
 ## Quick commands
 
-- Activate env: `source .venv/bin/activate`
-- Install deps: `pip install -e ".[dev]"`
-- Run: `python main.py`
-- Test: `pytest` (python) and `npm test` (game logic, node --test)
-- Lint/format: `ruff check . && ruff format .`
+- Run: `./run.sh [port]` — local no-cache dev server, opens `http://localhost:8000`
+- Test: `npm test` — game-logic tests via `node --test`
 
 ## Project structure
 
-- `main.py` — entry point
-- `tests/` — pytest test suite
-- `pyproject.toml` — metadata, deps, tool config
+- `index.html` — entry point; loads `src/main.js` as an ES module
+- `src/` — game modules (`audio/`, `core/`, `game/`, `maze/`, `render/`)
+- `tests/` — `*.test.mjs` suites run with `node --test`
+- `run.sh` — dev server (uses system `python3` only as a static file server)
 - `.scaffold.json` — record of how this repo was generated (do not edit by hand)
 
 ## Testing
 
-Run `pytest` from repo root. Tests live in `tests/`. Game-logic (JS) tests are `tests/*.test.mjs`, run with `npm test`. New features need at least one test that fails before the change and passes after.
+Run `npm test` from repo root. Tests live in `tests/` as `*.test.mjs` (`node --test`). New features need at least one test that fails before the change and passes after.
 
 ## Code style
 
-- `ruff` is the linter and formatter — config in `pyproject.toml`.
-- Naming: `snake_case` functions/vars, `PascalCase` classes.
-- Imports: stdlib → third-party → local.
+- No build step: vanilla ES modules, HTML, CSS.
+- Naming: `camelCase` functions/vars, `PascalCase` classes, `UPPER_SNAKE` module constants.
+- Imports: ES modules; group third-party before local relative imports.
 - Comments: explain *why*, not *what*. Skip them on self-evident code.
 
 ## Git
