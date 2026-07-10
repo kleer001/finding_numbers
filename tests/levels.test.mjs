@@ -41,6 +41,18 @@ test("levels 13+ grow one digit per level, random and babel", () => {
   }
 });
 
+test("noise stays out of the tutorial, washes in at 4, bursts at 7", () => {
+  for (const l of [1, 2, 3]) assert.deepEqual(levelSpec(l).noise, { wash: 0, burst: 0 });
+  assert.ok(levelSpec(4).noise.wash > 0);
+  assert.equal(levelSpec(4).noise.burst, 0);
+  assert.equal(levelSpec(6).noise.burst, 0);
+  assert.ok(levelSpec(7).noise.burst > 0);
+  for (const l of [12, 13, MAX_LEVEL]) {
+    const n = levelSpec(l).noise;
+    assert.ok(n.wash >= 0.6 && n.burst >= 1);
+  }
+});
+
 test("levelSpec fails loudly out of range", () => {
   assert.throws(() => levelSpec(0));
   assert.throws(() => levelSpec(MAX_LEVEL + 1));

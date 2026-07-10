@@ -52,11 +52,12 @@ window.prefs = prefs;
 window.menu = menu;
 
 // The station reads whatever the current level says: audible entries, how many
-// times each is spoken, and the cadence between digits.
+// times each is spoken, the cadence between digits, and the dread-noise levels.
 station.init(() => ({
   digits: state.audibleDigits,
   repeats: state.spec.repeats,
   interval: state.spec.interval,
+  noise: state.spec.noise,
 }));
 
 // --- preferences menu: rows are data; keyboard and taps share change() -----
