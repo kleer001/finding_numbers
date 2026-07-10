@@ -11,6 +11,9 @@ const CALM = { min: 1000, max: 4000, step: 250 };
 const BRISK = { min: 800, max: 2500, step: 250 }; // repeats on: keep a pass short
 const RAPID = { min: 600, max: 1800, step: 200 }; // long expert messages
 
+// Shared with the jukebox picker so both draw cadence from one source.
+export const CADENCES = { CALM, BRISK, RAPID };
+
 // Brown-noise dread: wash = slow swells intensity, burst = between-digit
 // stabs intensity (both 0..1). The noise threatens the voice but never touches
 // it — spectrally below the voice band and hard-ducked whenever a digit plays.

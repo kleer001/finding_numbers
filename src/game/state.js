@@ -2,17 +2,17 @@
 // cell and build a fresh one (see maze/cell.js). Progression tracks the real
 // state (progression.js); cells are just re-dressed scenery.
 
-import { GRID, TRANSITION_MS } from "./config.js";
+import { GRID, TRANSITION_MS, STATION_FREQS } from "./config.js";
 import { levelSpec, MAX_LEVEL } from "./levels.js";
 import { makeCell, doorRole, doorEntryTile, atDoor, isFloor, OPPOSITE } from "../maze/cell.js";
-import { makeRng } from "../core/rng.js";
+import { makeRng, subSeed } from "../core/rng.js";
 import {
   createProgress, makeMessage, step, score, audibleDigits,
 } from "./progression.js";
 
 export function createState(seed, startLevel = 1) {
   const rng = makeRng(seed >>> 0);
-  const state = { rng, level: startLevel, transition: null, sourceGlyph: null };
+  const state = { rng, seed: seed >>> 0, level: startLevel, transition: null, sourceGlyph: null, started: false };
   newMaze(state);
   return state;
 }
@@ -26,6 +26,9 @@ export function setLevel(state, level) {
 
 function newMaze(state) {
   state.spec = levelSpec(state.level);
+  // Radio-dial flavor: a station frequency picked per level off a side stream,
+  // so it varies by level and session without disturbing the maze RNG.
+  state.frequency = STATION_FREQS[subSeed(state.seed, `freq${state.level}`) % STATION_FREQS.length];
   state.progress = createProgress(makeMessage(state.rng, state.spec));
   enterCell(state, null, "start", false);
 }
@@ -52,6 +55,7 @@ function refresh(state) {
 // One grid step, or a door-crossing that starts a transition. Returns an event
 // tag ('advance'|'stray'|'return'|'retreat'|'win'|'reset'|null) for audio.
 export function tryMove(state, dir) {
+  state.started = true; // any directional input clears the cold-open banner
   if (state.transition) return null;
   const D = { N: [0, -1], S: [0, 1], E: [1, 0], W: [-1, 0] }[dir];
   const nx = state.player.x + D[0];

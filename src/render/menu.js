@@ -5,7 +5,7 @@
 // panel) closes. Keyboard still works: up/down select, left/right change,
 // P closes.
 
-import { CANVAS, PALETTE, CHAR, GRID, SCREEN } from "../game/config.js";
+import { CANVAS, CHAR, GRID, SCREEN } from "../game/config.js";
 
 const PANEL_COLS = 19; // whole columns, so the panel snaps to the grid
 const PANEL_W = PANEL_COLS * CHAR.W;
@@ -49,10 +49,10 @@ export function menuHit(x, y, rowCount) {
   return null;
 }
 
-export function renderMenu(ctx, index, rows, mono) {
+export function renderMenu(ctx, index, rows, mono, page, title = "PREFERENCES") {
   const box = layout(rows.length);
 
-  ctx.fillStyle = PALETTE.bg;
+  ctx.fillStyle = page;
   ctx.fillRect(box.x, box.y, box.w, box.h);
   ctx.strokeStyle = mono;
   ctx.lineWidth = 2;
@@ -63,7 +63,7 @@ export function renderMenu(ctx, index, rows, mono) {
   ctx.textBaseline = "middle";
 
   ctx.textAlign = "center";
-  ctx.fillText("PREFERENCES", CANVAS.W / 2, box.y + TITLE_H / 2);
+  ctx.fillText(title, CANVAS.W / 2, box.y + TITLE_H / 2);
   ctx.textAlign = "right";
   ctx.fillText("[X]", box.x + box.w - 18, box.y + TITLE_H / 2);
 

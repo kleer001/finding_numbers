@@ -2,7 +2,7 @@
 // the bottom rows — every glyph the same CHAR.FONT size in one phosphor
 // color at one brightness: a character-mode monochrome monitor.
 
-import { GRID, CANVAS, PALETTE, GLYPH, PREFS_BTN, CHAR, WATERFALL } from "../game/config.js";
+import { GRID, CANVAS, GLYPH, PREFS_BTN, CHAR, WATERFALL, INTRO_MESSAGES, SIGNAL_LOST_MESSAGES } from "../game/config.js";
 import { RAMP, SUB, stepWaterfall } from "./waterfall.js";
 
 function drawGlyph(ctx, ch, gx, gy) {
@@ -15,7 +15,7 @@ function drawText(ctx, str, col, row) {
 
 // `tint` is the current phosphor {fg, rgb}; `spectrum` is the live FFT bins.
 export function render(ctx, state, showCount, tint, spectrum, now) {
-  ctx.fillStyle = PALETTE.bg;
+  ctx.fillStyle = tint.bg;
   ctx.fillRect(0, 0, CANVAS.W, CANVAS.H);
 
   ctx.fillStyle = tint.fg;
@@ -39,8 +39,9 @@ export function render(ctx, state, showCount, tint, spectrum, now) {
 
 // HUD rows 17-19: status field cols 0-4, waterfall cols 5-17, PREFS 18-22.
 function renderHud(ctx, state, showCount, tint, spectrum, now) {
-  drawWaterfall(ctx, spectrum, tint, now);
-  drawLevelBadge(ctx, state.level ?? 1, tint.fg);
+  if (state.started) drawWaterfall(ctx, spectrum, tint, now);
+  else drawIntroBanner(ctx, tint, now, state.spec.interval);
+  drawLevelBadge(ctx, state.level ?? 1, tint);
 
   // Digits readout + count under the LVL badge (SHOW NUMBERS). Natural glyph
   // advance instead of per-cell tracking: 23 columns is too few for prose.
@@ -51,6 +52,12 @@ function renderHud(ctx, state, showCount, tint, spectrum, now) {
     ctx.fillText(digits || "—", 6, 18.5 * CHAR.H);
     ctx.fillText(`${state.score ?? 0} / ${state.goal ?? "?"}`, 6, 19.5 * CHAR.H);
     ctx.textAlign = "center";
+  } else {
+    // Idle status field: a number-station dial reading, freq on 18, unit on 19.
+    ctx.fillStyle = tint.fg;
+    const freq = String(state.frequency ?? "");
+    drawText(ctx, freq, Math.floor((5 - freq.length) / 2), 18);
+    drawText(ctx, "kHz", 1, 19);
   }
 
   // Bottom-right preferences button: a bordered "PREFS" box that is also the
@@ -63,25 +70,33 @@ function renderHud(ctx, state, showCount, tint, spectrum, now) {
   drawText(ctx, "PREFS", 18, 18);
 }
 
-// Scrolling text-mode spectrogram in the middle of the HUD band. Block glyphs
-// on a half-cell sub-grid: a graphics element, so it alone drops to half size.
+// Scrolling text-mode spectrogram in the middle of the HUD band. Solid filled
+// sub-cells on a half-cell grid — brightness rides globalAlpha up the RAMP.
+// (Block glyphs render far narrower than a sub-cell, so they left column gaps.)
 function drawWaterfall(ctx, spectrum, tint, now) {
   const wf = stepWaterfall(spectrum, now);
   const rows = WATERFALL.rows * SUB;
+  const cw = CHAR.W / SUB;
+  const ch = CHAR.H / SUB;
   ctx.fillStyle = tint.fg;
-  ctx.font = `${CHAR.FONT / 2}px VT323, "Courier New", monospace`;
   for (let c = 0; c < wf.length; c++) {
     for (let r = 0; r < rows; r++) {
       const lv = wf[c][rows - 1 - r]; // low freq at the bottom row
       if (lv === 0) continue;
-      ctx.fillText(
-        RAMP[lv],
-        (WATERFALL.col + (c + 0.5) / SUB) * CHAR.W,
-        (WATERFALL.row + (r + 0.5) / SUB) * CHAR.H,
+      ctx.globalAlpha = lv / (RAMP.length - 1);
+      ctx.fillRect(
+        WATERFALL.col * CHAR.W + c * cw,
+        WATERFALL.row * CHAR.H + r * ch,
+        cw + 1, // +1 overlap so sub-cells tile with no seams
+        ch + 1,
       );
     }
   }
-  ctx.font = `${CHAR.FONT}px VT323, "Courier New", monospace`;
+  ctx.globalAlpha = 1;
+  waterfallFrame(ctx, tint);
+}
+
+function waterfallFrame(ctx, tint) {
   ctx.strokeStyle = tint.fg;
   ctx.lineWidth = 1;
   ctx.strokeRect(
@@ -92,13 +107,86 @@ function drawWaterfall(ctx, spectrum, tint, now) {
   );
 }
 
-// Reverse-video level badge: phosphor-filled top HUD row of the status field,
-// dark letters, one per cell.
-function drawLevelBadge(ctx, level, mono) {
+// Cold-open banner: flicker through INTRO_MESSAGES in the waterfall box until
+// the first move. Each message holds for one digit-readout beat (the same
+// quantized-random cadence the station speaks numbers at, see station.js), so
+// the banner drifts in time with how the station would be reading the signal.
+let introLines = null;
+let introSwitchAt = 0;
+
+function introHold(interval) {
+  const { min, max, step } = interval;
+  const steps = Math.floor((max - min) / step);
+  return min + step * ((Math.random() * (steps + 1)) | 0);
+}
+
+function drawIntroBanner(ctx, tint, now, interval) {
+  if (introLines === null) {
+    introLines = INTRO_MESSAGES[0]; // open on the plain instruction
+    introSwitchAt = now + introHold(interval);
+  } else if (now >= introSwitchAt) {
+    let next;
+    do {
+      next = INTRO_MESSAGES[Math.floor(Math.random() * INTRO_MESSAGES.length)];
+    } while (next === introLines);
+    introLines = next;
+    introSwitchAt = now + introHold(interval);
+  }
+  ctx.fillStyle = tint.fg;
+  const top = WATERFALL.row + Math.floor((WATERFALL.rows - introLines.length) / 2);
+  for (let i = 0; i < introLines.length; i++) {
+    const line = introLines[i];
+    const col = WATERFALL.col + Math.floor((WATERFALL.cols - line.length) / 2);
+    drawText(ctx, line, col, top + i);
+  }
+  waterfallFrame(ctx, tint);
+}
+
+// Jukebox mode backdrop: a clean themed screen with the live spectrum waterfall
+// as a "now playing" spectrogram under the picker panel (drawn by renderMenu).
+export function renderJukebox(ctx, tint, spectrum, now) {
+  ctx.fillStyle = tint.bg;
+  ctx.fillRect(0, 0, CANVAS.W, CANVAS.H);
+  drawWaterfall(ctx, spectrum, tint, now);
+}
+
+// Server heartbeat failed: a full-width lost-signal bar across screen center,
+// drawn over whatever the loop last rendered. Flickers randomly through
+// SIGNAL_LOST_MESSAGES (English tag + "signal lost" in the station's languages)
+// and blinks, like a dying relay hunting for the carrier.
+let lostPhrase = null;
+let lostSwitchAt = 0;
+
+export function renderLostConnection(ctx, tint, now) {
+  const row = GRID.CY;
+  ctx.fillStyle = tint.bg;
+  ctx.fillRect(0, (row - 1) * CHAR.H, CANVAS.W, 3 * CHAR.H);
+  ctx.strokeStyle = tint.fg;
+  ctx.lineWidth = 2;
+  ctx.strokeRect(1, (row - 1) * CHAR.H + 1, CANVAS.W - 2, 3 * CHAR.H - 2);
+  if (lostPhrase === null || now >= lostSwitchAt) {
+    let next;
+    do {
+      next = SIGNAL_LOST_MESSAGES[Math.floor(Math.random() * SIGNAL_LOST_MESSAGES.length)];
+    } while (next === lostPhrase && SIGNAL_LOST_MESSAGES.length > 1);
+    lostPhrase = next;
+    lostSwitchAt = now + 450 + Math.random() * 450; // ~0.45-0.9s per language
+  }
+  if (Math.floor(now / 300) % 2) return; // blink: text off half the time
+  ctx.fillStyle = tint.fg;
+  ctx.font = `${CHAR.FONT}px VT323, "Courier New", monospace`;
+  ctx.textAlign = "center";
+  ctx.textBaseline = "middle";
+  drawText(ctx, lostPhrase, Math.floor((GRID.W - lostPhrase.length) / 2), row);
+}
+
+// Reverse-video level badge: ink-filled top HUD row of the status field,
+// page-colored letters, one per cell.
+function drawLevelBadge(ctx, level, tint) {
   const label = `LV ${level}`;
-  ctx.fillStyle = mono;
+  ctx.fillStyle = tint.fg;
   ctx.fillRect(0, GRID.H * CHAR.H, 5 * CHAR.W, CHAR.H);
-  ctx.fillStyle = PALETTE.bg;
+  ctx.fillStyle = tint.bg;
   drawText(ctx, label, Math.floor((5 - label.length) / 2), GRID.H);
 }
 
