@@ -61,7 +61,8 @@ export const CRT_CONFIG = {
   chromaticAberration: 0.0009,
   staticNoise: 0.02,
   glowBloom: 0.004,
-  scanlineIntensity: 0.35,
+  scanlineIntensity: 0.45,
+  dotMask: true, // faint aperture grille over the mono phosphor
   desaturation: 0.15,
   flicker: 0.02,
   signalLoss: 0.04,
