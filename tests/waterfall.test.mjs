@@ -1,9 +1,11 @@
 import test from "node:test";
 import assert from "node:assert/strict";
 
-import { RAMP, VOICE_BAND, quantize, spectrumToColumn } from "../src/render/waterfall.js";
+import { WATERFALL } from "../src/game/config.js";
+import { RAMP, SUB, VOICE_BAND, quantize, spectrumToColumn, stepWaterfall } from "../src/render/waterfall.js";
 
-test("brightness quantizes to the full character ramp", () => {
+test("brightness quantizes to the full block-gradient ramp", () => {
+  assert.equal(RAMP, " ░▒▓█");
   assert.equal(quantize(0), 0);
   assert.equal(quantize(255), RAMP.length - 1);
   let prev = 0;
@@ -24,6 +26,12 @@ test("column samples band peaks across the low voice band only", () => {
   assert.equal(col.length, 3);
   assert.equal(col[0], 40);
   assert.equal(col[2], 200);
+});
+
+test("waterfall runs on a half-cell sub-grid inside its strip", () => {
+  const levels = stepWaterfall(new Uint8Array(512), 0);
+  assert.equal(levels.length, WATERFALL.cols * SUB);
+  assert.equal(levels[0].length, WATERFALL.rows * SUB);
 });
 
 test("band peaks pick the loudest bin in each band", () => {
