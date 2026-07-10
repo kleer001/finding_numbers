@@ -103,6 +103,17 @@ export function makeCell(entryDir, kind, rng, frontier, forwardDoors = 2) {
     return cell;
   }
 
+  // corridor: an empty pass-through — one way in, one way onward (straight or a
+  // bend), no decision to make. Pure scenery between real junctions.
+  if (kind === "corridor") {
+    const exit = rng.pick(ALL_DIRS.filter((d) => d !== entryDir));
+    const cell = buildCell({ [entryDir]: true, [exit]: true }, "corridor");
+    cell.entryDir = entryDir;
+    cell.backDir = entryDir;
+    cell.correctDir = null;
+    return cell;
+  }
+
   // interior: back door + forward choices (no dead-ends).
   const forwards = shuffle(ALL_DIRS.filter((d) => d !== entryDir), rng).slice(0, forwardDoors);
   const doors = { [entryDir]: true };

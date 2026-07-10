@@ -31,8 +31,9 @@ function newMaze(state) {
 }
 
 // Build the cell being entered and drop the player at its entry door / room.
-function enterCell(state, entryDir, kind, frontier) {
+function enterCell(state, entryDir, kind, frontier, pending) {
   state.cell = makeCell(entryDir, kind, state.rng, frontier, state.spec.forwardDoors);
+  state.cell.pending = pending ?? null; // corridor only: the real cell beyond it
   if (kind === "start" || kind === "source") {
     state.player = { x: GRID.CX, y: GRID.CY };
     if (kind === "source") state.player = doorEntryTile(entryDir);
@@ -68,18 +69,39 @@ export function tryMove(state, dir) {
 
   // Off-grid move: only valid through a door opening -> leave the cell.
   if (atDoor(dir, state.player.x, state.player.y, state.cell.doors)) {
+    // Corridors carry no decision: onward leads to the pending real cell, back
+    // undoes the crossing that inserted them (which was always a forward one).
+    if (state.cell.kind === "corridor") {
+      if (dir !== state.cell.backDir) {
+        // corridors may bend: enter the pending cell from the side we exit
+        return beginTransition(state, { ...state.cell.pending, entryDir: OPPOSITE[dir] }, null);
+      }
+      const ev = step(state.progress, "back");
+      return beginTransition(state, nextFromProgress(state, dir), ev);
+    }
+
     const role = doorRole(state.cell, dir);
     const ev = step(state.progress, role);
-    const next = ev === "win"
+    let next = ev === "win"
       ? { entryDir: OPPOSITE[dir], kind: "source", frontier: false }
-      : {
-          entryDir: OPPOSITE[dir],
-          kind: state.progress.depth === 0 ? "start" : "interior",
-          frontier: state.progress.stray === 0,
-        };
+      : nextFromProgress(state, dir);
+    // Empty pass-through cells pad forward walks only, so a corridor's rear
+    // door can always mean step('back').
+    const forward = ev === "advance" || ev === "stray" || ev === "win";
+    if (forward && state.rng.chance(state.spec.corridorChance)) {
+      next = { entryDir: OPPOSITE[dir], kind: "corridor", pending: next };
+    }
     return beginTransition(state, next, ev);
   }
   return null;
+}
+
+function nextFromProgress(state, dir) {
+  return {
+    entryDir: OPPOSITE[dir],
+    kind: state.progress.depth === 0 ? "start" : "interior",
+    frontier: state.progress.stray === 0,
+  };
 }
 
 function beginTransition(state, next, ev) {
@@ -106,6 +128,6 @@ export function update(state, dtMs, nowMs) {
     if (next.advance) state.level = Math.min(state.level + 1, MAX_LEVEL);
     newMaze(state);
   } else {
-    enterCell(state, next.entryDir, next.kind, next.frontier);
+    enterCell(state, next.entryDir, next.kind, next.frontier, next.pending);
   }
 }
