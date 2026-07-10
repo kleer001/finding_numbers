@@ -4,8 +4,6 @@ A liminal horror maze you navigate **by ear** — a shortwave number station
 bleeding through the static, and a maze that rearranges itself the moment you
 stop listening.
 
-![Playing finding_numbers — an amber character-mode screen: a maze of `#` walls with an `@` player, a live spectrogram, and a station frequency on the dial](docs/img/gameplay.png)
-
 You are `@`, lost in a shifting maze of near-identical rooms, listening to a
 station read numbers through the noise. Walk toward the signal: take a turn and
 listen — if a new digit joins the broadcast, you chose right; if not, you're
@@ -21,63 +19,96 @@ voice is faint and buried in noise on purpose.
 
 ## What's inside
 
+<table>
+<tr>
+<td width="50%" valign="top">
+
 ### Navigate by ear
 
-There is no map. Every room has doors, and one of them leads closer to the
-station. Closer means a **new** number fades into the broadcast; no new number
-means you went the wrong way. The count of audible digits is your only compass,
-and the rooms rebuild themselves as you move. The transmission never lies — no
-decoys, no dropped digits. Only the voice, the message, and the maze get harder.
+There is no map. Every room has doors, and one leads closer to the station.
+Closer means a **new** number fades into the broadcast; no new number means you
+went the wrong way. The count of audible digits is your only compass, and the
+rooms rebuild themselves as you move. The transmission never lies — no decoys,
+no dropped digits. Only the voice, the message, and the maze get harder.
 
-### A fake number station that sounds real
+</td>
+<td width="50%" valign="top">
+
+<img src="docs/img/gameplay.png" width="440" alt="An amber character-mode screen: a maze of # walls with an @ player, a live spectrogram, and a station frequency on the dial">
+
+</td>
+</tr>
+
+<tr>
+<td width="50%" valign="top">
+
+### A station that sounds real
 
 The whole game is a WebAudio number station built to unsettle:
 
 - **Six languages** of spoken digits — English, Spanish, Italian, Chinese,
-  Japanese, Hindi — plus a *babel* mode that picks a different language for
-  every digit.
+  Japanese, Hindi — plus a *babel* mode that picks a different language per digit.
 - A **brown-noise dread bed** that swells and stabs between digits but is
-  sidechain-ducked under the voice, so it threatens the signal without ever
-  masking it.
-- **Shortwave character** — band-limited voice, QSB fading, saturation, a
-  constant hiss floor — the numbers ride about 15 dB above the noise.
-- The status dial reads a **real number-station frequency** in kHz (The Buzzer /
-  UVB-76, the Lincolnshire Poacher, the Cuban *Atención*, The Pip, and more),
-  chosen per level.
+  sidechain-ducked under the voice — it threatens the signal without masking it.
+- **Shortwave character** — band-limited voice, QSB fading, saturation, a hiss
+  floor; the numbers ride ~15 dB above the noise.
+- The dial reads a **real number-station frequency** in kHz (The Buzzer/UVB-76,
+  the Lincolnshire Poacher, the Cuban *Atención*, The Pip…), chosen per level.
+
+</td>
+<td width="50%" valign="top">
+
+<img src="docs/img/jukebox.png" width="440" alt="The jukebox picker — LANGUAGE, COHERENCE, CADENCE, STATIC, NUMBERS, EXIT — over a live spectrogram">
+
+**Jukebox mode** — just want a creepy station in the background? Open
+**Preferences → JUKEBOX** for a listen-only transmitter: pick a language,
+coherence (a looping message, endless random digits, or a 0–9 counting melody),
+cadence, static level, and numbers on/off (off = pure brown-noise ambience).
+
+</td>
+</tr>
+
+<tr>
+<td width="50%" valign="top">
 
 ### A character-mode CRT
 
 Everything is drawn as one monospace glyph grid — one font, one size, one
 phosphor color — like a text-mode monitor, then run through a WebGL CRT filter
 (scanlines, curvature, chromatic aberration, a 0–5 "dying monitor" noise dial).
-A **live waterfall spectrogram** of the signal scrolls in the HUD.
+A **live waterfall spectrogram** of the signal scrolls in the HUD. Pick your
+phosphor (**amber** or **green**) and your **mode** — dark, or a light "amber
+paper" inversion.
 
-Pick your phosphor (**amber** or **green**) and your **mode** — dark, or a light
-"amber paper" inversion:
+</td>
+<td width="50%" valign="top">
 
-![The preferences panel — CRT FX, CRT NOISE, SHOW NUMBERS, TINT, MODE, JUKEBOX, LEVEL, SOUND TEST](docs/img/preferences.png)
+<img src="docs/img/preferences.png" width="440" alt="The preferences panel — CRT FX, CRT NOISE, SHOW NUMBERS, TINT, MODE, JUKEBOX, LEVEL, SOUND TEST">
 
-![Light mode — black ink on an amber page](docs/img/light-mode.png)
+<img src="docs/img/light-mode.png" width="440" alt="Light mode — black ink on an amber page">
 
-### Multilingual signal — and multilingual warnings
+</td>
+</tr>
+
+<tr>
+<td width="50%" valign="top">
+
+### Multilingual signal — and warnings
 
 Before your first move, a cold-open banner drifts through station patter and
 commands in many languages (accented Latin *and* Cyrillic), timed to the
 station's own digit cadence. And when the local server drops, a **SIGNAL LOST**
 bar flickers the warning across languages like a dying relay hunting for the
-carrier:
+carrier.
 
-![A SIGNAL LOST warning in Russian — СИГНАЛ ПОТЕРЯН — flickering across the screen](docs/img/signal-lost.png)
+</td>
+<td width="50%" valign="top">
 
-### Jukebox mode
+<img src="docs/img/signal-lost.png" width="440" alt="A SIGNAL LOST warning in Russian — СИГНАЛ ПОТЕРЯН — flickering across the screen">
 
-Don't want to play — just want a creepy station on in the background? Open
-**Preferences → JUKEBOX** for a listen-only transmitter. Pick a **language**,
-**coherence** (a fixed message that loops, endless random digits, or a 0–9
-counting melody), **cadence**, **static** level, and **numbers on/off** — turn
-the numbers off for pure brown-noise ambience.
-
-![The jukebox picker — LANGUAGE, COHERENCE, CADENCE, STATIC, NUMBERS, EXIT — over a live spectrogram](docs/img/jukebox.png)
+</td>
+</tr>
+</table>
 
 ### 32 levels of decay
 
