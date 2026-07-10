@@ -5,6 +5,21 @@
 set -euo pipefail
 cd "$(dirname "$0")"
 PORT="${1:-8000}"
+# Reclaim the port: kill any server already listening on it (a prior run).
+# lsof exits 1 when nothing matches, which is the normal fresh-start case.
+# SIGKILL, not SIGTERM: a suspended (Ctrl-Z'd) server ignores SIGTERM but still
+# holds the port. Then wait for the socket to release so the bind can't race it.
+EXISTING="$(lsof -ti "tcp:$PORT" -sTCP:LISTEN)" || EXISTING=""
+if [ -n "$EXISTING" ]; then
+  echo "finding_numbers -> stopping previous server (pid $EXISTING) on $PORT"
+  kill -9 $EXISTING
+  for _ in $(seq 20); do
+    lsof -ti "tcp:$PORT" -sTCP:LISTEN >/dev/null 2>&1 || break
+    sleep 0.1
+  done
+fi
+# Open the app in the browser once the server has had a moment to bind.
+( sleep 1; xdg-open "http://localhost:$PORT" ) &
 exec python3 -c '
 import http.server, socketserver, sys
 class H(http.server.SimpleHTTPRequestHandler):
