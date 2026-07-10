@@ -38,4 +38,20 @@ export const CRT_CONFIG = {
   desaturation: 0.15,
   flicker: 0.02,
   signalLoss: 0.04,
+  horizontalTearing: 0.00012,
+  verticalJitter: 0.001,
+};
+
+// CRT NOISE pref: 0..5 lerps each field here from its CRT_CONFIG value (at 0)
+// to this ceiling (at 5) — interlacing, static, and distortion crank together.
+export const CRT_NOISE_MAX = {
+  barrelDistortion: 0.05,
+  chromaticAberration: 0.004,
+  staticNoise: 0.2,
+  glowBloom: 0.012,
+  scanlineIntensity: 1.1,
+  flicker: 0.09,
+  signalLoss: 0.2,
+  horizontalTearing: 0.002,
+  verticalJitter: 0.004,
 };
