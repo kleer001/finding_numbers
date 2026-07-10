@@ -32,7 +32,7 @@ function newMaze(state) {
 
 // Build the cell being entered and drop the player at its entry door / room.
 function enterCell(state, entryDir, kind, frontier, pending) {
-  state.cell = makeCell(entryDir, kind, state.rng, frontier, state.spec.forwardDoors);
+  state.cell = makeCell(entryDir, kind, state.rng, frontier, state.spec.forwardDoors, state.spec.theme);
   state.cell.pending = pending ?? null; // corridor only: the real cell beyond it
   if (kind === "start" || kind === "source") {
     state.player = { x: GRID.CX, y: GRID.CY };
@@ -68,7 +68,7 @@ export function tryMove(state, dir) {
   }
 
   // Off-grid move: only valid through a door opening -> leave the cell.
-  if (atDoor(dir, state.player.x, state.player.y, state.cell.doors)) {
+  if (atDoor(dir, state.player.x, state.player.y, state.cell)) {
     // Corridors carry no decision: onward leads to the pending real cell, back
     // undoes the crossing that inserted them (which was always a forward one).
     if (state.cell.kind === "corridor") {

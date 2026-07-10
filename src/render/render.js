@@ -26,7 +26,7 @@ export function render(ctx, state, showCount) {
   for (let y = 0; y < GRID.H; y++) {
     for (let x = 0; x < GRID.W; x++) {
       const ch = cell.grid[y][x];
-      if (ch === GLYPH.WALL) drawGlyph(ctx, "#", x, y);
+      if (ch === GLYPH.WALL) drawGlyph(ctx, cell.wallGlyph ?? GLYPH.WALL, x, y);
       else if (ch === GLYPH.SOURCE) drawGlyph(ctx, state.sourceGlyph ?? "*", x, y);
       // floor left blank (void) for a stark corridor read
     }
