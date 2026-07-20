@@ -8,7 +8,7 @@ You are `@`, lost in a shifting maze of near-identical rooms, listening to a
 station read numbers through the noise. Walk toward the signal, capture the whole
 message, and reach the source of the transmission — it will pull you somewhere new.
 
-## ▶ [Play it here](https://kleer001.github.io/finding_numbers/)
+## ▶ [Play it here](https://kleer001.github.io/finding_numbers/) · [on itch.io](https://kleer001.itch.io/finding-numbers)
 
 Tap or press any key to start the audio, **put on headphones**, and listen. The
 voice is faint and buried in noise on purpose.

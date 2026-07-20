@@ -1,5 +1,7 @@
 # itch.io page description — paste-ready
 
+Live page: <https://kleer001.itch.io/finding-numbers>
+
 itch.io's description box takes basic formatting only (headings, bold/italic, lists,
 links, images, quotes). Paste the block below into **Edit game → Description**. The
 editor has an **Edit as HTML** toggle if you'd rather paste markup; the markdown here
