@@ -2,7 +2,7 @@
 // cell and build a fresh one (see maze/cell.js). Progression tracks the real
 // state (progression.js); cells are just re-dressed scenery.
 
-import { GRID, TRANSITION_MS, STATION_FREQS } from "./config.js";
+import { GRID, TRANSITION_MS, WIN_WIPE_MS, STATION_FREQS } from "./config.js";
 import { levelSpec, MAX_LEVEL } from "./levels.js";
 import { makeCell, doorRole, doorEntryTile, atDoor, isFloor, OPPOSITE } from "../maze/cell.js";
 import { makeRng, subSeed } from "../core/rng.js";
@@ -109,9 +109,21 @@ function nextFromProgress(state, dir) {
 }
 
 function beginTransition(state, next, ev) {
-  state.transition = { t: 0, next };
+  // The source-step win gets a longer beat for the spiral wipe; crossings cut fast.
+  const dur = next.reset ? WIN_WIPE_MS : TRANSITION_MS;
+  state.transition = { t: 0, next, dur, committed: false };
   refresh(state); // audible count updates immediately; the visual catches up
   return ev;
+}
+
+// Advance the level and rebuild the maze at the START of a win wipe, so the
+// spiral can reveal the incoming level while the outgoing one is still on screen.
+// The render layer calls this once, after snapshotting the outgoing level.
+export function commitWin(state) {
+  const next = state.transition.next;
+  if (next.advance) state.level = Math.min(state.level + 1, MAX_LEVEL);
+  newMaze(state);
+  state.transition.committed = true;
 }
 
 // Advance the static-cut transition; commit the new cell when it completes.
@@ -124,14 +136,12 @@ export function update(state, dtMs, nowMs) {
 
   if (!state.transition) return;
   state.transition.t += dtMs;
-  if (state.transition.t < TRANSITION_MS) return;
+  if (state.transition.t < state.transition.dur) return;
 
   const next = state.transition.next;
+  // A win commits at the wipe's start (commitWin); wait for that so we don't clear
+  // the transition before the spiral has both levels to draw.
+  if (next.reset && !state.transition.committed) return;
   state.transition = null;
-  if (next.reset) {
-    if (next.advance) state.level = Math.min(state.level + 1, MAX_LEVEL);
-    newMaze(state);
-  } else {
-    enterCell(state, next.entryDir, next.kind, next.frontier, next.pending);
-  }
+  if (!next.reset) enterCell(state, next.entryDir, next.kind, next.frontier, next.pending);
 }

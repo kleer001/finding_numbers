@@ -2,7 +2,7 @@
 // the bottom rows — every glyph the same CHAR.FONT size in one phosphor
 // color at one brightness: a character-mode monochrome monitor.
 
-import { GRID, CANVAS, GLYPH, PREFS_BTN, CHAR, WATERFALL, INTRO_MESSAGES, SIGNAL_LOST_MESSAGES } from "../game/config.js";
+import { GRID, CANVAS, GLYPH, PREFS_BTN, CHAR, SCREEN, WATERFALL, INTRO_MESSAGES, SIGNAL_LOST_MESSAGES } from "../game/config.js";
 import { RAMP, SUB, stepWaterfall } from "./waterfall.js";
 import { pickInterval } from "../game/levels.js";
 
@@ -119,6 +119,23 @@ function introHold(interval) {
   return pickInterval(interval);
 }
 
+// Draw the cold-open banner standalone (title splash reuses it, so the same
+// message pool and flicker state drive both). Sets the shared font/alignment
+// the in-game caller already has set.
+export function renderIntroBanner(ctx, tint, now, interval) {
+  ctx.font = `${CHAR.FONT}px VT323, "Courier New", monospace`;
+  ctx.textAlign = "center";
+  ctx.textBaseline = "middle";
+  drawIntroBanner(ctx, tint, now, interval);
+}
+
+// Clear the flicker state so the next draw re-opens on the plain instruction at
+// the live clock. The burn-in sampler advances this state with its own clock and
+// calls this afterwards to hand a clean banner back to the live loop.
+export function resetIntroBanner() {
+  introLines = null;
+}
+
 function drawIntroBanner(ctx, tint, now, interval) {
   if (introLines === null) {
     introLines = INTRO_MESSAGES[0]; // open on the plain instruction
@@ -187,6 +204,66 @@ function drawLevelBadge(ctx, level, tint) {
   ctx.fillRect(0, GRID.H * CHAR.H, 5 * CHAR.W, CHAR.H);
   ctx.fillStyle = tint.bg;
   drawText(ctx, label, Math.floor((5 - label.length) / 2), GRID.H);
+}
+
+// Level-complete wipe: a spiral arm of changing numbers sweeps outward from the
+// number gate at screen center. Behind the arm (swept interior) is the incoming
+// level; ahead of it (outside) the outgoing level still shows — the arm is the
+// seam between them. `t` in [0,1]; `oldCanvas`/`newCanvas` are full-screen
+// snapshots of the two levels. Only the source-step win uses this.
+const WIPE_TURNS = 2.5; // default spiral arms swept before the screen is full
+const WIPE_MAXR = 16; // cells from center to the far corner of the 23x20 grid
+const WIPE_BAND = 0.09; // thickness of the number arm, in spiral-phase units
+
+// Spiral coordinate of a cell: grows outward, twisted by angle into arms.
+function wipePhase(x, y, turns) {
+  const dx = x - GRID.CX;
+  const dy = y - GRID.CY;
+  const d = Math.hypot(dx, dy) / WIPE_MAXR;
+  const a = Math.atan2(dy, dx) / (2 * Math.PI); // -0.5..0.5
+  return d - a / turns;
+}
+
+export function renderSpiralWipe(ctx, t, tint, now, oldCanvas, newCanvas, turns = WIPE_TURNS) {
+  ctx.drawImage(oldCanvas, 0, 0); // outgoing level is the base
+
+  const pMin = -0.5 / turns;
+  const pMax = 1 + 0.5 / turns;
+  const front = pMin + t * (pMax - pMin);
+
+  // Reveal the incoming level in the swept interior: clip to swept cells, one blit.
+  ctx.save();
+  ctx.beginPath();
+  let anySwept = false;
+  for (let y = 0; y < SCREEN.ROWS; y++) {
+    for (let x = 0; x < SCREEN.COLS; x++) {
+      if (front - wipePhase(x, y, turns) >= WIPE_BAND) {
+        ctx.rect(x * CHAR.W, y * CHAR.H, CHAR.W + 1, CHAR.H + 1);
+        anySwept = true;
+      }
+    }
+  }
+  if (anySwept) {
+    ctx.clip();
+    ctx.drawImage(newCanvas, 0, 0);
+  }
+  ctx.restore();
+
+  // The changing-number arm riding the spiral front, between the two levels.
+  ctx.font = `${CHAR.FONT}px VT323, "Courier New", monospace`;
+  ctx.textAlign = "center";
+  ctx.textBaseline = "middle";
+  const frame = Math.floor(now / 70); // digit shimmer
+  for (let y = 0; y < SCREEN.ROWS; y++) {
+    for (let x = 0; x < SCREEN.COLS; x++) {
+      const age = front - wipePhase(x, y, turns);
+      if (age < 0 || age >= WIPE_BAND) continue;
+      ctx.fillStyle = tint.bg;
+      ctx.fillRect(x * CHAR.W, y * CHAR.H, CHAR.W + 1, CHAR.H + 1);
+      ctx.fillStyle = tint.fg;
+      drawGlyph(ctx, String((x * 7 + y * 13 + frame) % 10), x, y);
+    }
+  }
 }
 
 // Full-screen TV-static wash used during a cell transition. `t` in [0,1].

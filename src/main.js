@@ -1,12 +1,14 @@
 // Boot: wire canvas, input, update+render loop, the CRT filter, and prefs menu.
 
-import { CANVAS, CRT_CONFIG, CRT_NOISE_MAX, TRANSITION_MS, TINTS, PALETTE, LANGUAGES, DIAL_MAX } from "./game/config.js";
+import { CANVAS, CRT_CONFIG, CRT_NOISE_MAX, TINTS, PALETTE, LANGUAGES, DIAL_MAX } from "./game/config.js";
 import { MAX_LEVEL } from "./game/levels.js";
-import { createState, setLevel, tryMove, update } from "./game/state.js";
+import { createState, setLevel, tryMove, update, commitWin } from "./game/state.js";
 import { installInput, installTouch, tapZone } from "./game/input.js";
 import { makeJukebox } from "./game/jukebox.js";
-import { render, renderStatic, renderLostConnection, renderJukebox } from "./render/render.js";
+import { render, renderStatic, renderSpiralWipe, renderLostConnection, renderJukebox } from "./render/render.js";
 import { renderMenu, menuHit } from "./render/menu.js";
+import { renderTitle, titleHit } from "./render/title.js";
+import { renderBurnIn } from "./render/burnin.js";
 import { CRTFilterWebGL } from "./lib/CRTFilter.js";
 import * as station from "./audio/station.js";
 
@@ -15,6 +17,17 @@ canvas.width = CANVAS.W;
 canvas.height = CANVAS.H;
 // willReadFrequently: the CRT filter reads the canvas back every frame.
 const ctx = canvas.getContext("2d", { willReadFrequently: true });
+
+// Offscreen snapshots of the outgoing/incoming levels, composited by the spiral
+// wipe on a source-step win (see the frame loop).
+const makeLayer = () => {
+  const c = document.createElement("canvas");
+  c.width = CANVAS.W;
+  c.height = CANVAS.H;
+  return c.getContext("2d");
+};
+const oldLevel = makeLayer();
+const newLevel = makeLayer();
 
 // --- persistence: prefs + current level survive a reload -------------------
 
@@ -30,6 +43,7 @@ function loadSave() {
   return {
     crt: typeof s.crt === "boolean" ? s.crt : true,
     crtNoise: Number.isInteger(s.crtNoise) && s.crtNoise >= 0 && s.crtNoise <= DIAL_MAX ? s.crtNoise : 0,
+    burnIn: typeof s.burnIn === "boolean" ? s.burnIn : false,
     showCount: typeof s.showCount === "boolean" ? s.showCount : false,
     tint: s.tint === "green" ? "green" : "amber",
     dark: typeof s.dark === "boolean" ? s.dark : true,
@@ -52,6 +66,7 @@ function save() {
 
 const { level: startLevel, ...prefs } = loadSave();
 const state = createState((performance.now() * 1000) | 0 || 1, startLevel);
+const title = { open: true }; // boot lands on the splash; C/N gate the first play
 const menu = { open: false, index: 0 };
 const jukebox = { active: false, index: 0 };
 const jukeboxEngine = makeJukebox((performance.now() * 1000) | 0 || 7);
@@ -92,6 +107,11 @@ const MENU_ROWS = [
     label: "CRT NOISE",
     value: () => String(prefs.crtNoise),
     change: (d) => { prefs.crtNoise = clamp(prefs.crtNoise + d, 0, DIAL_MAX); applyCrtNoise(); },
+  },
+  {
+    label: "BURN-IN",
+    value: () => (prefs.burnIn ? "ON" : "OFF"),
+    change: () => { prefs.burnIn = !prefs.burnIn; },
   },
   {
     label: "SHOW NUMBERS",
@@ -188,20 +208,35 @@ function rowsNav(rows, holder, dir) {
   else rowsChange(rows, holder, holder.index, dir === "E" ? 1 : -1);
 }
 
+// --- title splash -----------------------------------------------------------
+
+// CONTINUE resumes the level loaded from the save; NEW restarts at level 1.
+function titleAction(action) {
+  if (action === "new") { setLevel(state, 1); save(); }
+  title.open = false;
+}
+
 // --- input ------------------------------------------------------------------
 
 function handleMove(dir) {
   station.arm();
   const panel = activePanel();
-  if (panel) rowsNav(panel.rows, panel.holder, dir);
-  else if (tryMove(state, dir) === "win") station.victory();
+  if (panel) { rowsNav(panel.rows, panel.holder, dir); return; }
+  if (title.open) return; // the splash has no movement, only its buttons
+  if (tryMove(state, dir) === "win") station.victory();
 }
 
 function handleKey(code) {
   station.arm();
   if (jukebox.active) { if (code === "Escape") jukebox.active = false; return; }
-  if (code === "KeyP") menu.open = !menu.open;
-  else if (code === "Escape") menu.open = false;
+  if (menu.open) { if (code === "KeyP" || code === "Escape") menu.open = false; return; }
+  if (title.open) {
+    if (code === "KeyC") titleAction("continue");
+    else if (code === "KeyN") titleAction("new");
+    else if (code === "KeyP") menu.open = true; // PREFS is live on the splash too
+    return;
+  }
+  if (code === "KeyP") menu.open = true;
   else if (code === "KeyC") { prefs.crt = !prefs.crt; applyCrt(); save(); }
 }
 
@@ -215,6 +250,12 @@ function handleTap(x, y) {
     else rowsChange(panel.rows, panel.holder, hit.row, hit.delta);
     return;
   }
+  if (title.open) {
+    if (tapZone(x, y).type === "prefs") { menu.open = true; return; }
+    const action = titleHit(x, y);
+    if (action) titleAction(action);
+    return;
+  }
   const zone = tapZone(x, y);
   if (zone.type === "prefs") menu.open = true;
   else handleMove(zone.dir);
@@ -222,7 +263,7 @@ function handleTap(x, y) {
 
 // Held finger auto-repeats movement only; panel steppers stay tap-only.
 function handleHold(x, y) {
-  if (menu.open || jukebox.active) return;
+  if (title.open || menu.open || jukebox.active) return;
   const zone = tapZone(x, y);
   if (zone.type === "move") handleMove(zone.dir);
 }
@@ -293,14 +334,37 @@ function frame(now) {
     ? { fg: base.fg, bg: PALETTE.bg, rgb: base.rgb }
     : { fg: PALETTE.bg, bg: base.fg, rgb: base.rgb };
   station.getSpectrum(spectrum);
+  if (title.open) {
+    renderTitle(ctx, tint, startLevel, now);
+    if (jukebox.active) renderMenu(ctx, jukebox.index, JUKEBOX_ROWS.map((r) => ({ label: r.label, value: r.value() })), tint.fg, tint.bg, "JUKEBOX");
+    else if (menu.open) renderMenu(ctx, menu.index, MENU_ROWS.map((r) => ({ label: r.label, value: r.value() })), tint.fg, tint.bg);
+    if (prefs.burnIn) renderBurnIn(ctx, tint, startLevel, prefs.crt);
+    requestAnimationFrame(frame);
+    return;
+  }
   if (jukebox.active) {
     renderJukebox(ctx, tint, spectrum, now);
     renderMenu(ctx, jukebox.index, JUKEBOX_ROWS.map((r) => ({ label: r.label, value: r.value() })), tint.fg, tint.bg, "JUKEBOX");
   } else {
-    if (state.transition) renderStatic(ctx, Math.min(1, state.transition.t / TRANSITION_MS), tint.rgb);
-    else render(ctx, state, prefs.showCount, tint, spectrum, now);
+    if (state.transition) {
+      const tr = state.transition;
+      const p = Math.min(1, tr.t / tr.dur);
+      if (tr.next.reset) {
+        // Snapshot the outgoing level, advance, snapshot the incoming one — once,
+        // at the wipe's start — then spiral one under the other for the duration.
+        if (!tr.committed) {
+          render(oldLevel, state, prefs.showCount, tint, spectrum, now);
+          commitWin(state);
+          render(newLevel, state, prefs.showCount, tint, spectrum, now);
+        }
+        renderSpiralWipe(ctx, p, tint, now, oldLevel.canvas, newLevel.canvas);
+      } else {
+        renderStatic(ctx, p, tint.rgb); // ordinary cell crossing
+      }
+    } else render(ctx, state, prefs.showCount, tint, spectrum, now);
     if (menu.open) renderMenu(ctx, menu.index, MENU_ROWS.map((r) => ({ label: r.label, value: r.value() })), tint.fg, tint.bg);
   }
+  if (prefs.burnIn) renderBurnIn(ctx, tint, startLevel, prefs.crt);
   if (connectionLost) renderLostConnection(ctx, tint, now);
   requestAnimationFrame(frame);
 }

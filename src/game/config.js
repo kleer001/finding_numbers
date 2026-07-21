@@ -103,6 +103,7 @@ export const SIGNAL_LOST_MESSAGES = [
 export const PREFS_BTN = { x: 18 * CHAR.W, y: 17 * CHAR.H, w: 5 * CHAR.W, h: 3 * CHAR.H };
 
 export const TRANSITION_MS = 260; // static-cut between cells (<= 300ms)
+export const WIN_WIPE_MS = 2000; // spiral-numbers wipe when stepping the source gate
 
 export const LANGUAGES = ["english", "spanish", "italian", "chinese", "japanese", "hindi"];
 

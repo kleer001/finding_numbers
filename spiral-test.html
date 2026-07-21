@@ -1,0 +1,137 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1" />
+<title>spiral wipe tuner — finding_numbers</title>
+<link rel="preconnect" href="https://fonts.googleapis.com" />
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+<link href="https://fonts.googleapis.com/css2?family=VT323&display=swap" rel="stylesheet" />
+<style>
+  :root { color-scheme: light; }
+  body { margin: 0; font-family: system-ui, sans-serif; color: #1a1a1a; background: #fafafa;
+         display: flex; flex-wrap: wrap; gap: 28px; padding: 24px; align-items: flex-start; }
+  #stage { background: #000; width: 800px; max-width: 100%; height: auto; aspect-ratio: 4 / 3;
+           border: 1px solid #ccc; image-rendering: pixelated; }
+  .panel { min-width: 300px; flex: 1; max-width: 420px; }
+  h1 { font-size: 19px; margin: 0 0 4px; }
+  p.sub { margin: 0 0 20px; color: #555; font-size: 13px; line-height: 1.5; }
+  .row { margin: 20px 0; }
+  .row label { display: flex; justify-content: space-between; font-size: 14px; font-weight: 600; margin-bottom: 6px; }
+  .row label .val { font-family: ui-monospace, monospace; color: #a15c00; }
+  input[type=range] { width: 100%; }
+  .controls { display: flex; gap: 12px; align-items: center; margin-top: 22px; flex-wrap: wrap; }
+  button { font: inherit; padding: 6px 14px; border: 1px solid #999; border-radius: 6px; background: #fff; cursor: pointer; }
+  button:hover { background: #f0f0f0; }
+  .tints { display: flex; gap: 18px; margin-top: 16px; font-size: 14px; }
+  code { background: #eee; padding: 1px 5px; border-radius: 4px; }
+</style>
+</head>
+<body>
+  <canvas id="stage" width="800" height="600"></canvas>
+
+  <div class="panel">
+    <h1>Spiral wipe tuner</h1>
+    <p class="sub">The level-complete number spiral, running the real in-game renderer.
+       Drag the sliders to find a speed and turn count you like.</p>
+
+    <div class="row">
+      <label>Duration <span class="val" id="durVal">2000 ms</span></label>
+      <input type="range" id="dur" min="500" max="2500" step="10" value="2000" />
+    </div>
+    <div class="row">
+      <label>Turns <span class="val" id="turnsVal">2.5</span></label>
+      <input type="range" id="turns" min="2.5" max="7" step="0.1" value="2.5" />
+    </div>
+    <div class="row">
+      <label>Scrub <span class="val" id="tVal">auto</span></label>
+      <input type="range" id="scrub" min="0" max="1" step="0.01" value="0" />
+    </div>
+
+    <div class="controls">
+      <button id="play">Pause</button>
+      <label><input type="checkbox" id="loop" checked /> loop</label>
+      <button id="release">Auto (un-scrub)</button>
+    </div>
+
+    <div class="tints">
+      <label><input type="radio" name="tint" value="amber" checked /> amber</label>
+      <label><input type="radio" name="tint" value="green" /> green</label>
+    </div>
+
+    <p class="sub" style="margin-top:26px">
+      In-game: <code>2000 ms</code>, <code>2.5 turns</code>.
+      Grab the scrub slider to freeze a phase; hit <b>Auto</b> to release.
+      Set chosen values in <code>WIN_WIPE_MS</code> (src/game/config.js) and the <code>turns</code> default in <code>renderSpiralWipe</code> (src/render/render.js).
+    </p>
+  </div>
+
+  <script type="module">
+    import { renderSpiralWipe } from "./src/render/render.js";
+    import { TINTS, CANVAS, CHAR, SCREEN } from "./src/game/config.js";
+
+    const ctx = document.getElementById("stage").getContext("2d");
+    const $ = (id) => document.getElementById(id);
+
+    // Stand-in level snapshots so the reveal is visible: the outgoing level is a
+    // dim hash field, the incoming one a brighter, offset field. (In-game these
+    // are the real rendered levels.)
+    const makeLevel = (fg, alpha, offset) => {
+      const c = document.createElement("canvas");
+      c.width = CANVAS.W; c.height = CANVAS.H;
+      const g = c.getContext("2d");
+      g.fillStyle = "#000"; g.fillRect(0, 0, CANVAS.W, CANVAS.H);
+      g.font = `${CHAR.FONT}px VT323, monospace`;
+      g.textAlign = "center"; g.textBaseline = "middle";
+      g.globalAlpha = alpha; g.fillStyle = fg;
+      for (let y = 0; y < SCREEN.ROWS; y++)
+        for (let x = 0; x < SCREEN.COLS; x++)
+          if ((x + y + offset) % 2 === 0)
+            g.fillText("#", x * CHAR.W + CHAR.W / 2, y * CHAR.H + CHAR.H / 2);
+      return c;
+    };
+    let oldCanvas, newCanvas;
+    const buildLevels = (fg) => {
+      oldCanvas = makeLevel(fg, 0.28, 0); // outgoing: dim
+      newCanvas = makeLevel(fg, 0.7, 1);  // incoming: brighter, offset
+    };
+    buildLevels(TINTS.amber.fg);
+    const dur = $("dur"), durVal = $("durVal");
+    const turns = $("turns"), turnsVal = $("turnsVal");
+    const scrub = $("scrub"), tVal = $("tVal");
+    const playBtn = $("play"), loopChk = $("loop"), releaseBtn = $("release");
+
+    const HOLD = 350; // ms the full screen holds before the loop restarts
+    let playing = true, scrubbing = false, start = null, tintKey = "amber";
+
+    document.querySelectorAll('input[name=tint]').forEach((r) =>
+      r.addEventListener("change", () => { tintKey = r.value; buildLevels(TINTS[tintKey].fg); }));
+    dur.addEventListener("input", () => { durVal.textContent = dur.value + " ms"; start = null; });
+    turns.addEventListener("input", () => { turnsVal.textContent = (+turns.value).toFixed(1); });
+    scrub.addEventListener("input", () => { scrubbing = true; tVal.textContent = (+scrub.value).toFixed(2); });
+    releaseBtn.addEventListener("click", () => { scrubbing = false; tVal.textContent = "auto"; start = null; });
+    playBtn.addEventListener("click", () => {
+      playing = !playing; playBtn.textContent = playing ? "Pause" : "Play"; start = null;
+    });
+
+    function frame(now) {
+      let t;
+      if (scrubbing || !playing) {
+        t = +scrub.value;
+      } else {
+        if (start === null) start = now;
+        const d = +dur.value;
+        const cycle = loopChk.checked ? d + HOLD : d;
+        if (loopChk.checked && now - start >= cycle) start = now;
+        t = Math.min(1, (now - start) / d);
+        scrub.value = t;
+        tVal.textContent = t.toFixed(2);
+      }
+      const base = TINTS[tintKey];
+      renderSpiralWipe(ctx, t, { fg: base.fg, bg: "#000000", rgb: base.rgb }, now, oldCanvas, newCanvas, +turns.value);
+      requestAnimationFrame(frame);
+    }
+    requestAnimationFrame(frame);
+  </script>
+</body>
+</html>
