@@ -1,0 +1,68 @@
+<!doctype html>
+<html><head><meta charset="utf-8"><link rel="stylesheet" href="font.css">
+<style>
+  html,body { margin:0; padding:0; background:#000; }
+  #stage {
+    position:relative; width:960px; height:300px; overflow:hidden;
+    background:#000; font-family:"VT323",monospace;
+  }
+  #maze {
+    position:absolute; inset:0; color:#ffd257; opacity:.30;
+    font-size:22px; line-height:22px; letter-spacing:6px;
+    white-space:pre; padding:8px 0 0 6px;
+    text-shadow:0 0 6px rgba(255,210,87,.5);
+  }
+  #veil {
+    position:absolute; inset:0;
+    background:
+      radial-gradient(ellipse 520px 190px at 50% 50%, rgba(0,0,0,.94) 0%, rgba(0,0,0,.86) 45%, rgba(0,0,0,0) 78%),
+      radial-gradient(ellipse 900px 340px at 50% 50%, rgba(0,0,0,0) 40%, rgba(0,0,0,.75) 100%);
+  }
+  #title {
+    position:absolute; inset:0; display:flex; flex-direction:column;
+    align-items:center; justify-content:center; gap:2px;
+  }
+  h1 {
+    margin:0; font-size:74px; line-height:.94; font-weight:400; white-space:nowrap;
+    letter-spacing:14px; text-indent:14px; color:#ffd257;
+    text-shadow:0 0 3px rgba(255,210,87,.9), 0 0 20px rgba(255,180,50,.7), 0 0 58px rgba(255,140,30,.4);
+  }
+  p {
+    margin:10px 0 0; font-size:27px; letter-spacing:5px; text-indent:5px;
+    color:#ffd257; opacity:.92; text-shadow:0 0 10px rgba(255,210,87,.55);
+  }
+  .at { color:#ffd257; text-shadow:0 0 8px #ffd257, 0 0 26px rgba(255,210,87,.9); }
+  #scan {
+    position:absolute; inset:0; pointer-events:none;
+    background:repeating-linear-gradient(to bottom,
+      rgba(0,0,0,0) 0px, rgba(0,0,0,0) 2px,
+      rgba(0,0,0,.42) 2px, rgba(0,0,0,.42) 4px);
+  }
+  #edge {
+    position:absolute; inset:0; pointer-events:none;
+    box-shadow: inset 0 0 90px 30px #000;
+  }
+</style></head>
+<body><div id="stage">
+  <div id="maze"></div>
+  <div id="veil"></div>
+  <div id="title">
+    <h1>FINDING NUMBERS</h1>
+    <p><span class="at">@</span> &nbsp;NAVIGATE THE MAZE BY EAR</p>
+  </div>
+  <div id="scan"></div>
+  <div id="edge"></div>
+</div>
+<script>
+  // Seeded LCG: the field must render identically on every re-export.
+  let s = 20260720;
+  const rnd = () => (s = (s * 1103515245 + 12345) & 0x7fffffff) / 0x7fffffff;
+  const COLS = 35, ROWS = 14;
+  let out = "";
+  for (let y = 0; y < ROWS; y++) {
+    for (let x = 0; x < COLS; x++) out += rnd() < .62 ? "#" : " ";
+    out += "\n";
+  }
+  document.getElementById("maze").textContent = out;
+</script>
+</body></html>
