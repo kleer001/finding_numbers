@@ -10,14 +10,14 @@ test("panel snaps to the character grid", () => {
   const box = layout(ROWS);
   assert.equal(box.w, 19 * CHAR.W);
   assert.equal(box.x, 2 * CHAR.W);
-  assert.equal(box.y, CHAR.H); // snapped to a whole grid row
-  assert.equal(box.h, 480);
+  assert.equal(box.y, 4 * CHAR.H); // snapped to a whole grid row
+  assert.equal(box.h, 300);
   assert.ok(box.y + box.h <= 17 * CHAR.H, "panel stays out of the HUD band");
 });
 
 test("taps land where they look: steppers, close, chrome", () => {
   const box = layout(ROWS);
-  const rowY = box.y + 60 + 30; // vertical center of the first row band
+  const rowY = box.y + 60 + 15; // vertical center of the first row band
 
   assert.deepEqual(menuHit(400, box.y - 10, ROWS), { type: "close" }); // outside
   assert.deepEqual(menuHit(box.x + box.w - 20, box.y + 20, ROWS), { type: "close" }); // [X]

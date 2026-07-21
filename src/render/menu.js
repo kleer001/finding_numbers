@@ -9,17 +9,17 @@ import { CANVAS, CHAR, GRID, SCREEN } from "../game/config.js";
 
 const PANEL_COLS = 19; // whole columns, so the panel snaps to the grid
 const PANEL_W = PANEL_COLS * CHAR.W;
-const ROW_H = 2 * CHAR.H;
+const ROW_H = CHAR.H;
 const PAD = 28;
 const TITLE_H = 2 * CHAR.H;
 const FOOTER_H = 2 * CHAR.H;
 const ARROW_W = 96; // tap zone width for each < > stepper
 const CLOSE = 48; // [X] tap box edge
 
-// Title + footer + 2-row pitch make the panel a whole number of grid rows,
-// centered over the maze band (never the HUD, which stays live underneath).
+// Title + footer + one row per option make the panel a whole number of grid
+// rows, centered over the maze band (never the HUD, which stays live underneath).
 export function layout(rowCount) {
-  const panelRows = 4 + 2 * rowCount;
+  const panelRows = 4 + rowCount;
   const h = panelRows * CHAR.H;
   const y = Math.round((GRID.H - panelRows) / 2) * CHAR.H;
   return { x: ((SCREEN.COLS - PANEL_COLS) / 2) * CHAR.W, y, w: PANEL_W, h };
