@@ -52,6 +52,8 @@ function loadSave() {
     jbCadence: ["CALM", "BRISK", "RAPID"].includes(s.jbCadence) ? s.jbCadence : "CALM",
     jbStatic: Number.isInteger(s.jbStatic) && s.jbStatic >= 0 && s.jbStatic <= DIAL_MAX ? s.jbStatic : 2,
     jbVoice: typeof s.jbVoice === "boolean" ? s.jbVoice : true,
+    tone: ["brown", "pink", "white"].includes(s.tone) ? s.tone : "pink",
+    volume: Number.isInteger(s.volume) && s.volume >= 0 && s.volume <= DIAL_MAX ? s.volume : 4,
     level: Number.isInteger(s.level) && s.level >= 1 && s.level <= MAX_LEVEL ? s.level : 1,
   };
 }
@@ -92,10 +94,13 @@ station.init(() => {
     noise: state.spec.noise,
   };
 });
+station.setTone(prefs.tone);
+station.setVolume(prefs.volume / DIAL_MAX);
 
 // --- preferences menu: rows are data; keyboard and taps share change() -----
 
 const clamp = (v, lo, hi) => Math.min(hi, Math.max(lo, v));
+const TONES = ["brown", "pink", "white"]; // TONE pref order (warm -> balanced -> bright)
 
 const MENU_ROWS = [
   {
@@ -137,6 +142,16 @@ const MENU_ROWS = [
     label: "LEVEL",
     value: () => String(state.level),
     change: (d) => setLevel(state, clamp(state.level + d, 1, MAX_LEVEL)),
+  },
+  {
+    label: "TONE",
+    value: () => prefs.tone.toUpperCase(),
+    change: (d) => { prefs.tone = cycle(TONES, prefs.tone, d); station.setTone(prefs.tone); },
+  },
+  {
+    label: "VOLUME",
+    value: () => String(prefs.volume),
+    change: (d) => { prefs.volume = clamp(prefs.volume + d, 0, DIAL_MAX); station.setVolume(prefs.volume / DIAL_MAX); },
   },
   {
     // Tap to play the winning tones; value shows the live audio state so a

@@ -91,7 +91,7 @@ export async function arm() {
   await ctx.resume();
 
   master = ctx.createGain();
-  master.gain.value = 0.9;
+  master.gain.value = volTarget; // VOLUME pref drives the whole mix
   master.connect(ctx.destination);
 
   analyser = ctx.createAnalyser();
@@ -107,9 +107,51 @@ export async function arm() {
 }
 
 function buildHissBed() {
+  const { out, src } = buildHissChain(ctx, toneColor);
+  hissOut = out;
+  hissSrc = src;
+  out.connect(master);
+}
+
+// Fill `d` with the TONE pref's noise color. White is flat and bright; pink
+// (-3 dB/oct) is the mellow default; brown (-6 dB/oct) is dark. The chain's
+// highpass kills brown's DC/sub content, so no loop-seam windowing is needed.
+function fillNoise(d, color) {
+  if (color === "white") {
+    for (let i = 0; i < d.length; i++) d[i] = Math.random() * 2 - 1;
+    return;
+  }
+  if (color === "brown") {
+    let b = 0;
+    for (let i = 0; i < d.length; i++) {
+      b += 0.02 * (Math.random() * 2 - 1 - b);
+      d[i] = b * 3.5;
+    }
+    return;
+  }
+  // pink (default): Paul Kellet's 1/f filter — rolls the harsh 2-4 kHz band down.
+  let b0 = 0, b1 = 0, b2 = 0, b3 = 0, b4 = 0, b5 = 0, b6 = 0;
+  for (let i = 0; i < d.length; i++) {
+    const w = Math.random() * 2 - 1;
+    b0 = 0.99886 * b0 + w * 0.0555179;
+    b1 = 0.99332 * b1 + w * 0.0750759;
+    b2 = 0.969 * b2 + w * 0.153852;
+    b3 = 0.8665 * b3 + w * 0.3104856;
+    b4 = 0.55 * b4 + w * 0.5329522;
+    b5 = -0.7616 * b5 - w * 0.016898;
+    d[i] = (b0 + b1 + b2 + b3 + b4 + b5 + b6 + w * 0.5362) * 0.11;
+    b6 = w * 0.115926;
+  }
+}
+
+// Build the always-on hiss chain into `ctx` for the given TONE color and return
+// { out, src }: its output node (started) and its source (so a tone change can
+// stop it). Exported so the offline render-and-measure test drives the SAME graph
+// the live game does — no reimplementation, no drift. The de-ess stays on for
+// every color, so WHITE is honest grit, not the old fatiguing hiss.
+export function buildHissChain(ctx, color = "pink") {
   const buf = ctx.createBuffer(1, ctx.sampleRate * 2, ctx.sampleRate);
-  const d = buf.getChannelData(0);
-  for (let i = 0; i < d.length; i++) d[i] = Math.random() * 2 - 1;
+  fillNoise(buf.getChannelData(0), color);
   const src = ctx.createBufferSource();
   src.buffer = buf;
   src.loop = true;
@@ -117,14 +159,23 @@ function buildHissBed() {
   const hp = ctx.createBiquadFilter();
   hp.type = "highpass";
   hp.frequency.value = VOICE_BAND[0];
+  // De-ess the residual harshness: a notch on the ear's most sensitive band,
+  // then band-limit just under the voice's 2.7 kHz presence so the bed always
+  // sits beneath the digits.
+  const deharsh = ctx.createBiquadFilter();
+  deharsh.type = "peaking";
+  deharsh.frequency.value = 2200;
+  deharsh.Q.value = 1.0;
+  deharsh.gain.value = -6;
   const lp = ctx.createBiquadFilter();
   lp.type = "lowpass";
-  lp.frequency.value = VOICE_BAND[1];
+  lp.frequency.value = 2500;
   const gain = ctx.createGain();
-  gain.gain.value = 0.06; // constant floor — the voice rides ~15dB above this
+  gain.gain.value = HISS_GAIN;
 
-  src.connect(hp).connect(lp).connect(gain).connect(master);
+  src.connect(hp).connect(deharsh).connect(lp).connect(gain);
   src.start();
+  return { out: gain, src };
 }
 
 // --- brown-noise dread bed ---------------------------------------------------
@@ -136,6 +187,66 @@ function buildHissBed() {
 let washLevel = null; // slow-swell gain, scaled by the level's wash intensity
 let burstGain = null; // envelope gain for between-digit stabs
 let duck = null; // sidechain: dips while a digit speaks
+
+let toneColor = "pink"; // TONE pref: noise color + voice tilt ("brown"|"pink"|"white")
+let hissSrc = null; // current hiss source (stopped and rebuilt on a tone change)
+let hissOut = null; // current hiss output gain (crossfaded on a tone change)
+let voiceLowShelf = null; // voice tone tilt — tracks TONE, gentler than the noise
+let voiceHighShelf = null;
+let volTarget = 0.8; // VOLUME pref (0..1) -> master.gain; remembered before arm()
+
+// Voice tone tilt per color: same direction as the noise color but gentler, so
+// the numbers stay legible even at BROWN. PINK is flat — today's default.
+const VOICE_TILT = {
+  brown: { low: 2, high: -3 },
+  pink: { low: 0, high: 0 },
+  white: { low: -1.5, high: 3 },
+};
+const HISS_GAIN = 0.06; // hiss floor — the voice rides ~15 dB above this
+
+// VOLUME pref (0..1): master level for the whole mix. Safe before arm().
+export function setVolume(t) {
+  volTarget = Math.max(0, Math.min(1, t));
+  if (!master || !ctx) return;
+  rampParam(master.gain, volTarget);
+}
+
+// TONE pref: recolor the hiss and re-tilt the voice. Safe before arm() — stored
+// and applied when the graph is built.
+export function setTone(color) {
+  toneColor = VOICE_TILT[color] ? color : "pink";
+  if (!ctx) return;
+  const { low, high } = VOICE_TILT[toneColor];
+  if (voiceLowShelf) rampParam(voiceLowShelf.gain, low);
+  if (voiceHighShelf) rampParam(voiceHighShelf.gain, high);
+  if (master) rebuildHiss();
+}
+
+function rampParam(param, target) {
+  const t = ctx.currentTime;
+  param.cancelScheduledValues(t);
+  param.setValueAtTime(param.value, t);
+  param.linearRampToValueAtTime(target, t + 0.15);
+}
+
+// Crossfade the hiss to a freshly-colored bed so a TONE change never clicks.
+function rebuildHiss() {
+  const t = ctx.currentTime;
+  const oldOut = hissOut, oldSrc = hissSrc;
+  if (oldOut) {
+    oldOut.gain.cancelScheduledValues(t);
+    oldOut.gain.setValueAtTime(oldOut.gain.value, t);
+    oldOut.gain.linearRampToValueAtTime(0, t + 0.1);
+  }
+  if (oldSrc) oldSrc.stop(t + 0.15);
+  const { out, src } = buildHissChain(ctx, toneColor);
+  hissOut = out;
+  hissSrc = src;
+  out.gain.cancelScheduledValues(t);
+  out.gain.setValueAtTime(0, t);
+  out.gain.linearRampToValueAtTime(HISS_GAIN, t + 0.1);
+  out.connect(master);
+}
 
 const WASH_PEAK = 0.3; // wash gain at intensity 1 (voice rides ~0.9)
 const BURST_PEAK = 0.4;
@@ -252,7 +363,20 @@ function buildVoiceBus() {
   lfo.connect(lfoDepth).connect(qsb.gain);
   lfo.start();
 
-  hp.connect(honk).connect(lp).connect(drive).connect(shaper).connect(postGain).connect(qsb).connect(master);
+  // Tone tilt (TONE pref): a receiver tone control at the very end of the chain,
+  // post-saturation. Tracks the noise color but gentler, so BROWN stays legible.
+  const lowsh = ctx.createBiquadFilter();
+  lowsh.type = "lowshelf";
+  lowsh.frequency.value = 400;
+  lowsh.gain.value = VOICE_TILT[toneColor].low;
+  const highsh = ctx.createBiquadFilter();
+  highsh.type = "highshelf";
+  highsh.frequency.value = 2200;
+  highsh.gain.value = VOICE_TILT[toneColor].high;
+  voiceLowShelf = lowsh;
+  voiceHighShelf = highsh;
+
+  hp.connect(honk).connect(lp).connect(drive).connect(shaper).connect(postGain).connect(qsb).connect(lowsh).connect(highsh).connect(master);
   voiceIn = hp;
 }
 
