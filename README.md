@@ -1,8 +1,8 @@
 # finding_numbers
 
 A liminal horror maze you navigate **by ear** — a shortwave number station
-bleeding through the static, and a maze that rearranges itself the moment you
-stop listening.
+bleeding through the static, and rooms that don't always stay where you left
+them.
 
 You are `@`, lost in a shifting maze of near-identical rooms, listening to a
 station read numbers through the noise. Walk toward the signal, capture the whole
@@ -26,8 +26,10 @@ has the full rundown.
 
 ### Navigate by ear
 
-There is no map, and the rooms rebuild themselves the moment you look away. The
-station is your only compass — learn to read what changes when you turn.
+There is no map and nothing marks the right door. The station is your only
+compass — a correct turn adds a number to the broadcast, a wrong one just goes
+quiet. Most rooms hold still and can be learned; some stretches move their exit
+on you a few times before settling.
 
 </td>
 <td width="66%" valign="top">

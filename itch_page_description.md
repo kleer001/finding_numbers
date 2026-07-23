@@ -10,14 +10,14 @@ maps cleanly onto what it allows.
 - **Cover image**: `docs/img/cover.png` (630×500) → *Edit game → Cover image*.
 - **Screenshots**: add `docs/img/gameplay.png`, `jukebox.png`, `signal-lost.png`,
   `light-mode.png` under *Screenshots*.
-- **Tagline** (the one-liner under the title): `Navigate a shifting maze by ear — a number station bleeding through the static.`
+- **Tagline** (the one-liner under the title): `Navigate a maze by ear — a number station bleeding through the static, and rooms that don't always stay where you left them.`
 
 ---
 
 ## A liminal horror maze you navigate **by ear**
 
-A shortwave number station is bleeding through the static, and the maze rearranges
-itself the moment you stop listening.
+A shortwave number station is bleeding through the static, and some of these rooms
+don't stay where you left them.
 
 You are `@`, lost in a shifting maze of near-identical rooms, listening to a station
 read numbers through the noise. Walk toward the signal, capture the whole message, and
@@ -28,8 +28,12 @@ reach the source of the transmission — it will pull you somewhere new.
 
 ## What's inside
 
-- **Navigate by ear** — there is no map, and the rooms rebuild themselves the moment
-  you look away. The station is your only compass.
+- **Navigate by ear** — there is no map and nothing marks the right door. The station
+  is your only compass: a correct turn adds a number to the broadcast, a wrong one
+  just goes quiet.
+- **Rooms that lie — but not all of them** — most of the maze holds still and can be
+  learned. Some stretches can't: a room will move its exit on you a few times before
+  it settles for good. The deeper you go, the more of each level you can't trust.
 - **A station that sounds real** — the whole game is a number station built in WebAudio:
   many voices, a brown-noise dread that circles the signal without ever swallowing it,
   and a dial tuned to frequencies that really broadcast into the dark.
