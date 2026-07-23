@@ -4,7 +4,7 @@
 
 import { GRID, TRANSITION_MS, WIN_WIPE_MS, STATION_FREQS } from "./config.js";
 import { levelSpec, MAX_LEVEL } from "./levels.js";
-import { makeCell, doorRole, doorEntryTile, atDoor, isFloor, OPPOSITE } from "../maze/cell.js";
+import { makeCell, buildRoomPlan, doorRole, doorEntryTile, atDoor, isFloor, OPPOSITE } from "../maze/cell.js";
 import { makeRng, subSeed } from "../core/rng.js";
 import {
   createProgress, makeMessage, step, score, audibleDigits,
@@ -30,12 +30,20 @@ function newMaze(state) {
   // so it varies by level and session without disturbing the maze RNG.
   state.frequency = STATION_FREQS[subSeed(state.seed, `freq${state.level}`) % STATION_FREQS.length];
   state.progress = createProgress(makeMessage(state.rng, state.spec));
+  // Golden path laid out up front: the start's exit + each decision room's
+  // honesty-bounded change sequence (see cell.js buildRoomPlan). roomVisits
+  // counts entries per depth to index into that sequence.
+  const backbone = buildRoomPlan(state.rng, state.spec);
+  state.startExit = backbone.startExit;
+  state.roomPlan = backbone.rooms;
+  state.roomVisits = [];
   enterCell(state, null, "start", false);
 }
 
 // Build the cell being entered and drop the player at its entry door / room.
 function enterCell(state, entryDir, kind, frontier, pending) {
-  state.cell = makeCell(entryDir, kind, state.rng, frontier, state.spec.forwardDoors, state.spec.theme);
+  const plan = resolvePlan(state, entryDir, kind, frontier);
+  state.cell = makeCell(entryDir, kind, state.rng, frontier, state.spec.forwardDoors, state.spec.theme, plan);
   state.cell.pending = pending ?? null; // corridor only: the real cell beyond it
   if (kind === "start" || kind === "source") {
     state.player = { x: GRID.CX, y: GRID.CY };
@@ -44,6 +52,25 @@ function enterCell(state, entryDir, kind, frontier, pending) {
     state.player = doorEntryTile(entryDir);
   }
   refresh(state);
+}
+
+// The level-plan slice for the cell being entered: the first start's fixed exit,
+// or a frontier room's current forwards + correct door. Each frontier entry
+// advances that room's change budget (clamped, so it freezes once spent).
+// Off-frontier stray cells and corridors get none — they stay faked/random.
+function resolvePlan(state, entryDir, kind, frontier) {
+  if (kind === "start" && entryDir === null) return { exit: state.startExit };
+  if (kind !== "interior" || !frontier) return null;
+  const depth = state.progress.depth;
+  const room = state.roomPlan[depth];
+  if (!room) return null;
+  const visited = state.roomVisits[depth] ?? 0;
+  state.roomVisits[depth] = visited + 1;
+  return {
+    back: room.back,
+    forwards: room.forwards,
+    correctDir: room.correctSeq[Math.min(visited, room.budget)],
+  };
 }
 
 function refresh(state) {

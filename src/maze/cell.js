@@ -81,6 +81,51 @@ export function isFloor(cell, x, y) {
 
 const ALL_DIRS = ["N", "S", "E", "W"];
 
+// Honesty (0..1) governs how often a golden-path room may betray the player.
+// The lie budget is the number of allowed *changes*: honesty 1.0 -> 0 (the room
+// never moves), 0.9 -> 1, 0.8 -> 2, ... 0.0 -> 10. Ten steps because a 0.1 drop
+// buys one more change.
+const CHANGE_STEPS = 10;
+
+// Resolve a level's honesty for one golden-path step. `spec.honesty` is either a
+// single number (uniform across the level) or an array indexed by depth; either
+// way it defaults to 1.0 (fully honest) when unset.
+export function honestyAt(spec, depth) {
+  const h = spec.honesty;
+  if (Array.isArray(h)) return h[depth] ?? 1;
+  return typeof h === "number" ? h : 1;
+}
+
+export function changeBudget(honesty) {
+  return Math.max(0, Math.round((1 - honesty) * CHANGE_STEPS));
+}
+
+// Lay out the whole golden path up front. For each decision depth (1..digits-1)
+// we fix the forward doors — excluding the door back toward start, so a forward
+// choice is never "the way you came" — and precompute the sequence of correct
+// doors the room steps through as the player keeps returning to it. Each change
+// lands on a different door than the one before (a real change, not a reroll
+// that might land on itself); once a room's budget is spent it freezes. The
+// backbone is chained off each room's *first* correct door so the toward-start
+// direction stays coherent as later doors shuffle.
+export function buildRoomPlan(rng, spec) {
+  const startExit = rng.pick(ALL_DIRS); // start's single door -> sets depth 1's back
+  const rooms = [];
+  let prevCorrect = startExit;
+  for (let depth = 1; depth < spec.digits; depth++) {
+    const back = OPPOSITE[prevCorrect];
+    const forwards = shuffle(ALL_DIRS.filter((d) => d !== back), rng).slice(0, spec.forwardDoors);
+    const budget = changeBudget(honestyAt(spec, depth));
+    const correctSeq = [rng.pick(forwards)];
+    for (let k = 1; k <= budget; k++) {
+      correctSeq.push(rng.pick(forwards.filter((f) => f !== correctSeq[k - 1])));
+    }
+    rooms[depth] = { back, forwards, correctSeq, budget };
+    prevCorrect = correctSeq[0];
+  }
+  return { startExit, rooms };
+}
+
 // Generate a fresh cell as the player transitions into it. The maze is faked:
 // each cell is built on the fly from the door it was entered through.
 //   entryDir     - side the player enters from (the "back" door); null for start.
@@ -89,7 +134,9 @@ const ALL_DIRS = ["N", "S", "E", "W"];
 //   forwardDoors - forward choices per interior cell (2 or 3; 3 opens all sides).
 //   theme        - zone look: {wall, half}; array values are picked per cell.
 //                  Non-load-bearing: it never changes where the doors are.
-export function makeCell(entryDir, kind, rng, frontier, forwardDoors = 2, theme = {}) {
+//   plan         - level-plan slice for this cell: {exit} for the first start,
+//                  {forwards, correctDir} for a frontier room. null = faked/random.
+export function makeCell(entryDir, kind, rng, frontier, forwardDoors = 2, theme = {}, plan = null) {
   const half = pickThemed(theme.half, rng) ?? GRID.HALF;
   const wallGlyph = pickThemed(theme.wall, rng) ?? GLYPH.WALL;
   const dress = (cell) => {
@@ -98,7 +145,7 @@ export function makeCell(entryDir, kind, rng, frontier, forwardDoors = 2, theme 
   };
 
   if (kind === "start") {
-    const exit = entryDir ?? rng.pick(ALL_DIRS); // one door; advances you onward
+    const exit = entryDir ?? plan?.exit ?? rng.pick(ALL_DIRS); // one door; advances you onward
     const cell = dress(buildCell({ [exit]: true }, "start", half));
     cell.entryDir = null;
     cell.backDir = null;
@@ -125,14 +172,23 @@ export function makeCell(entryDir, kind, rng, frontier, forwardDoors = 2, theme 
     return cell;
   }
 
-  // interior: back door + forward choices (no dead-ends).
-  const forwards = shuffle(ALL_DIRS.filter((d) => d !== entryDir), rng).slice(0, forwardDoors);
+  // interior: back door + forward choices (no dead-ends). Frontier decision
+  // rooms take their forwards + correct door from the level plan (honesty-
+  // bounded, precomputed); off-frontier stray cells stay faked/random.
+  const forwards = plan
+    ? plan.forwards
+    : shuffle(ALL_DIRS.filter((d) => d !== entryDir), rng).slice(0, forwardDoors);
   const doors = { [entryDir]: true };
+  // A planned room shows its full fixed door set (toward-start + forwards) no
+  // matter which side you re-enter from, so an honest room looks identical every
+  // visit. `backDir` is still where you came in, so "walk back the way you came"
+  // always undoes a stray.
+  if (plan) doors[plan.back] = true;
   for (const f of forwards) doors[f] = true;
   const cell = dress(buildCell(doors, "interior", half));
   cell.entryDir = entryDir;
   cell.backDir = entryDir;
-  cell.correctDir = frontier ? rng.pick(forwards) : null;
+  cell.correctDir = plan ? plan.correctDir : frontier ? rng.pick(forwards) : null;
   return cell;
 }
 
