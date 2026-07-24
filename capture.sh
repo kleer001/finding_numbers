@@ -35,7 +35,7 @@ clip_seconds() {
     title)      echo 10 ;;
     core-loop)  echo 20 ;;
     wrong-turn) echo 28 ;;
-    room-moved) echo 55 ;;
+    room-moved) echo 38 ;;
     pulse)      echo 22 ;;
     crt-decay)  echo 24 ;;
     jukebox)    echo 35 ;;

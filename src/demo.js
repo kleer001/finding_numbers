@@ -113,23 +113,31 @@ async function travelTo(api, depth, beat = BEAT) {
   throw new Error(`never reached the decision room at depth ${depth}`);
 }
 
-// Set a level whose golden path contains a room that will move, and return that
-// room's depth. Levels are tried in order; the first with a spendable change
-// budget wins and stays loaded.
-//
-// Depth 1 is skipped: backing out of it lands in the start cell, whose single
-// door is rebuilt to whichever side you re-entered by, so walking back in comes
-// from a different side than the first visit and the room's learned door ends
-// up being its way back. From depth 2 on, the room behind is an ordinary
-// planned room and the approach is the same both times.
-function seekUnstableRoom(api, levels, minDepth = 2) {
+// Load the level whose first room-that-moves sits shallowest, and return that
+// room's depth. Which depths are unstable falls out of the level's honesty
+// curve rather than its maze roll, so this survives the reload that loading the
+// winner costs — checked rather than assumed, since a take that walks to the
+// wrong room proves nothing.
+function seekUnstableRoom(api, levels) {
+  const unstableDepth = () => api.state.roomPlan.findIndex((room) => room && room.budget >= 1);
+  let best = null;
   for (const level of levels) {
     api.setLevel(level);
-    const depth = api.state.roomPlan.findIndex((room, d) => d >= minDepth && room && room.budget >= 1);
-    if (depth >= minDepth) return depth;
+    const depth = unstableDepth();
+    if (depth > 0 && (!best || depth < best.depth)) best = { level, depth };
   }
-  throw new Error(`no unstable room at depth ${minDepth}+ on levels ${levels.join(",")}`);
+  if (!best) throw new Error(`no unstable room on levels ${levels.join(",")}`);
+  api.setLevel(best.level);
+  if (unstableDepth() !== best.depth) {
+    throw new Error(`level ${best.level} reloaded with its unstable room elsewhere`);
+  }
+  return best.depth;
 }
+
+// What a room looks like and where it leads — the two things compared across a
+// revisit. The deep-station zone picks its wall glyph and corridor width per
+// cell, so a rebuilt room comes back wearing a different face.
+const roomLook = (cell) => ({ wall: cell.wallGlyph, half: cell.half, correct: cell.correctDir });
 
 // --- the clips --------------------------------------------------------------
 
@@ -161,45 +169,35 @@ const CLIPS = {
     await advance(api, 1);
   },
 
-  // 3. The room that moved. A room's door *set* never changes — only which of
-  // them is correct — so there is nothing to see in the room itself. The whole
-  // beat is the same door giving a different answer: take it once and a number
-  // arrives, take it again later and none does.
+  // 3. The room that moved: a room, the room past it, then straight back to the
+  // first one — which comes back changed.
   //
-  // Getting back to the room has to go the long way round. Retreating into it
-  // from the far side makes that door its back door, and re-taking it would
-  // read as walking backwards rather than as a betrayal — so the take retreats
-  // one room further and comes back in from the front.
+  // Staged in the deep station, because that is the only zone where a revisit
+  // is visible. A room's door set is fixed everywhere — the way back plus every
+  // forward choice — so which door is correct can move without a single pixel
+  // moving with it. Down here the zone also picks a wall glyph and corridor
+  // width per cell, so the rebuilt room wears a different face, and the change
+  // you can see arrives with the change you can't.
   "room-moved": async (api) => {
     api.prefs.showCount = true;
-    const TRAVEL = 80; // brisk pace for the legs that are only getting there
-    const depth = seekUnstableRoom(api, [4, 5, 6, 7, 8, 9, 10, 11, 12]);
+    const depth = seekUnstableRoom(api, [10, 11, 12]);
     await begin(api);
     await travelTo(api, depth, 400);
-    await wait(1500); // the room, as it first looks
+    await wait(2600); // the room, as it first looks
+    const first = roomLook(api.state.cell);
 
-    const learned = api.state.cell.correctDir;
-    const before = api.state.score;
-    await cross(api, learned);
-    await wait(2000); // the number arrives
-    if (api.state.score <= before) throw new Error(`${learned} did not advance the count`);
+    await travelTo(api, depth + 1, 400); // on into the next room
+    await wait(2600);
 
-    await backOut(api, TRAVEL);
-    if (api.state.cell.correctDir === learned) {
-      throw new Error(`room at depth ${depth} did not move (exit stayed ${learned})`);
+    await backOut(api); // and straight back to the first one
+    const again = roomLook(api.state.cell);
+    if (again.wall === first.wall && again.half === first.half) {
+      throw new Error("the room came back wearing the same face — nothing to see");
     }
-    await wait(300);
-    await backOut(api, TRAVEL); // one further back, so the room is re-entered from the front
-    await wait(300);
-    await travelTo(api, depth, 1200);
-
-    if (learned === api.state.cell.backDir) {
-      throw new Error(`re-entered from the wrong side: ${learned} is now the way back, not a choice`);
+    if (again.correct === first.correct) {
+      throw new Error(`the room's exit did not move (still ${first.correct})`);
     }
-    const retry = api.state.score;
-    await cross(api, learned); // the door that worked last time
-    if (api.state.score > retry) throw new Error(`${learned} still advanced the count`);
-    await wait(3500); // and no number arrives
+    await wait(4000); // hold on it: same room, different room
   },
 
   // 4. The pulse: the full golden path to the source, then the step onto the

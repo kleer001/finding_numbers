@@ -45,12 +45,12 @@ gives an editor room to find the loop point.
 |---|---|---|---|---|
 | 1 | Core loop | `core-loop` | 12–15s | itch GIF, `promo.html` share card, social — the one that sells it |
 | 2 | The wrong-turn tell | `wrong-turn` | 12–18s | Explains the mechanic; the "oh, I get it" post |
-| 3 | The room that moved | `room-moved` | ~22s | The horror beat; the longest story of the set |
+| 3 | The room that moved | `room-moved` | ~20s | The horror beat |
 | 4 | The pulse | `pulse` | 6–10s | Seamless loop; strongest muted performer |
 | 5 | CRT decay | `crt-decay` | ~18s | The aesthetic pillar |
 | 6 | Jukebox | `jukebox` | 20–30s | Ambient audience; the clip that rewards sound-on |
 | 7 | Title and burn-in | `title` | 5–8s | Trailer opener, page header |
-| 8 | Trailer | — | ~36s | Cut from 7, 1, 5, 3 and 4 |
+| 8 | Trailer | — | ~37s | Cut from 7, 1, 5, 3 and 4 |
 
 ### 1. Core loop
 
@@ -79,24 +79,26 @@ needs more setup than a trailer segment can give it.
 
 ### 3. The room that moved
 
-**A room never looks different.** Its door set is fixed — the way back plus every
-forward choice — and only *which* of them is correct moves. There is nothing to point
-a camera at, so the beat has to be the same door giving a different answer: take it
-once and a number arrives, take it again later and none does.
+A room, the room past it, then straight back to the first one — which comes back
+changed.
 
-Getting back to the room goes the long way round. Retreating into it from the far side
-makes the learned door its way back, and re-taking it would read as walking backwards
-rather than as a betrayal — so the take retreats one room further and comes in from
-the front. Depth 1 can't be used at all: backing out of it lands in the start cell,
-whose single door is rebuilt to whichever side you re-entered by.
+**Staged in the deep station, because that is the only zone where a revisit is
+visible.** A room's door set is fixed everywhere — the way back plus every forward
+choice — so which door is correct can move without a single pixel moving with it.
+Down in the deep station the zone also picks a wall glyph and corridor width per
+cell, so the rebuilt room wears a different face, and the change you can see arrives
+with the change you can't. Anywhere shallower, this clip has nothing to show.
+
+The take asserts both before it holds on the payoff: that the room came back looking
+different, and that its exit really moved. Either one failing means there is no clip,
+so it says so rather than banking footage of nothing happening.
 
 - **Caption:** "you memorized this room. it didn't stay memorized."
 - Keep the claim bounded — most rooms hold still, and that is what makes the ones
   that don't land. See "Honest copy" in `itch_page_description.md`.
 
-The take searches upward from level 4 for the first golden path holding a room with a
-change budget at depth 2 or deeper, and asserts the door really moved before it plays
-the beat — a room that held still has nothing to show.
+The take loads whichever deep level's first unstable room sits shallowest, so the
+walk in stays short.
 
 ### 4. The pulse
 
@@ -130,6 +132,10 @@ The title splash with the phosphor burn-in settling in. Short, no gameplay.
 ### 8. Trailer
 
 Assemble in this order: 7 → 1 → 5 → 3 → 4, then hold on the title with the play URL.
+Clip 3 appears twice — how the room looked, cut straight to how it came back, with
+its caption split across the two. Played whole, the walk out and back eats twenty
+seconds of a forty-second trailer; cut together, the two states of one room stand
+side by side, which is the whole point.
 Keep it under 45 seconds; the first five seconds decide whether the rest is watched.
 
 Clip 2 is deliberately absent. Its beat is a number that fails to arrive, which needs
