@@ -66,8 +66,15 @@ function save() {
   }
 }
 
+// A `?seed=` override makes a session reproducible, so the same take can be
+// re-shot until the framing is right (see src/demo.js). Without it the seed is
+// the clock, and no two runs lay out the same maze.
+const params = new URLSearchParams(location.search);
+const seedParam = Number(params.get("seed"));
+const seed = Number.isInteger(seedParam) && seedParam > 0 ? seedParam : (performance.now() * 1000) | 0 || 1;
+
 const { level: startLevel, ...prefs } = loadSave();
-const state = createState((performance.now() * 1000) | 0 || 1, startLevel);
+const state = createState(seed, startLevel);
 const title = { open: true }; // boot lands on the splash; C/N gate the first play
 const menu = { open: false, index: 0 };
 const jukebox = { active: false, index: 0 };
@@ -386,6 +393,26 @@ function frame(now) {
 requestAnimationFrame(frame);
 
 applyCrt();
+
+// A `?demo=<clip>` run hands the game to a scripted take for promo capture.
+// Kept behind the param so the driver never loads for an ordinary player.
+// A `?go=<path>` alongside it holds the take until that path resolves, which is
+// how capture.sh keeps the opening beat from playing before ffmpeg is live.
+const demoClip = params.get("demo");
+if (demoClip) {
+  import("./demo.js").then(async (demo) => {
+    const go = params.get("go");
+    if (go) await demo.waitForGo(go);
+    await demo.runClip(demoClip, {
+      state,
+      prefs,
+      menu,
+      jukebox,
+      setLevel: (level) => { setLevel(state, level); save(); },
+    });
+    window.demoDone = true; // dev handle: lets a take's real length be measured
+  });
+}
 
 // Start the station at boot so the number-station is playing the moment the
 // game loads. Autoplay policy may hold the context suspended until the first

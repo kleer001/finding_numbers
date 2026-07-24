@@ -21,6 +21,18 @@ it **on** for any clip where the count is the tell. Burn captions into every cli
 you hear and no mouse cursor. `./capture.sh -s` starts recording immediately;
 without `-s` it arms and waits for Enter so you can get set before the first frame.
 
+Naming a clip — `./capture.sh core-loop` — plays that take from `src/demo.js`
+instead, boots the game from factory settings so the previous take's tint and
+noise dial can't leak in, and stops recording on its own. The driver reads the
+level's golden path, so it walks the intended route rather than fumbling for it;
+a take that fails to land its beat throws instead of banking silent footage.
+
+- `--seed N` pins the maze layout, so the same take can be re-shot verbatim
+  until the framing is right. Without it every run lays out a different maze.
+- `-t SECONDS` overrides the clip's recording length.
+
+Clips 6 and 8 are the manual ones. Everything else is a named take.
+
 Open preferences with `P`. Useful rows: `SHOW NUMBERS`, `CRT NOISE`, `TINT`,
 `BURN-IN`, `LEVEL` (jump straight to a level), `JUKEBOX`, `VOLUME`.
 
@@ -29,16 +41,16 @@ gives an editor room to find the loop point.
 
 ## The clips
 
-| # | Clip | Length | Where it goes |
-|---|---|---|---|
-| 1 | Core loop | 12–15s | itch GIF, `promo.html` share card, social — the one that sells it |
-| 2 | The wrong-turn tell | 12–18s | Explains the mechanic; the "oh, I get it" post |
-| 3 | The room that moved | 10–15s | The horror beat |
-| 4 | The pulse | 6–10s | Seamless loop; strongest muted performer |
-| 5 | CRT decay | 10–15s | The aesthetic pillar |
-| 6 | Jukebox | 20–30s | Ambient audience; the clip that rewards sound-on |
-| 7 | Title and burn-in | 5–8s | Trailer opener, page header |
-| 8 | Trailer | 30–45s | Cut from the others |
+| # | Clip | Command | Length | Where it goes |
+|---|---|---|---|---|
+| 1 | Core loop | `core-loop` | 12–15s | itch GIF, `promo.html` share card, social — the one that sells it |
+| 2 | The wrong-turn tell | `wrong-turn` | 12–18s | Explains the mechanic; the "oh, I get it" post |
+| 3 | The room that moved | `room-moved` | 10–15s | The horror beat |
+| 4 | The pulse | `pulse` | 6–10s | Seamless loop; strongest muted performer |
+| 5 | CRT decay | `crt-decay` | 10–15s | The aesthetic pillar |
+| 6 | Jukebox | `jukebox` | 20–30s | Ambient audience; the clip that rewards sound-on |
+| 7 | Title and burn-in | `title` | 5–8s | Trailer opener, page header |
+| 8 | Trailer | — | 30–45s | Cut from the others |
 
 ### 1. Core loop
 
@@ -69,6 +81,10 @@ the exit somewhere else.
 - Keep the claim bounded — most rooms hold still, and that is what makes the ones
   that don't land. See "Honest copy" in `itch_page_description.md`.
 
+The take searches upward from level 4 for the first golden path holding a room
+with a change budget, so it stages the beat on the shallowest room that can
+actually betray you rather than walking deep and hoping.
+
 ### 4. The pulse
 
 Reach a source room and step onto the pulsing glyph. The spiral of numbers wipes
@@ -87,6 +103,10 @@ Open `PREFS` and walk `CRT NOISE` from 0 to 5 so the picture degrades live, then
 
 `PREFS` → `JUKEBOX`. No maze, just the transmitter and the scrolling waterfall. Let it
 run. This is the one clip worth explicitly asking for headphones on.
+
+The picker panel is part of jukebox mode and stays on screen the whole time, so
+the take is the panel over the waterfall — frame it as the instrument it is
+rather than expecting a clean transmitter shot.
 
 ### 7. Title and burn-in
 

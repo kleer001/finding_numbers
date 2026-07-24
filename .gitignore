@@ -7,6 +7,11 @@ dist/
 # Env
 .env
 
+# Capture output + the recorder handshake file (see capture.sh)
+recording-*.mp4
+.demo-go
+.playwright-mcp/
+
 # OS / editor
 .DS_Store
 .idea/
