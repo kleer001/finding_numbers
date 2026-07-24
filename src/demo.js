@@ -72,10 +72,11 @@ async function settle(state) {
 
 // Walk out of the current cell through `dir` and wait for the cut to land. A
 // crossing that never happens would otherwise record as a player standing in a
-// wall for the rest of the take, so it throws instead.
-async function cross(api, dir) {
+// wall for the rest of the take, so it throws instead. `pace` tightens the
+// walk for legs that are travel rather than beat.
+async function cross(api, dir, pace = STEP_MS) {
   const before = api.state.cell;
-  for (const code of exitKeys(api.state.cell, dir)) await press(code);
+  for (const code of exitKeys(api.state.cell, dir)) await press(code, pace);
   await settle(api.state);
   if (api.state.cell === before) throw new Error(`crossing ${dir} never left the cell`);
 }
@@ -83,7 +84,7 @@ async function cross(api, dir) {
 // Walking back the way you came always means the door you entered *this* cell
 // through — after a stray that is the stray cell's own back door, not the one
 // the room you strayed from was entered by.
-const backOut = (api) => cross(api, api.state.cell.backDir);
+const backOut = (api, pace) => cross(api, api.state.cell.backDir, pace);
 
 // Leave the title splash by CONTINUE, which keeps whatever level was set.
 async function begin(api) {
@@ -99,16 +100,35 @@ async function advance(api, rooms, beat = BEAT) {
   }
 }
 
+// Walk forward until the decision room at `depth` is the one being stood in.
+// Counting crossings is not the same as counting depth: a forward crossing can
+// drop an empty corridor in between, which spends a crossing and gains none, so
+// a take that counts crossings ends up somewhere it did not mean to be.
+async function travelTo(api, depth, beat = BEAT) {
+  for (let guard = 0; guard <= depth * 3; guard++) {
+    if (api.state.progress.depth >= depth && api.state.cell.kind === "interior") return;
+    await cross(api, onwardDir(api.state.cell));
+    await wait(beat);
+  }
+  throw new Error(`never reached the decision room at depth ${depth}`);
+}
+
 // Set a level whose golden path contains a room that will move, and return that
 // room's depth. Levels are tried in order; the first with a spendable change
 // budget wins and stays loaded.
-function seekUnstableRoom(api, levels) {
+//
+// Depth 1 is skipped: backing out of it lands in the start cell, whose single
+// door is rebuilt to whichever side you re-entered by, so walking back in comes
+// from a different side than the first visit and the room's learned door ends
+// up being its way back. From depth 2 on, the room behind is an ordinary
+// planned room and the approach is the same both times.
+function seekUnstableRoom(api, levels, minDepth = 2) {
   for (const level of levels) {
     api.setLevel(level);
-    const depth = api.state.roomPlan.findIndex((room) => room && room.budget >= 1);
-    if (depth > 0) return depth;
+    const depth = api.state.roomPlan.findIndex((room, d) => d >= minDepth && room && room.budget >= 1);
+    if (depth >= minDepth) return depth;
   }
-  throw new Error(`no unstable room on levels ${levels.join(",")}`);
+  throw new Error(`no unstable room at depth ${minDepth}+ on levels ${levels.join(",")}`);
 }
 
 // --- the clips --------------------------------------------------------------
@@ -133,7 +153,7 @@ const CLIPS = {
     api.prefs.showCount = true;
     api.setLevel(2);
     await begin(api);
-    await advance(api, 2);
+    await travelTo(api, 2);
     await cross(api, wrongDir(api.state.cell));
     await wait(4000); // hold on the frozen count longer than feels comfortable
     await backOut(api);
@@ -141,25 +161,45 @@ const CLIPS = {
     await advance(api, 1);
   },
 
-  // 3. The room that moved: learn a room's exit, stray, come back, find the
-  // exit somewhere else.
+  // 3. The room that moved. A room's door *set* never changes — only which of
+  // them is correct — so there is nothing to see in the room itself. The whole
+  // beat is the same door giving a different answer: take it once and a number
+  // arrives, take it again later and none does.
+  //
+  // Getting back to the room has to go the long way round. Retreating into it
+  // from the far side makes that door its back door, and re-taking it would
+  // read as walking backwards rather than as a betrayal — so the take retreats
+  // one room further and comes back in from the front.
   "room-moved": async (api) => {
     api.prefs.showCount = true;
+    const TRAVEL = 80; // brisk pace for the legs that are only getting there
     const depth = seekUnstableRoom(api, [4, 5, 6, 7, 8, 9, 10, 11, 12]);
     await begin(api);
-    await advance(api, depth, 500); // travel briskly; the beat is at the end
-    await wait(2200); // hold on the room as it first looks
+    await travelTo(api, depth, 400);
+    await wait(1500); // the room, as it first looks
+
     const learned = api.state.cell.correctDir;
-    await cross(api, wrongDir(api.state.cell));
-    await wait(1600);
-    await backOut(api);
-    // The whole clip is this comparison; a room that held still has nothing to
-    // show, so say so rather than banking a take of nothing happening.
+    const before = api.state.score;
+    await cross(api, learned);
+    await wait(2000); // the number arrives
+    if (api.state.score <= before) throw new Error(`${learned} did not advance the count`);
+
+    await backOut(api, TRAVEL);
     if (api.state.cell.correctDir === learned) {
       throw new Error(`room at depth ${depth} did not move (exit stayed ${learned})`);
     }
-    await wait(3000); // the same room, a different door
-    await advance(api, 1);
+    await wait(300);
+    await backOut(api, TRAVEL); // one further back, so the room is re-entered from the front
+    await wait(300);
+    await travelTo(api, depth, 1200);
+
+    if (learned === api.state.cell.backDir) {
+      throw new Error(`re-entered from the wrong side: ${learned} is now the way back, not a choice`);
+    }
+    const retry = api.state.score;
+    await cross(api, learned); // the door that worked last time
+    if (api.state.score > retry) throw new Error(`${learned} still advanced the count`);
+    await wait(3500); // and no number arrives
   },
 
   // 4. The pulse: the full golden path to the source, then the step onto the
@@ -175,18 +215,24 @@ const CLIPS = {
     for (const code of centerKeys(api.state.cell)) await press(code);
   },
 
-  // 5. CRT decay: the NOISE dial walked up live, then the tint flipped. Driven
-  // through the menu rather than the prefs object so the dial is on screen.
+  // 5. CRT decay: every dial that changes the look, walked live. Driven through
+  // the menu rather than the prefs object so the dials are on screen turning.
+  // MODE last — inverting the picture is the biggest jump of the four.
   "crt-decay": async (api) => {
     api.setLevel(3);
     await begin(api);
     await advance(api, 1, 300);
     await press("KeyP", 900); // open PREFS (row 0: CRT FX)
-    await press("ArrowDown", 700); // row 1: CRT NOISE
-    for (let i = 0; i < 5; i++) await press("ArrowRight", 900);
-    await wait(1200);
-    for (let i = 0; i < 3; i++) await press("ArrowDown", 400); // row 4: TINT
-    await press("ArrowRight", 2500);
+    await press("ArrowDown", 600); // row 1: CRT NOISE
+    for (let i = 0; i < 5; i++) await press("ArrowRight", 700);
+    await wait(900);
+    await press("ArrowDown", 500); // row 2: BURN-IN
+    await press("ArrowRight", 2200); // ghosting needs a beat to build
+    await press("ArrowDown", 350);
+    await press("ArrowDown", 500); // row 4: TINT
+    await press("ArrowRight", 2000);
+    await press("ArrowDown", 500); // row 5: MODE
+    await press("ArrowRight", 3000);
   },
 
   // 6. Jukebox: the transmitter and the waterfall, no maze. Nothing to drive —

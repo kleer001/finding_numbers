@@ -35,9 +35,9 @@ clip_seconds() {
     title)      echo 10 ;;
     core-loop)  echo 20 ;;
     wrong-turn) echo 28 ;;
-    room-moved) echo 30 ;;
-    pulse)      echo 20 ;;
-    crt-decay)  echo 20 ;;
+    room-moved) echo 55 ;;
+    pulse)      echo 22 ;;
+    crt-decay)  echo 24 ;;
     jukebox)    echo 35 ;;
     *)          echo "" ;;
   esac
@@ -113,6 +113,17 @@ for _ in $(seq 40); do
   xdotool search --onlyvisible --class "$CLASS" >/dev/null 2>&1 && break
   sleep 0.25
 done
+
+# Raise it to the top and keep it there. The recorder grabs a screen *region*,
+# not the window's own pixels, so anything that drifts over that rectangle —
+# a terminal, an editor — is recorded instead of the game, and the take looks
+# fine until you play it back.
+GAME_WID="$(xdotool search --onlyvisible --class "$CLASS" | tail -1)"
+if [ -n "$GAME_WID" ]; then
+  xdotool windowraise "$GAME_WID"
+  xdotool windowactivate "$GAME_WID" 2>/dev/null
+  sleep 0.5
+fi
 
 REC_ARGS=(-c "$CLASS")
 [ "$START_NOW" -eq 1 ] && REC_ARGS+=(-s)
