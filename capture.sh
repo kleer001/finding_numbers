@@ -94,8 +94,7 @@ class H(http.server.SimpleHTTPRequestHandler):
 socketserver.TCPServer.allow_reuse_address = True
 with socketserver.TCPServer(("", int(sys.argv[1])), H) as s: s.serve_forever()
 ' "$PORT" ) >/dev/null 2>&1 &
-# Left running on purpose: the game window stays open after the recording stops,
-# and a dead server would trip its lost-connection overlay.
+SERVER=$!
 echo "capture -> serving $HERE on $PORT"
 
 # Borderless game window at the canvas's native resolution, tagged with a unique
@@ -119,6 +118,8 @@ REC_ARGS=(-c "$CLASS")
 [ "$START_NOW" -eq 1 ] && REC_ARGS+=(-s)
 [ -n "$DURATION" ] && REC_ARGS+=(-t "$DURATION")
 
+# A manual take is a session: the window and its server stay up afterwards so
+# you can keep playing, and a dead server would trip the lost-connection overlay.
 if [ -z "$CLIP" ]; then
   exec "$RECORDER" "${REC_ARGS[@]}" "$OUTDIR"
 fi
@@ -132,3 +133,9 @@ sleep 1.5
 echo "capture -> released clip '$CLIP' (${DURATION}s)"
 wait "$REC"
 rm -f "$HERE/$GO_FILE"
+
+# A clip has nobody sitting at it, so it tears down its own window and server.
+# Left up, they would be found first by the next clip's window lookup and port
+# scan, and a run of several takes would record the wrong window.
+pkill -f "user-data-dir=/tmp/${CLASS}-profile"
+kill "$SERVER" 2>/dev/null
