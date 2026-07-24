@@ -26,10 +26,10 @@ clip_cut() {
   case "$1" in
     title)      echo "2.0 6.0|" ;;
     core-loop)  echo "3.3 15.0|no map. the station is your compass." ;;
-    wrong-turn) echo "11.9 13.6|a wrong turn doesn't tell you. the silence does." ;;
-    room-moved) echo "4.5 15.0|you memorized this room. it didn't stay memorized." ;;
+    wrong-turn) echo "11.9 13.6|a correct turn adds a number. a wrong one adds nothing." ;;
+    room-moved) echo "25.5 22.0|you memorized this room. it didn't stay memorized." ;;
     pulse)      echo "9.6 6.0|" ;;
-    crt-decay)  echo "4.3 12.2|dial the decay until the picture barely holds." ;;
+    crt-decay)  echo "4.3 18.2|dial in the decay." ;;
     jukebox)    echo "3.0 30.0|" ;;
     *)          echo "" ;;
   esac
@@ -102,16 +102,19 @@ for c in "${GIFS[@]}"; do
 done
 
 echo "== trailer"
-# Order from the shot list: title, core loop, the tell, the decay, the room that
-# moved, the pulse — opening on the title and closing on it with the URL. Hard
-# cuts throughout; the game already cuts to static, so a dissolve would fight it.
+# Title, core loop, the decay, the room that moved, the pulse — opening on the
+# title and closing on it with the URL. Hard cuts throughout; the game already
+# cuts to static, so a dissolve would fight it.
+#
+# The wrong-turn clip is deliberately absent: its beat is a number that fails to
+# arrive, which needs more setup than a trailer segment can give it and reads as
+# nothing happening without one.
 #   source in duration caption
 TRAILER=(
   "title|2.0|3.0|"
   "core-loop|3.3|6.0|no map. the station is your compass."
-  "wrong-turn|11.9|8.0|a wrong turn doesn't tell you. the silence does."
-  "crt-decay|4.6|5.0|dial the decay until the picture barely holds."
-  "room-moved|5.5|9.0|you memorized this room. it didn't stay memorized."
+  "crt-decay|9.5|8.0|dial in the decay."
+  "room-moved|38.5|9.0|you memorized this room. it didn't stay memorized."
   "pulse|9.6|6.0|"
 )
 

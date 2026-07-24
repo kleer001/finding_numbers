@@ -45,12 +45,12 @@ gives an editor room to find the loop point.
 |---|---|---|---|---|
 | 1 | Core loop | `core-loop` | 12–15s | itch GIF, `promo.html` share card, social — the one that sells it |
 | 2 | The wrong-turn tell | `wrong-turn` | 12–18s | Explains the mechanic; the "oh, I get it" post |
-| 3 | The room that moved | `room-moved` | 10–15s | The horror beat |
+| 3 | The room that moved | `room-moved` | ~22s | The horror beat; the longest story of the set |
 | 4 | The pulse | `pulse` | 6–10s | Seamless loop; strongest muted performer |
-| 5 | CRT decay | `crt-decay` | 10–15s | The aesthetic pillar |
+| 5 | CRT decay | `crt-decay` | ~18s | The aesthetic pillar |
 | 6 | Jukebox | `jukebox` | 20–30s | Ambient audience; the clip that rewards sound-on |
 | 7 | Title and burn-in | `title` | 5–8s | Trailer opener, page header |
-| 8 | Trailer | — | 30–45s | Cut from the others |
+| 8 | Trailer | — | ~36s | Cut from 7, 1, 5, 3 and 4 |
 
 ### 1. Core loop
 
@@ -66,24 +66,37 @@ the count ticks up and the waterfall streaks.
 the way you came; it resumes.
 
 - **First 3 seconds:** the count visibly failing to move.
-- **Caption:** "a wrong turn doesn't tell you. the silence does."
+- **Caption:** "a correct turn adds a number. a wrong one adds nothing."
+
+Nothing goes silent on a wrong turn. The first stray is graced, so the readout keeps
+saying exactly what it said before; only a second stray shortens it. The tell is a
+number that never arrives, which is why the copy has to talk about what is added
+rather than about silence.
 
 Absence is the mechanic, so this is the strongest teaching clip. Hold on the frozen
-count a beat longer than feels comfortable.
+count a beat longer than feels comfortable. It stays out of the trailer: the beat
+needs more setup than a trailer segment can give it.
 
 ### 3. The room that moved
 
-Use `LEVEL` to reach a level deep enough to contain an unstable stretch (level 9 and
-beyond). Learn a room's correct door, leave through a wrong one, walk back, and find
-the exit somewhere else.
+**A room never looks different.** Its door set is fixed — the way back plus every
+forward choice — and only *which* of them is correct moves. There is nothing to point
+a camera at, so the beat has to be the same door giving a different answer: take it
+once and a number arrives, take it again later and none does.
+
+Getting back to the room goes the long way round. Retreating into it from the far side
+makes the learned door its way back, and re-taking it would read as walking backwards
+rather than as a betrayal — so the take retreats one room further and comes in from
+the front. Depth 1 can't be used at all: backing out of it lands in the start cell,
+whose single door is rebuilt to whichever side you re-entered by.
 
 - **Caption:** "you memorized this room. it didn't stay memorized."
 - Keep the claim bounded — most rooms hold still, and that is what makes the ones
   that don't land. See "Honest copy" in `itch_page_description.md`.
 
-The take searches upward from level 4 for the first golden path holding a room
-with a change budget, so it stages the beat on the shallowest room that can
-actually betray you rather than walking deep and hoping.
+The take searches upward from level 4 for the first golden path holding a room with a
+change budget at depth 2 or deeper, and asserts the door really moved before it plays
+the beat — a room that held still has nothing to show.
 
 ### 4. The pulse
 
@@ -94,10 +107,12 @@ Cut it so the last frame matches the first. No caption needed — it carries its
 
 ### 5. CRT decay
 
-Open `PREFS` and walk `CRT NOISE` from 0 to 5 so the picture degrades live, then flip
-`TINT` between amber and green.
+Open `PREFS` and walk every dial that changes the look: `CRT NOISE` 0 to 5 so the
+picture degrades live, `BURN-IN` on so the title ghosts in behind the menu, `TINT`
+amber to green, and `MODE` to light, which inverts the whole picture.
 
-- **Caption:** "dial the decay until the picture barely holds."
+- **Caption:** "dial in the decay."
+- `MODE` goes last: inverting the picture is the biggest jump of the four.
 
 ### 6. Jukebox
 
@@ -114,9 +129,12 @@ The title splash with the phosphor burn-in settling in. Short, no gameplay.
 
 ### 8. Trailer
 
-Assemble in this order: 7 → 1 → 2 → 5 → 3 → 4, then hold on the title with the play
-URL. Keep it under 45 seconds; the first five seconds decide whether the rest is
-watched.
+Assemble in this order: 7 → 1 → 5 → 3 → 4, then hold on the title with the play URL.
+Keep it under 45 seconds; the first five seconds decide whether the rest is watched.
+
+Clip 2 is deliberately absent. Its beat is a number that fails to arrive, which needs
+more setup than a trailer segment can give it and reads as nothing happening without
+one.
 
 ## Post
 

@@ -30,7 +30,8 @@ reach the source of the transmission — it will pull you somewhere new.
 
 - **Navigate by ear** — there is no map and nothing marks the right door. The station
   is your only compass: a correct turn adds a number to the broadcast, a wrong one
-  just goes quiet.
+  adds nothing. Nothing buzzes and nothing turns red — you find out by what never
+  arrives.
 - **Rooms that lie — but not all of them** — most of the maze holds still and can be
   learned. Some stretches can't: a room will move its exit on you a few times before
   it settles for good. The deeper you go, the more of each level you can't trust.

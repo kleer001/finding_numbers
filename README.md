@@ -27,9 +27,10 @@ has the full rundown.
 ### Navigate by ear
 
 There is no map and nothing marks the right door. The station is your only
-compass — a correct turn adds a number to the broadcast, a wrong one just goes
-quiet. Most rooms hold still and can be learned; some stretches move their exit
-on you a few times before settling.
+compass — a correct turn adds a number to the broadcast, a wrong one adds
+nothing. Nothing buzzes and nothing turns red; you find out by what never
+arrives. Most rooms hold still and can be learned; some stretches move their
+exit on you a few times before settling.
 
 </td>
 <td width="66%" valign="top">
