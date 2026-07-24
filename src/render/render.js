@@ -2,7 +2,7 @@
 // the bottom rows — every glyph the same CHAR.FONT size in one phosphor
 // color at one brightness: a character-mode monochrome monitor.
 
-import { GRID, CANVAS, GLYPH, PREFS_BTN, CHAR, SCREEN, WATERFALL, INTRO_MESSAGES, SIGNAL_LOST_MESSAGES } from "../game/config.js";
+import { GRID, CANVAS, GLYPH, PREFS_BTN, CHAR, SCREEN, WATERFALL, INTRO_MESSAGES, SIGNAL_LOST_MESSAGES, WIN_WIPE_MS } from "../game/config.js";
 import { RAMP, SUB, stepWaterfall } from "./waterfall.js";
 import { pickInterval } from "../game/levels.js";
 
@@ -270,6 +270,21 @@ export function renderSpiralWipe(ctx, t, tint, now, oldCanvas, newCanvas, turns 
 // `rgb` tints the static to the current phosphor (amber/green). Snow is
 // quantized into 2x2 blocks at 4 brightness levels — coarse, like the rest
 // of the constrained screen.
+// Which half of the win transition `t` falls in. The spiral runs its full
+// WIN_WIPE_MS, then the screen holds blank for the remainder — arriving in the
+// next level straight off the wipe reads as a glitch rather than a cut, and the
+// beat of nothing is what sells it as one.
+export function winWipePhase(t) {
+  return t < WIN_WIPE_MS ? { spiral: t / WIN_WIPE_MS } : { blank: true };
+}
+
+// The screen with nothing on it. Background, not literal black, so the hold
+// still reads as this screen going empty when the picture is inverted.
+export function renderBlank(ctx, tint) {
+  ctx.fillStyle = tint.bg;
+  ctx.fillRect(0, 0, CANVAS.W, CANVAS.H);
+}
+
 export function renderStatic(ctx, t, rgb) {
   const rm = rgb[0] / 255, gm = rgb[1] / 255, bm = rgb[2] / 255;
   const img = ctx.createImageData(CANVAS.W, CANVAS.H);

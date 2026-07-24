@@ -5,7 +5,7 @@ import { MAX_LEVEL } from "./game/levels.js";
 import { createState, setLevel, tryMove, update, commitWin } from "./game/state.js";
 import { installInput, installTouch, tapZone } from "./game/input.js";
 import { makeJukebox } from "./game/jukebox.js";
-import { render, renderStatic, renderSpiralWipe, renderLostConnection, renderJukebox } from "./render/render.js";
+import { render, renderStatic, renderSpiralWipe, renderBlank, renderLostConnection, renderJukebox, winWipePhase } from "./render/render.js";
 import { renderMenu, menuHit } from "./render/menu.js";
 import { renderTitle, titleHit } from "./render/title.js";
 import { renderBurnIn } from "./render/burnin.js";
@@ -245,7 +245,9 @@ function handleMove(dir) {
   const panel = activePanel();
   if (panel) { rowsNav(panel.rows, panel.holder, dir); return; }
   if (title.open) return; // the splash has no movement, only its buttons
-  if (tryMove(state, dir) === "win") station.victory();
+  const ev = tryMove(state, dir);
+  if (ev === "win") station.victory();
+  else if (ev === "reset") station.gate();
 }
 
 function handleKey(code) {
@@ -379,7 +381,9 @@ function frame(now) {
           commitWin(state);
           render(newLevel, state, prefs.showCount, tint, spectrum, now);
         }
-        renderSpiralWipe(ctx, p, tint, now, oldLevel.canvas, newLevel.canvas);
+        const phase = winWipePhase(tr.t);
+        if (phase.blank) renderBlank(ctx, tint);
+        else renderSpiralWipe(ctx, phase.spiral, tint, now, oldLevel.canvas, newLevel.canvas);
       } else {
         renderStatic(ctx, p, tint.rgb); // ordinary cell crossing
       }

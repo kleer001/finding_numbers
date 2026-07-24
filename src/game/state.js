@@ -2,7 +2,7 @@
 // cell and build a fresh one (see maze/cell.js). Progression tracks the real
 // state (progression.js); cells are just re-dressed scenery.
 
-import { GRID, TRANSITION_MS, WIN_WIPE_MS, STATION_FREQS } from "./config.js";
+import { GRID, TRANSITION_MS, WIN_WIPE_MS, WIN_BLACK_MS, STATION_FREQS } from "./config.js";
 import { levelSpec, MAX_LEVEL } from "./levels.js";
 import { makeCell, buildRoomPlan, doorRole, doorEntryTile, atDoor, isFloor, OPPOSITE } from "../maze/cell.js";
 import { makeRng, subSeed } from "../core/rng.js";
@@ -136,8 +136,9 @@ function nextFromProgress(state, dir) {
 }
 
 function beginTransition(state, next, ev) {
-  // The source-step win gets a longer beat for the spiral wipe; crossings cut fast.
-  const dur = next.reset ? WIN_WIPE_MS : TRANSITION_MS;
+  // The source-step win gets a longer beat for the spiral wipe and the blank
+  // hold that follows it; ordinary crossings cut fast.
+  const dur = next.reset ? WIN_WIPE_MS + WIN_BLACK_MS : TRANSITION_MS;
   state.transition = { t: 0, next, dur, committed: false };
   refresh(state); // audible count updates immediately; the visual catches up
   return ev;

@@ -439,7 +439,10 @@ function scheduleNext() {
 
 // Victory chime: a rising ten-note square-wave arpeggio (C major pentatonic),
 // short blips with a gain fade, kept quiet. Routed direct to master (no QSB).
-const VICTORY_NOTES = [523.25, 587.33, 659.25, 783.99, 880, 1046.5, 1174.66, 1318.51, 1567.98, 1760];
+export const VICTORY_NOTES = [523.25, 587.33, 659.25, 783.99, 880, 1046.5, 1174.66, 1318.51, 1567.98, 1760];
+
+// Stepping over the number gate is the winning climb running the other way.
+export const GATE_NOTES = [...VICTORY_NOTES].reverse();
 
 // Prefs SOUND TEST: resume the context (mobile may have suspended it), then
 // play the winning tones once it is actually running.
@@ -449,10 +452,18 @@ export function testTone() {
 }
 
 export function victory() {
+  arpeggio(VICTORY_NOTES);
+}
+
+export function gate() {
+  arpeggio(GATE_NOTES);
+}
+
+function arpeggio(notes) {
   if (!ctx || !master) return;
   const t0 = ctx.currentTime;
   const gap = 0.09;
-  VICTORY_NOTES.forEach((freq, i) => {
+  notes.forEach((freq, i) => {
     const t = t0 + i * gap;
     const osc = ctx.createOscillator();
     osc.type = "square";

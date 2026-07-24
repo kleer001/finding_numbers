@@ -104,6 +104,7 @@ export const PREFS_BTN = { x: 18 * CHAR.W, y: 17 * CHAR.H, w: 5 * CHAR.W, h: 3 *
 
 export const TRANSITION_MS = 260; // static-cut between cells (<= 300ms)
 export const WIN_WIPE_MS = 2000; // spiral-numbers wipe when stepping the source gate
+export const WIN_BLACK_MS = 350; // blank screen held after the wipe, before the new level
 
 export const LANGUAGES = ["english", "spanish", "italian", "chinese", "japanese", "hindi"];
 
