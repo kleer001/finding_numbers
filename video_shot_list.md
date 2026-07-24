@@ -118,11 +118,20 @@ Assemble in this order: 7 → 1 → 2 → 5 → 3 → 4, then hold on the title 
 URL. Keep it under 45 seconds; the first five seconds decide whether the rest is
 watched.
 
-## Platform variants
+## Post
+
+`./post.sh` cuts everything in `clips/` into `clips/out/`: each clip trimmed to its
+beat with its caption burned in, 9:16 versions, looping GIFs, and the trailer. It is
+re-runnable and overwrites its own output, so a re-shot take just needs another pass.
+
+The trim windows and the trailer's running order live in the tables at the top of
+`post.sh` — retime a clip by editing the numbers there, not by re-recording.
 
 - **Vertical (9:16)** cuts of clips 1, 3 and 4 for short-video feeds. **Pad** the 4:3
   frame rather than cropping — the HUD carries the digit count and the waterfall, and
-  cropping to vertical throws away the part that makes the clip legible.
-- **Looping GIF** from clip 1 or 4 for the itch page and README.
+  cropping to vertical throws away the part that makes the clip legible. The caption
+  moves into the black band below the frame, where it covers nothing.
+- **Looping GIF** from clips 1 and 4 for the itch page and README, held to a few
+  seconds so the file stays light enough to autoplay.
 - **Static frames** for stills: the deepest level reachable via `LEVEL` with `CRT NOISE`
   high makes the most striking screenshot.
