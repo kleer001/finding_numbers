@@ -35,18 +35,40 @@ clip_cut() {
   esac
 }
 
-# The takes were recorded at whatever level the game happened to be running at,
-# and they came out uneven: room-moved runs a dense -9.6 LUFS against the menu
-# take's -16, so cutting from one to the other slams. These trims put every clip
-# on a common ~-16 LUFS bed. Measured per clip with:
-#   ffmpeg -ss IN -t DUR -i clips/NAME.mp4 -af ebur128=peak=true -f null -
-#   name = gain_dB
-clip_gain() {
-  case "$1" in
-    room-moved) echo "-6.5" ;;
-    core-loop)  echo "-2.5" ;;
-    *)          echo "0" ;;
-  esac
+# The takes carry a lot of energy the game's own audio spec doesn't claim to make:
+# station.js builds a 300-3000 Hz band, but the captures came out with subsonic
+# wander (the room take drifts to -0.077 DC) and a boxy ~280 Hz drone holding half
+# of all energy. Neither reads as pitch. What they do is eat headroom and flatten
+# the bed to an 8.5 dB crest factor, so it arrives as one unrelenting slab -- which
+# is what makes the takes tiring rather than atmospheric. This clears both and
+# leaves the voice band, where the station actually lives, alone.
+AUDIO_FIX="highpass=f=250:p=2,highpass=f=250:p=2,\
+equalizer=f=285:w=1.3:width_type=q:g=-4,\
+equalizer=f=3200:w=1.0:width_type=q:g=-2,\
+lowpass=f=4500:p=2"
+
+# Clearing the low end raises crest factor, which pushes the static bursts back up
+# toward full scale -- so cap them. Catches transients only; AAC needs the headroom
+# because its intersample peaks land above what the PCM peak meter reports.
+CEILING="alimiter=limit=-1.5dB:level=disabled"
+
+# Then put every clip on one loudness bed so no cut slams. Measured on the treated
+# audio, since the filter itself changes level. A linear gain, not loudnorm's
+# dynamic ride: the takes are short on dynamics already and compression costs more.
+TARGET_LUFS=-16
+SILENT_FLOOR=-35   # below this a clip has no content to normalise, only a noise
+                   # floor to amplify -- the title splash is silent because
+                   # WebAudio cannot start before the player's first input.
+
+# in: clip_name start_seconds duration_seconds -> gain in dB to reach TARGET_LUFS
+norm_gain() {
+  local measured
+  measured=$(ffmpeg -nostdin -hide_banner -nostats -ss "$2" -t "$3" -i "$IN/$1.mp4" \
+    -af "$AUDIO_FIX,ebur128=framelog=quiet" -f null - 2>&1 \
+    | grep -m1 -E "^ +I:" | awk '{print $2}')
+  [ -n "$measured" ] || { echo "could not measure loudness of $1" >&2; exit 1; }
+  awk -v m="$measured" -v t="$TARGET_LUFS" -v f="$SILENT_FLOOR" \
+    'BEGIN { printf "%.2f", (m < f) ? 0 : t - m }'
 }
 
 CLIPS=(title core-loop wrong-turn room-moved pulse crt-decay jukebox)
@@ -86,9 +108,10 @@ for c in "${CLIPS[@]}"; do
   cap="${spec#*|}"
   vf="null"
   [ -n "$cap" ] && vf="$(caption_4x3 "$cap" "$c")"
+  g="$(norm_gain "$c" "$ss" "$dur")"
   ffmpeg -v error -y -ss "$ss" -t "$dur" -i "$IN/$c.mp4" -vf "$vf" \
-    -af "volume=$(clip_gain "$c")dB" "${encode[@]}" "$OUT/$c.mp4"
-  printf "   %-12s %ss\n" "$c.mp4" "$dur"
+    -af "$AUDIO_FIX,volume=${g}dB,$CEILING" "${encode[@]}" "$OUT/$c.mp4"
+  printf "   %-12s %ss  %+gdB\n" "$c.mp4" "$dur" "$g"
 done
 
 echo "== 9:16"
@@ -101,7 +124,7 @@ for c in "${VERTICAL[@]}"; do
   vf="scale=1080:-2,pad=1080:1920:0:(1920-ih)/2:black"
   [ -n "$cap" ] && vf="$vf,$(caption_9x16 "$cap" "$c-9x16")"
   ffmpeg -v error -y -ss "$ss" -t "$dur" -i "$IN/$c.mp4" -vf "$vf" \
-    -af "volume=$(clip_gain "$c")dB" "${encode[@]}" "$OUT/$c-9x16.mp4"
+    -af "$AUDIO_FIX,volume=$(norm_gain "$c" "$ss" "$dur")dB,$CEILING" "${encode[@]}" "$OUT/$c-9x16.mp4"
   printf "   %-12s %ss\n" "$c-9x16.mp4" "$dur"
 done
 
@@ -151,7 +174,7 @@ for row in "${TRAILER[@]}"; do
   [ -n "$cap" ] && vf="$(caption_4x3 "$cap" "t$i")"
   seg="$(printf "%s/%02d-%s.mp4" "$WORK" "$i" "$src")"
   ffmpeg -v error -y -ss "$ss" -t "$dur" -i "$IN/$src.mp4" -vf "$vf" \
-    -af "volume=$(clip_gain "$src")dB" "${encode[@]}" "$seg"
+    -af "$AUDIO_FIX,volume=$(norm_gain "$src" "$ss" "$dur")dB,$CEILING" "${encode[@]}" "$seg"
   SEGS+=("$seg")
   i=$((i + 1))
 done
