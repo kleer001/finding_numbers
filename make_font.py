@@ -200,11 +200,8 @@ BLOCKS = {
     0xE001: ("wallAshlar", ashlar),
     0xE002: ("wallPlate", plate),
     0xE003: ("wallGrate", grate),
-    # The box-drawing diagonals are real characters, and drawn corner to corner
-    # they are also the pair 10 PRINT flips between (PETSCII 205/206) — so the
-    # groundwork for that is here should the maze ever want it.
-    0x2571: ("uni2571", rising),   # BOX DRAWINGS LIGHT DIAGONAL LOWER LEFT TO UPPER RIGHT
-    0x2572: ("uni2572", falling),  # BOX DRAWINGS LIGHT DIAGONAL UPPER LEFT TO LOWER RIGHT
+    # Only the cross is encoded. Its two halves are drawn separately because that
+    # is how a diagonal has to be built, not because either is a wall on its own.
     0x2573: ("uni2573", crossed),  # BOX DRAWINGS LIGHT DIAGONAL CROSS
 }
 
