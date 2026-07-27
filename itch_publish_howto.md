@@ -90,6 +90,18 @@ page, below *Visibility & access* — widen the window if you'd rather see it be
 - Screenshots only render on the public page if the theme puts them there: **View page →
   Edit theme → Layout → Sidebar**. Any other layout hides them.
 
+### 6b. Trailer and loops
+
+`./post.sh` builds these into `clips/out/` (gitignored -- they are rebuilt, not stored).
+
+- **Trailer**: `trailer.mp4`, ~44s. itch takes a **link**, not a file: the trailer field
+  accepts YouTube, Vimeo or SketchFab URLs, so it has to be hosted there first. The field
+  is under *Edit game -> Details*. A trailer also lights up the "Watch trailer" button on
+  grid listings.
+- **Looping GIFs**: `core-loop.gif`, `pulse.gif` -- small enough to autoplay, and they can
+  go straight into the page body or a devlog, which takes image uploads directly.
+- **Vertical cuts**: `*-9x16.mp4` are for short-video feeds off-site, not for itch.
+
 ### 7. Theme — banner, background, colors
 
 Save the page first, then **View page → Edit theme** (the theme editor lives on the public
@@ -167,5 +179,7 @@ butler push dist/finding_numbers.zip <your-itch-username>/finding-numbers:html5
 - **Audio needs a gesture.** The station stays silent until the first tap/keypress — this
   is the browser's autoplay policy, not a bug. The "click to play" embed option makes
   that expectation obvious to players.
-- **The VT323 font loads from Google Fonts** over the network. It renders online (itch is
-  online); a monospace fallback covers any hiccup.
+- **The font ships with the game** (`assets/fonts/station-grid.woff2`, built by
+  `make_font.py`). Nothing is fetched from a CDN, so the walls draw correctly offline and
+  on a first load with a cold network. It carries block and masonry glyphs no stock face
+  has -- a fallback would draw the walls in a second typeface, or not at all.

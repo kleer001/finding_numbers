@@ -35,7 +35,7 @@ exit on you a few times before settling.
 </td>
 <td width="66%" valign="top">
 
-<img src="docs/img/gameplay.png" width="600" alt="An amber character-mode screen: a maze of # walls with an @ player, a live spectrogram, and a station frequency on the dial">
+<img src="docs/img/gameplay.png" width="600" alt="An amber character-mode screen: a brick-walled maze with an @ player, the digits heard so far, and a live spectrogram in the HUD">
 
 </td>
 </tr>
@@ -67,6 +67,11 @@ tuned to frequencies that really broadcast into the dark.
 One font, one phosphor color, one glyph grid — a text-mode monitor bent through a
 WebGL CRT filter, the signal scrolling as a live spectrogram in the HUD. Dial the
 decay up until the picture barely holds.
+
+Every level wears its own walls: brick, dressed stone, riveted plate, three
+scales of checker, static, shear, cage. The game ships the font that draws them
+(`make_font.py` builds it), because no stock face has the glyphs and a fallback
+would put a second typeface in the middle of the grid.
 
 </td>
 <td width="66%" valign="top">
@@ -140,6 +145,8 @@ step**, so any static file server works too.
 ## Built with
 
 - **No build step** — vanilla ES modules, HTML, and CSS.
+- **Its own font** — VT323 plus block and masonry glyphs drawn to the character
+  cell, self-hosted, so a wall tiles seamlessly and never falls back.
 - **WebAudio** for the station; a seeded mulberry32 RNG generates the maze, so
   every run is reproducible from its seed.
 - Tests: `node --test` for the game logic (`npm test`).

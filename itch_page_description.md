@@ -9,7 +9,9 @@ maps cleanly onto what it allows.
 
 - **Cover image**: `docs/img/cover.png` (630×500) → *Edit game → Cover image*.
 - **Screenshots**: add `docs/img/gameplay.png`, `jukebox.png`, `signal-lost.png`,
-  `light-mode.png` under *Screenshots*.
+  `light-mode.png`, `preferences.png` under *Screenshots*.
+- **Trailer**: `clips/out/trailer.mp4` (~44s, built by `./post.sh`). itch takes a hosted
+  link rather than a file -- see `itch_publish_howto.md` section 6b.
 - **Tagline** (the one-liner under the title): `Navigate a maze by ear — a number station bleeding through the static, and rooms that don't always stay where you left them.`
 
 ---
@@ -42,6 +44,9 @@ reach the source of the transmission — it will pull you somewhere new.
 - **A character-mode CRT** — one font, one phosphor color, one glyph grid, bent through
   a WebGL CRT filter, with the signal scrolling as a live spectrogram. Dial the decay up
   until the picture barely holds.
+- **Walls that tell you how deep you are** — every level wears its own: brick near the
+  surface, then dressed stone, riveted plate, checkers that coarsen as they go, static,
+  shear, and finally a cage.
 - **32 levels of decay** — six languages, more doors, and walls that lose their nerve
   the deeper you go. Thirty-two levels down, the signal can barely hold itself together.
 
