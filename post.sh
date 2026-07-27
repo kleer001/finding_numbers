@@ -35,6 +35,20 @@ clip_cut() {
   esac
 }
 
+# The takes were recorded at whatever level the game happened to be running at,
+# and they came out uneven: room-moved runs a dense -9.6 LUFS against the menu
+# take's -16, so cutting from one to the other slams. These trims put every clip
+# on a common ~-16 LUFS bed. Measured per clip with:
+#   ffmpeg -ss IN -t DUR -i clips/NAME.mp4 -af ebur128=peak=true -f null -
+#   name = gain_dB
+clip_gain() {
+  case "$1" in
+    room-moved) echo "-6.5" ;;
+    core-loop)  echo "-2.5" ;;
+    *)          echo "0" ;;
+  esac
+}
+
 CLIPS=(title core-loop wrong-turn room-moved pulse crt-decay jukebox)
 VERTICAL=(core-loop room-moved pulse)   # the shot list's short-video cuts
 GIFS=(core-loop pulse)
@@ -72,7 +86,8 @@ for c in "${CLIPS[@]}"; do
   cap="${spec#*|}"
   vf="null"
   [ -n "$cap" ] && vf="$(caption_4x3 "$cap" "$c")"
-  ffmpeg -v error -y -ss "$ss" -t "$dur" -i "$IN/$c.mp4" -vf "$vf" "${encode[@]}" "$OUT/$c.mp4"
+  ffmpeg -v error -y -ss "$ss" -t "$dur" -i "$IN/$c.mp4" -vf "$vf" \
+    -af "volume=$(clip_gain "$c")dB" "${encode[@]}" "$OUT/$c.mp4"
   printf "   %-12s %ss\n" "$c.mp4" "$dur"
 done
 
@@ -85,7 +100,8 @@ for c in "${VERTICAL[@]}"; do
   cap="${spec#*|}"
   vf="scale=1080:-2,pad=1080:1920:0:(1920-ih)/2:black"
   [ -n "$cap" ] && vf="$vf,$(caption_9x16 "$cap" "$c-9x16")"
-  ffmpeg -v error -y -ss "$ss" -t "$dur" -i "$IN/$c.mp4" -vf "$vf" "${encode[@]}" "$OUT/$c-9x16.mp4"
+  ffmpeg -v error -y -ss "$ss" -t "$dur" -i "$IN/$c.mp4" -vf "$vf" \
+    -af "volume=$(clip_gain "$c")dB" "${encode[@]}" "$OUT/$c-9x16.mp4"
   printf "   %-12s %ss\n" "$c-9x16.mp4" "$dur"
 done
 
@@ -134,7 +150,8 @@ for row in "${TRAILER[@]}"; do
   vf="null"
   [ -n "$cap" ] && vf="$(caption_4x3 "$cap" "t$i")"
   seg="$(printf "%s/%02d-%s.mp4" "$WORK" "$i" "$src")"
-  ffmpeg -v error -y -ss "$ss" -t "$dur" -i "$IN/$src.mp4" -vf "$vf" "${encode[@]}" "$seg"
+  ffmpeg -v error -y -ss "$ss" -t "$dur" -i "$IN/$src.mp4" -vf "$vf" \
+    -af "volume=$(clip_gain "$src")dB" "${encode[@]}" "$seg"
   SEGS+=("$seg")
   i=$((i + 1))
 done
