@@ -97,6 +97,51 @@ def checker(sub):
     return stipple_at(sub, lambda r, c: (r + c) % 2 == 0)
 
 
+# Masonry is drawn as the joints between blocks, not as filled blocks: a wall of
+# line-work reads unmistakably as built structure while costing a fifth of the ink
+# a filled one would, which is what keeps the opening levels dim.
+STROKE = 70  # ~2px at the game's 28px, in font units
+
+
+def hjoint(pen, yf, x0f=0.0, x1f=1.0):
+    """A mortar line across the cell. Drawn just inside the edge it sits on, so
+    the neighbouring cell's own line abuts it instead of doubling its width."""
+    y = Y0 + (Y1 - Y0) * yf
+    rect(pen, X0 + (X1 - X0) * x0f, y, X0 + (X1 - X0) * x1f, y + STROKE)
+
+
+def vjoint(pen, xf, y0f=0.0, y1f=1.0):
+    x = X0 + (X1 - X0) * xf
+    rect(pen, x, Y0 + (Y1 - Y0) * y0f, x + STROKE, Y0 + (Y1 - Y0) * y1f)
+
+
+def brick(pen):
+    """Running bond: two courses, the upper one offset half a block."""
+    hjoint(pen, 0.0)
+    hjoint(pen, 0.5)
+    vjoint(pen, 0.0, 0.0, 0.5)
+    vjoint(pen, 0.5, 0.5, 1.0)
+
+
+def ashlar(pen):
+    """One large dressed block per cell."""
+    hjoint(pen, 0.0)
+    vjoint(pen, 0.0, 0.0, 1.0)
+
+
+def plate(pen):
+    """A riveted panel: an inset border with a rivet at each corner."""
+    i, o = 0.08, 0.92
+    hjoint(pen, i, i, o)
+    hjoint(pen, o, i, o)
+    vjoint(pen, i, i, o)
+    vjoint(pen, o, i, o)
+    r = STROKE * 0.9
+    for fx, fy in ((0.26, 0.24), (0.74, 0.24), (0.26, 0.72), (0.74, 0.72)):
+        x, y = X0 + (X1 - X0) * fx, Y0 + (Y1 - Y0) * fy
+        rect(pen, x, y, x + r, y + r)
+
+
 # Densities chosen so the shades read as even steps: a quarter, a half, three
 # quarters, then solid. The checkers are all half ink and differ only in scale,
 # which is what lets three levels in a row share a brightness and still look like
@@ -112,6 +157,13 @@ BLOCKS = {
     0x2590: ("uni2590", half(0.5, 0, 1, 1)),
     0x259A: ("uni259A", checker(2)),   # QUADRANT UPPER LEFT AND LOWER RIGHT
     0x1FB95: ("u1FB95", checker(4)),   # CHECKER BOARD FILL
+    # Unicode has no character for a brick wall or a riveted panel, so the
+    # masonry lives in the private-use area. These are ours; nothing else will
+    # ever claim these codepoints, and they stay in the BMP where the inherited
+    # format 4 subtables can carry them.
+    0xE000: ("wallBrick", brick),
+    0xE001: ("wallAshlar", ashlar),
+    0xE002: ("wallPlate", plate),
 }
 
 
@@ -170,7 +222,11 @@ def main():
     print(f"  family      : {FAMILY}")
     print(f"  cell        : {CELL_W_PX:.2f} x {CELL_H_PX:.2f} px at {FONT_PX}px")
     print(f"  block ink   : x {X0:.0f}..{X1:.0f}   y {Y0:.0f}..{Y1:.0f} (font units)")
-    print(f"  added       : {' '.join(chr(c) for c in BLOCKS)}")
+    # Private-use codepoints have no glyph in the terminal's own font, so name
+    # them rather than printing a blank.
+    added = (f"U+{c:04X} {name}" if 0xE000 <= c <= 0xF8FF else f"U+{c:04X} {chr(c)}"
+             for c, (name, _) in BLOCKS.items())
+    print("  added       : " + ", ".join(added))
 
 
 if __name__ == "__main__":

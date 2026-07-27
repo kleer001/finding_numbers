@@ -74,29 +74,31 @@ const DRIFT = { half: 2 }; // abandoned halls
 const INTERFERENCE = { half: 0 }; // claustrophobic
 const DEEP_STATION = { half: [0, 1, 2] };
 
-// One wall surface per level. A zone's three levels used to share a glyph, so
-// stepping up a level looked like nowhere new — level 1 to 2 read as the same
-// room with a longer number. The ramp runs clean to corroded: a crisp ASCII grid
-// near the surface, then the letterforms and currency marks a rotting terminal
-// throws up. Neighbours are picked to differ in shape, not just in density, so
-// the change registers at a glance.
+// The game's own wall graphics, drawn in make_font.py. They live in the
+// private-use area because Unicode has no character for a brick wall, and they
+// exist because a glyph like '#' is a letterform: it inks a third of the cell and
+// leaves black around itself, so a wall of them reads as scattered marks instead
+// of a surface. These are drawn to the cell, joints and all, and tile into one
+// unbroken wall -- as line-work, which costs a fifth of the ink a filled block
+// would and so keeps the opening levels dim.
+const BRICK = "\uE000"; // running-bond masonry
+const ASHLAR = "\uE001"; // large dressed blocks
+const PLATE = "\uE002"; // riveted steel panel
+
+// One wall surface per level: a zone's three levels used to share a glyph, so
+// stepping up a level looked like nowhere new. Neighbours differ in kind, not
+// just in weight, so the change registers at a glance -- CLEAR SIGNAL is built
+// structure going brick to stone to steel, DRIFT is one checkerboard at three
+// scales, INTERFERENCE the faintest shade and the letterforms.
 //
-// The shades carry the middle of the ramp because they are the only glyphs whose
-// difference is pure density — the eye reads ░▒▓█ as one wall getting heavier,
-// where two letterforms just read as two different letters. They exist because
-// the game ships its own font (make_font.py); stock VT323 has no block glyphs at
-// all, which is why these walls used to come out in a fallback face.
-// Ordered against the zones' corridor widths, not just by weight. How bright a
+// Ordered against the zones' corridor widths, not by weight alone. How bright a
 // level burns is its glyph's density times how much wall is on screen, and the
-// two run opposite ways: DRIFT's wide corridors leave little wall on screen,
-// INTERFERENCE's narrow ones leave it nearly all wall and need the faintest
-// shade to stay looked-at.
-//
-// DRIFT's three are one checkerboard at three scales — half ink whatever the
-// scale, so the zone holds a steady brightness while the wall visibly coarsens
-// under you. A denser shade there just burned: past about half ink the screen
-// goes to a sheet of amber and stops reading as a maze at all.
-const WALL_RAMP = ["#", "%", "8", "▒", "🮕", "▚", "░", "Ø", "Æ"];
+// two run opposite ways: DRIFT's wide corridors leave little wall, so they carry
+// the checkers, while INTERFERENCE's narrow ones leave the screen nearly all wall
+// and need the faintest shade to stay looked-at. Past about half ink a level
+// stops reading as a maze and becomes a sheet of amber with a slot in it.
+const WALL_RAMP = [BRICK, ASHLAR, PLATE, "▒", "🮕", "▚", "░", "Ø", "Æ"];
+
 const DEEPEST_MIX = 6; // most glyphs one level's walls will draw from
 
 // Past the authored zones the surface stops holding: each level mixes a wider
