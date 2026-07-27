@@ -27,7 +27,7 @@ clip_cut() {
     title)      echo "2.0 6.0|" ;;
     core-loop)  echo "3.3 15.0|no map. the station is your compass." ;;
     wrong-turn) echo "11.9 13.6|a correct turn adds a number. a wrong one adds nothing." ;;
-    room-moved) echo "16.3 20.0|you memorized this room. it didn't stay memorized." ;;
+    room-moved) echo "7.0 10.0|you memorized this room. it didn't stay memorized." ;;
     pulse)      echo "9.6 6.0|" ;;
     crt-decay)  echo "4.3 18.2|dial in the decay." ;;
     jukebox)    echo "3.0 30.0|" ;;
@@ -110,17 +110,19 @@ echo "== trailer"
 # arrive, which needs more setup than a trailer segment can give it and reads as
 # nothing happening without one.
 #
-# The room appears twice, cut straight from how it looked to how it came back and
-# splitting its caption across the two. Played whole, the walk out and back eats
-# twenty seconds of a forty-second trailer; cut together, the two states of one
-# room are the entire point standing side by side.
+# Title and core loop run at their full clip length. The title splash is the
+# game's tone in six seconds of amber and hum, and the core loop needs its whole
+# run for the digit count to visibly climb — cut short, both read as filler.
+#
+# The room is one continuous take, not two states cut together: the walk through
+# it and the static that swallows it land in the same ten seconds, so the whole
+# caption sits over the whole beat.
 #   source in duration caption
 TRAILER=(
-  "title|2.0|3.0|"
-  "core-loop|3.3|6.0|no map. the station is your compass."
+  "title|2.0|6.0|"
+  "core-loop|3.3|15.0|no map. the station is your compass."
   "crt-decay|9.5|8.0|dial in the decay."
-  "room-moved|16.3|4.5|you memorized this room."
-  "room-moved|31.2|5.5|it didn't stay memorized."
+  "room-moved|7.0|10.0|you memorized this room. it didn't stay memorized."
   "pulse|9.6|6.0|"
 )
 
