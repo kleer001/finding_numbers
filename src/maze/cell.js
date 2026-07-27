@@ -135,6 +135,13 @@ export function strayRoomPlan(rng, backDir, forwardDoors) {
     back: backDir,
     forwards: shuffle(ALL_DIRS.filter((d) => d !== backDir), rng).slice(0, forwardDoors),
     correctDir: null,
+    // The way out is the room's own door toward the room it hangs off, not
+    // whichever side you last walked in through. A stray room keeps one door set
+    // across visits, so the player navigates it by memory — and memory says the
+    // door you originally entered by is the way back. Leave backDir on the entry
+    // side and that door reads as a fresh wrong turn instead, driving the stray
+    // count up until the readout goes blank with no way to walk it back.
+    backIsFixed: true,
   };
 }
 
@@ -186,20 +193,21 @@ export function makeCell(entryDir, kind, rng, frontier, forwardDoors = 2, theme 
 
   // interior: back door + forward choices (no dead-ends). Frontier decision
   // rooms take their forwards + correct door from the level plan (honesty-
-  // bounded, precomputed); off-frontier stray cells stay faked/random.
+  // bounded, precomputed); off-frontier stray rooms take a route-derived one.
   const forwards = plan
     ? plan.forwards
     : shuffle(ALL_DIRS.filter((d) => d !== entryDir), rng).slice(0, forwardDoors);
   const doors = { [entryDir]: true };
   // A planned room shows its full fixed door set (toward-start + forwards) no
   // matter which side you re-enter from, so an honest room looks identical every
-  // visit. `backDir` is still where you came in, so "walk back the way you came"
-  // always undoes a stray.
+  // visit. On a golden-path room `backDir` stays where you came in, so "walk back
+  // the way you came" always undoes a stray; a stray room pins it to its own way
+  // out instead (see strayRoomPlan).
   if (plan) doors[plan.back] = true;
   for (const f of forwards) doors[f] = true;
   const cell = dress(buildCell(doors, "interior", half));
   cell.entryDir = entryDir;
-  cell.backDir = entryDir;
+  cell.backDir = plan?.backIsFixed ? plan.back : entryDir;
   cell.correctDir = plan ? plan.correctDir : frontier ? rng.pick(forwards) : null;
   return cell;
 }

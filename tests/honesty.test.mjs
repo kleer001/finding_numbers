@@ -210,3 +210,45 @@ test("level 1 is fully honest: every golden-path room has a zero change budget",
     assert.equal(s.roomPlan[d].correctSeq.length, 1);
   }
 });
+
+// Rooms keep one door set across visits, so the player navigates them by memory.
+// That only works if the door memory calls the way out actually is the way out:
+// with backDir left on the entry side, the door you originally came in through
+// read as a fresh wrong turn, so trying to walk back drove the stray count up
+// until the digits readout blanked and there was no way to walk it down again.
+test("the door you came in through is the way back out", () => {
+  let checked = 0;
+  for (let seed = 1; seed <= 200; seed++) {
+    const s = createState(seed, 1);
+    if (walk(s, s.cell.correctDir) !== "advance") continue;
+
+    const wrong = strayDoor(s.cell);
+    if (!wrong || walk(s, wrong) !== "stray") continue;
+    const cameInBy = s.cell.backDir; // the door facing the room we just left
+
+    const onward = deeperDoor(s.cell);
+    if (!onward || walk(s, onward) !== "stray") continue; // deeper
+    if (walk(s, s.cell.backDir) !== "return") continue;   // back to the first room
+
+    assert.equal(s.cell.backDir, cameInBy, `seed ${seed}: the way out moved`);
+    assert.equal(walk(s, cameInBy), "return", `seed ${seed}: walking back strayed instead`);
+    assert.equal(s.progress.stray, 0, `seed ${seed}: did not land back on the path`);
+    assert.ok(s.audibleDigits.length > 0, `seed ${seed}: readout still blank`);
+    checked++;
+  }
+  assert.ok(checked > 100, `only ${checked} seeds exercised the path`);
+});
+
+test("a golden-path room's way back keeps pointing at the level start", () => {
+  for (let seed = 1; seed <= 200; seed++) {
+    const s = createState(seed, 1);
+    walk(s, s.cell.correctDir);
+    const towardStart = s.cell.backDir;
+
+    const wrong = strayDoor(s.cell);
+    if (!wrong || walk(s, wrong) !== "stray") continue;
+    if (walk(s, s.cell.backDir) !== "return") continue; // unwind onto the path
+
+    assert.equal(s.cell.backDir, towardStart, `seed ${seed}: back door swung to the stray room`);
+  }
+});

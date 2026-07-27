@@ -102,6 +102,7 @@ function resolvePlan(state, entryDir, kind, frontier) {
     back: room.back,
     forwards: room.forwards,
     correctDir: room.correctSeq[Math.min(visited, room.budget)],
+    backIsFixed: true,
   };
 }
 
