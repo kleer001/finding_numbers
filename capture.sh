@@ -28,6 +28,17 @@ HERE="$(cd "$(dirname "$0")" && pwd)"
 RECORDER="$HERE/../utilities/window_recorder.sh"
 [ -x "$RECORDER" ] || { echo "recorder not found: $RECORDER" >&2; exit 1; }
 
+# The page a clip records. Most are scripted playthroughs driven by src/demo.js;
+# room-moved is a staged shot on its own page, because the game will not perform
+# that beat to camera -- see the comment at the top of promo-room-moved.html. It
+# takes the same go-file handshake, so it records like all the others.
+clip_page() {
+  case "$1" in
+    room-moved) echo "promo-room-moved.html" ;;
+    *)          echo "" ;;
+  esac
+}
+
 # Recording length per clip: the shot list's target plus handle, so there is
 # something to trim to on both ends.
 clip_seconds() {
@@ -35,7 +46,7 @@ clip_seconds() {
     title)      echo 10 ;;
     core-loop)  echo 20 ;;
     wrong-turn) echo 28 ;;
-    room-moved) echo 38 ;;
+    room-moved) echo 8 ;;
     pulse)      echo 22 ;;
     crt-decay)  echo 24 ;;
     jukebox)    echo 35 ;;
@@ -63,7 +74,12 @@ done
 QUERY=""
 if [ -n "$CLIP" ]; then
   [ -z "$DURATION" ] && DURATION="$(clip_seconds "$CLIP")"
-  QUERY="?demo=$CLIP&go=/$GO_FILE"
+  PAGE="$(clip_page "$CLIP")"
+  if [ -n "$PAGE" ]; then
+    QUERY="$PAGE?go=/$GO_FILE" # staged page: no demo driver to hand it to
+  else
+    QUERY="?demo=$CLIP&go=/$GO_FILE"
+  fi
   [ -n "$SEED" ] && QUERY="$QUERY&seed=$SEED"
   START_NOW=1
 elif [ -n "$SEED" ]; then

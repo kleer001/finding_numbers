@@ -27,7 +27,7 @@ clip_cut() {
     title)      echo "2.0 6.0|" ;;
     core-loop)  echo "3.3 15.0|no map. the station is your compass." ;;
     wrong-turn) echo "11.9 13.6|a correct turn adds a number. a wrong one adds nothing." ;;
-    room-moved) echo "7.0 10.0|you memorized this room. it didn't stay memorized." ;;
+    room-moved) echo "1.7 5.4|you memorized this room. it didn't stay memorized." ;;
     pulse)      echo "9.6 6.0|" ;;
     crt-decay)  echo "4.3 18.2|dial in the decay." ;;
     jukebox)    echo "3.0 30.0|" ;;
@@ -161,7 +161,7 @@ TRAILER=(
   "title|2.0|6.0|"
   "core-loop|3.3|15.0|no map. the station is your compass."
   "crt-decay|9.5|8.0|dial in the decay."
-  "room-moved|7.0|10.0|you memorized this room. it didn't stay memorized."
+  "room-moved|1.7|5.4|you memorized this room. it didn't stay memorized."
   "pulse|9.6|6.0|"
 )
 

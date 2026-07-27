@@ -113,32 +113,6 @@ async function travelTo(api, depth, beat = BEAT) {
   throw new Error(`never reached the decision room at depth ${depth}`);
 }
 
-// Load the level whose first room-that-moves sits shallowest, and return that
-// room's depth. Which depths are unstable falls out of the level's honesty
-// curve rather than its maze roll, so this survives the reload that loading the
-// winner costs — checked rather than assumed, since a take that walks to the
-// wrong room proves nothing.
-function seekUnstableRoom(api, levels) {
-  const unstableDepth = () => api.state.roomPlan.findIndex((room) => room && room.budget >= 1);
-  let best = null;
-  for (const level of levels) {
-    api.setLevel(level);
-    const depth = unstableDepth();
-    if (depth > 0 && (!best || depth < best.depth)) best = { level, depth };
-  }
-  if (!best) throw new Error(`no unstable room on levels ${levels.join(",")}`);
-  api.setLevel(best.level);
-  if (unstableDepth() !== best.depth) {
-    throw new Error(`level ${best.level} reloaded with its unstable room elsewhere`);
-  }
-  return best.depth;
-}
-
-// What a room looks like and where it leads — the two things compared across a
-// revisit. The deep-station zone picks its wall glyph and corridor width per
-// cell, so a rebuilt room comes back wearing a different face.
-const roomLook = (cell) => ({ wall: cell.wallGlyph, half: cell.half, correct: cell.correctDir });
-
 // --- the clips --------------------------------------------------------------
 
 const CLIPS = {
@@ -169,36 +143,8 @@ const CLIPS = {
     await advance(api, 1);
   },
 
-  // 3. The room that moved: a room, the room past it, then straight back to the
-  // first one — which comes back changed.
-  //
-  // Staged in the deep station, because that is the only zone where a revisit
-  // is visible. A room's door set is fixed everywhere — the way back plus every
-  // forward choice — so which door is correct can move without a single pixel
-  // moving with it. Down here the zone also picks a wall glyph and corridor
-  // width per cell, so the rebuilt room wears a different face, and the change
-  // you can see arrives with the change you can't.
-  "room-moved": async (api) => {
-    api.prefs.showCount = true;
-    const depth = seekUnstableRoom(api, [10, 11, 12]);
-    await begin(api);
-    await travelTo(api, depth, 400);
-    await wait(2600); // the room, as it first looks
-    const first = roomLook(api.state.cell);
-
-    await travelTo(api, depth + 1, 400); // on into the next room
-    await wait(2600);
-
-    await backOut(api); // and straight back to the first one
-    const again = roomLook(api.state.cell);
-    if (again.wall === first.wall && again.half === first.half) {
-      throw new Error("the room came back wearing the same face — nothing to see");
-    }
-    if (again.correct === first.correct) {
-      throw new Error(`the room's exit did not move (still ${first.correct})`);
-    }
-    await wait(4000); // hold on it: same room, different room
-  },
+  // 3 (the room that moved) is not here: it is a staged shot on its own page,
+  // promo-room-moved.html, which explains why.
 
   // 4. The pulse: the full golden path to the source, then the step onto the
   // glyph that spirals into the next level.

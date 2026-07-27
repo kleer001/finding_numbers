@@ -44,7 +44,7 @@ function loadSave() {
     crt: typeof s.crt === "boolean" ? s.crt : true,
     crtNoise: Number.isInteger(s.crtNoise) && s.crtNoise >= 0 && s.crtNoise <= DIAL_MAX ? s.crtNoise : 0,
     burnIn: typeof s.burnIn === "boolean" ? s.burnIn : false,
-    showCount: typeof s.showCount === "boolean" ? s.showCount : false,
+    showCount: typeof s.showCount === "boolean" ? s.showCount : true,
     tint: s.tint === "green" ? "green" : "amber",
     dark: typeof s.dark === "boolean" ? s.dark : true,
     jbLang: [...LANGUAGES, "babel"].includes(s.jbLang) ? s.jbLang : "english",

@@ -45,7 +45,7 @@ gives an editor room to find the loop point.
 |---|---|---|---|---|
 | 1 | Core loop | `core-loop` | 12–15s | itch GIF, `promo.html` share card, social — the one that sells it |
 | 2 | The wrong-turn tell | `wrong-turn` | 12–18s | Explains the mechanic; the "oh, I get it" post |
-| 3 | The room that moved | `room-moved` | ~20s | The horror beat |
+| 3 | The room that moved | `room-moved` | ~5s | The horror beat - staged, see below |
 | 4 | The pulse | `pulse` | 6–10s | Seamless loop; strongest muted performer |
 | 5 | CRT decay | `crt-decay` | ~18s | The aesthetic pillar |
 | 6 | Jukebox | `jukebox` | 20–30s | Ambient audience; the clip that rewards sound-on |
@@ -79,19 +79,26 @@ needs more setup than a trailer segment can give it.
 
 ### 3. The room that moved
 
-A room, the room past it, then straight back to the first one — which comes back
-changed.
+Cross a room that is a bare corridor, step into the room past it, turn around,
+walk back - and the corridor you crossed is now a crossroads. A "-", then a "7",
+then a "+".
 
-**Staged in the deep station, because that is the only zone where a revisit is
-visible.** A room's door set is fixed everywhere — the way back plus every forward
-choice — so which door is correct can move without a single pixel moving with it.
-Down in the deep station the zone also picks a wall glyph and corridor width per
-cell, so the rebuilt room wears a different face, and the change you can see arrives
-with the change you can't. Anywhere shallower, this clip has nothing to show.
+**This one is staged**, on its own page (`promo-room-moved.html`) rather than
+driven through `src/demo.js`. The game will not perform the beat to camera. A
+room's openings never move, so the only thing a real revisit can change is the
+corridor width, and only in the deep station - and most rolls change the wall
+texture at the same time, at which point the room stops reading as the same room
+and the shot says nothing. A room that is recognisable has not visibly changed; a
+room that has visibly changed is not recognisable.
 
-The take asserts both before it holds on the payoff: that the room came back looking
-different, and that its exit really moved. Either one failing means there is no clip,
-so it says so rather than banking footage of nothing happening.
+What staging buys is legibility. What it costs is literal accuracy: the room
+gains doors, which the game does not do. Everything drawing it is the game's own
+- `buildCell` for the geometry, `render()` for the frame, `renderStatic` for the
+cut, the shipped font, the CRT filter - so every shape on screen is a shape the
+game builds. The licence is the transition between them.
+
+`capture.sh room-moved` records it like any other clip; the page takes the same
+go-file handshake.
 
 - **Caption:** "you memorized this room. it didn't stay memorized."
 - Keep the claim bounded — most rooms hold still, and that is what makes the ones

@@ -1,0 +1,146 @@
+<!doctype html>
+<html lang="en">
+  <head>
+    <meta charset="utf-8" />
+    <meta name="color-scheme" content="dark" />
+    <title>finding_numbers — room-moved (staged)</title>
+    <link rel="preload" href="assets/fonts/station-grid.woff2" as="font" type="font/woff2" crossorigin />
+    <link rel="stylesheet" href="styles.css" />
+  </head>
+  <body>
+    <main id="stage"><canvas id="game" width="800" height="600"></canvas></main>
+
+    <!--
+      A staged shot of the room-moved beat, not a recording of a playthrough.
+
+      The beat: cross a room that is a bare corridor, step into the room past it,
+      turn around, walk back — and the corridor you crossed is now a crossroads.
+
+      It is staged because the game will not reliably perform it to camera. A
+      room's openings never move, so the only thing a real revisit can change is
+      the corridor width, and only in the deep station; most rolls change the wall
+      texture at the same time, at which point the room stops reading as the same
+      room and the shot says nothing. Three attempts at catching a good roll cost
+      more than authoring it.
+
+      What that buys is legibility, and what it costs is literal accuracy: this
+      room gains doors, which the game does not do. Everything drawing it is the
+      game's own — buildCell for the geometry, render() for the frame,
+      renderStatic for the cut, the shipped font, the CRT filter — so the shapes
+      are all shapes the game builds; it is the transition between them that is
+      the licence.
+
+      Recorded like any other clip, then trimmed by post.sh.
+    -->
+    <script type="module">
+      import { CANVAS, CHAR, GRID, TINTS, PALETTE, CRT_CONFIG } from "./src/game/config.js";
+      import { buildCell, doorEntryTile } from "./src/maze/cell.js";
+      import { render, renderStatic } from "./src/render/render.js";
+      import { CRTFilterWebGL } from "./src/lib/CRTFilter.js";
+      import { waitForGo } from "./src/demo.js";
+
+      const canvas = document.getElementById("game");
+      const ctx = canvas.getContext("2d");
+      const tint = { fg: TINTS.amber.fg, bg: PALETTE.bg, rgb: TINTS.amber.rgb };
+      const spectrum = new Uint8Array(512);
+
+      // The shapes, and the whole point of the shot: a room the hero crosses as a
+      // bare "-", and the same room on the way back cut as a "+". Ambiguity was
+      // what sank the earlier attempts -- two plus-shaped rooms differing only in
+      // corridor width read as two rooms, not as one room changing.
+      const BAR = { W: true, E: true };                        // -
+      const ELBOW = { W: true, S: true };                       // 7
+      const CROSS = { N: true, S: true, E: true, W: true };     // +
+
+      // Level 5's look: the quarter checker at the drift zone's corridor width.
+      const WALL = "\u{1FB95}";
+      const HALF = 2;
+
+      const room = (doors) => Object.assign(
+        buildCell(doors, "interior", HALF), { wallGlyph: WALL });
+      const roomBar = room(BAR);
+      const roomElbow = room(ELBOW);
+      const roomCross = room(CROSS);
+
+      const state = {
+        cell: roomBar,
+        player: { ...doorEntryTile("W") },
+        started: true,
+        level: 5,
+        score: 3,
+        goal: 8,
+        audibleDigits: [{ digit: 4 }, { digit: 1 }, { digit: 6 }],
+        frequency: 4625,
+        sourceGlyph: null,
+        spec: { interval: { min: 1000, max: 4000, step: 250 } },
+      };
+
+      const PACE = 50; // ms per step: 57 steps of corridor, and the clip is ~5s
+      const CUT = 260; // matches TRANSITION_MS, so the cut lands like the game's
+      const sleep = (ms) => new Promise((r) => setTimeout(r, ms));
+
+      let cutUntil = 0, cutStart = 0;
+      function frame(now) {
+        if (now < cutUntil) renderStatic(ctx, (now - cutStart) / CUT, tint.rgb);
+        else render(ctx, state, true, tint, spectrum, now);
+        requestAnimationFrame(frame);
+      }
+      requestAnimationFrame(frame);
+
+      async function walk(dir, n) {
+        const d = { N: [0, -1], S: [0, 1], E: [1, 0], W: [-1, 0] }[dir];
+        for (let i = 0; i < n; i++) {
+          state.player.x += d[0];
+          state.player.y += d[1];
+          await sleep(PACE);
+        }
+      }
+
+      // Cut to the next cell the way a door crossing does: static over the join.
+      async function cutTo(cell, entryDir) {
+        cutStart = performance.now();
+        cutUntil = cutStart + CUT;
+        await sleep(CUT);
+        state.cell = cell;
+        state.player = { ...doorEntryTile(entryDir) };
+      }
+
+      const TO_MIDDLE = GRID.CX;              // west edge to the junction
+      const OUT_EAST = GRID.W - GRID.CX;      // junction out through the east door
+
+      async function play() {
+        await document.fonts.ready;
+        // Same handshake the scripted takes use: hold until the recorder says go,
+        // so the opening beat is not already over by the time ffmpeg is live.
+        const go = new URLSearchParams(location.search).get("go");
+        if (go) await waitForGo(go);
+        await sleep(300);
+
+        // A bare corridor: straight through, left to right.
+        await walk("E", TO_MIDDLE);
+        await sleep(300);
+        await walk("E", OUT_EAST);
+
+        // The room past it bends away south -- somewhere else, plainly.
+        await cutTo(roomElbow, "W");
+        state.score = 4;
+        await walk("E", TO_MIDDLE);
+        await sleep(350);
+
+        // Turn around and walk back out the way you came in.
+        await walk("W", TO_MIDDLE + 1);
+
+        // Same room. Four ways out of it now.
+        await cutTo(roomCross, "E");
+        state.score = 3;
+        await walk("W", GRID.W - 1 - GRID.CX);
+        await sleep(1200);
+
+        window.stagedDone = true;
+      }
+
+      new CRTFilterWebGL(canvas, CRT_CONFIG).start();
+      play();
+    </script>
+  </body>
+</html>
