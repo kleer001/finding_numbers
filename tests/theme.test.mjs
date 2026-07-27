@@ -34,7 +34,8 @@ test("the deep station stops holding one surface", () => {
 // supplies -- a second typeface mid-grid, or tofu. Latin-1 comes from VT323;
 // the blocks are the ones make_font.py draws in, and nothing else is available.
 test("every wall glyph is one the shipped font actually carries", () => {
-  const BLOCKS = new Set([0x2591, 0x2592, 0x2593, 0x2588, 0x2580, 0x2584, 0x258c, 0x2590]);
+  const BLOCKS = new Set([0x2591, 0x2592, 0x2593, 0x2588, 0x2580, 0x2584, 0x258c, 0x2590,
+    0x259a, 0x1fb95]);
   const served = (c) => (c >= 0x20 && c <= 0xff) || BLOCKS.has(c);
   for (let level = 1; level <= MAX_LEVEL; level++) {
     const w = levelSpec(level).theme.wall;

@@ -88,10 +88,15 @@ const DEEP_STATION = { half: [0, 1, 2] };
 // all, which is why these walls used to come out in a fallback face.
 // Ordered against the zones' corridor widths, not just by weight. How bright a
 // level burns is its glyph's density times how much wall is on screen, and the
-// two run opposite ways: DRIFT's wide corridors leave little wall, so they can
-// carry the solid block, while INTERFERENCE's narrow ones leave the screen
-// nearly all wall and need the faintest shade to stay looked-at.
-const WALL_RAMP = ["#", "%", "8", "▒", "▓", "█", "░", "Ø", "Æ"];
+// two run opposite ways: DRIFT's wide corridors leave little wall on screen,
+// INTERFERENCE's narrow ones leave it nearly all wall and need the faintest
+// shade to stay looked-at.
+//
+// DRIFT's three are one checkerboard at three scales — half ink whatever the
+// scale, so the zone holds a steady brightness while the wall visibly coarsens
+// under you. A denser shade there just burned: past about half ink the screen
+// goes to a sheet of amber and stops reading as a maze at all.
+const WALL_RAMP = ["#", "%", "8", "▒", "🮕", "▚", "░", "Ø", "Æ"];
 const DEEPEST_MIX = 6; // most glyphs one level's walls will draw from
 
 // Past the authored zones the surface stops holding: each level mixes a wider

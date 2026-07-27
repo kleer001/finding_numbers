@@ -21,6 +21,7 @@ import os
 
 from fontTools.pens.ttGlyphPen import TTGlyphPen
 from fontTools.ttLib import TTFont
+from fontTools.ttLib.tables._c_m_a_p import CmapSubtable
 
 HERE = os.path.dirname(os.path.abspath(__file__))
 SRC = os.path.join(HERE, "assets", "fonts", "VT323-Regular.ttf")
@@ -67,16 +68,21 @@ def solid(pen):
     rect(pen, X0, Y0, X1, Y1)
 
 
-def stipple(keep):
-    """A shade: `keep(row, col)` decides which cells of the subgrid carry ink."""
+def stipple_at(sub, keep):
+    """`keep(row, col)` decides which squares of a `sub`x`sub` grid carry ink."""
     def draw(pen):
-        w, h = (X1 - X0) / SUB, (Y1 - Y0) / SUB
-        for r in range(SUB):
-            for c in range(SUB):
+        w, h = (X1 - X0) / sub, (Y1 - Y0) / sub
+        for r in range(sub):
+            for c in range(sub):
                 if keep(r, c):
                     x, y = X0 + c * w, Y0 + r * h
                     rect(pen, x, y, x + w, y + h)
     return draw
+
+
+def stipple(keep):
+    """A shade, on the CP437-style subgrid."""
+    return stipple_at(SUB, keep)
 
 
 def half(x0f, y0f, x1f, y1f):
@@ -86,8 +92,15 @@ def half(x0f, y0f, x1f, y1f):
     return draw
 
 
-# Densities chosen so the ramp reads as even steps: a quarter, a half, three
-# quarters, then solid.
+def checker(sub):
+    """A checkerboard at `sub` squares across the cell — half ink at any scale."""
+    return stipple_at(sub, lambda r, c: (r + c) % 2 == 0)
+
+
+# Densities chosen so the shades read as even steps: a quarter, a half, three
+# quarters, then solid. The checkers are all half ink and differ only in scale,
+# which is what lets three levels in a row share a brightness and still look like
+# three different places — the same wall going blockier as it comes apart.
 BLOCKS = {
     0x2591: ("uni2591", stipple(lambda r, c: r % 2 == 0 and c % 2 == 0)),
     0x2592: ("uni2592", stipple(lambda r, c: (r + c) % 2 == 0)),
@@ -97,6 +110,8 @@ BLOCKS = {
     0x2584: ("uni2584", half(0, 0, 1, 0.5)),
     0x258C: ("uni258C", half(0, 0, 0.5, 1)),
     0x2590: ("uni2590", half(0.5, 0, 1, 1)),
+    0x259A: ("uni259A", checker(2)),   # QUADRANT UPPER LEFT AND LOWER RIGHT
+    0x1FB95: ("u1FB95", checker(4)),   # CHECKER BOARD FILL
 }
 
 
@@ -121,8 +136,21 @@ def main():
         order.append(name)
 
     src.setGlyphOrder(order)
+
+    # The source font's subtables address the BMP only, so they get the BMP part;
+    # handing them a codepoint above U+FFFF overflows the format on compile. The
+    # rest of the range needs a format 12 subtable, which is where the astral
+    # codepoints live.
+    bmp = {c: g for c, g in cmap.items() if c <= 0xFFFF}
     for table in src["cmap"].tables:
-        table.cmap = cmap
+        table.cmap = bmp
+
+    if len(bmp) < len(cmap):
+        fmt12 = CmapSubtable.newSubtable(12)
+        fmt12.platformID, fmt12.platEncID, fmt12.format = 3, 10, 12
+        fmt12.reserved, fmt12.length, fmt12.language, fmt12.nGroups = 0, 0, 0, 0
+        fmt12.cmap = cmap
+        src["cmap"].tables.append(fmt12)
 
     # Rename: this is a derivative, and calling it VT323 would misdescribe it.
     for rec in src["name"].names:
