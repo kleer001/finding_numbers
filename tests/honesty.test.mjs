@@ -160,3 +160,53 @@ test("the curve is stable per level and a hand-authored honesty wins", () => {
   assert.deepEqual(honestyCurve(9, 10), honestyCurve(9, 10)); // same level -> same shape
   assert.deepEqual(levelSpec(9).honesty, honestyCurve(9, levelSpec(9).digits));
 });
+
+// A stray room's layout comes from the route that reached it, not from the live
+// maze RNG. Without this, backing out of a deeper stray rebuilt the room you were
+// returning to from scratch — the level shifting under the player even where its
+// honesty is 1.0, which the honesty budget is supposed to be the only cause of.
+const DIRS_NSEW = ["N", "S", "E", "W"];
+const doorsOf = (cell) => DIRS_NSEW.filter((d) => cell.doors[d]).join("");
+const strayDoor = (cell) =>
+  DIRS_NSEW.find((d) => cell.doors[d] && d !== cell.correctDir && d !== cell.backDir);
+const deeperDoor = (cell) => DIRS_NSEW.find((d) => cell.doors[d] && d !== cell.backDir);
+
+function walk(s, dir) {
+  s.player = { ...doorEntryTile(dir) };
+  const ev = tryMove(s, dir);
+  update(s, 300, 0); // past TRANSITION_MS, so the crossing commits
+  return ev;
+}
+
+// The only way back into a stray room is out of a deeper one: the door you came
+// through becomes that room's back door, so re-taking it unwinds instead.
+test("backing out of a deeper stray finds the room you left, unchanged", () => {
+  let checked = 0;
+  for (let seed = 1; seed <= 200; seed++) {
+    const s = createState(seed, 1);
+    if (walk(s, s.cell.correctDir) !== "advance") continue;
+
+    const wrong = strayDoor(s.cell);
+    if (!wrong || walk(s, wrong) !== "stray") continue;
+    const layout = doorsOf(s.cell);
+    const route = s.strayPath.join("");
+
+    const onward = deeperDoor(s.cell);
+    if (!onward || walk(s, onward) !== "stray") continue;   // deeper: room B
+    if (walk(s, s.cell.backDir) !== "return") continue;     // back into room A
+
+    assert.equal(s.strayPath.join(""), route, `seed ${seed}: not the same place`);
+    assert.equal(doorsOf(s.cell), layout, `seed ${seed}: stray room re-rolled its doors`);
+    checked++;
+  }
+  assert.ok(checked > 100, `only ${checked} seeds exercised the path`);
+});
+
+test("level 1 is fully honest: every golden-path room has a zero change budget", () => {
+  const s = createState(4242, 1);
+  assert.deepEqual(levelSpec(1).honesty, [1, 1, 1]);
+  for (let d = 1; d < levelSpec(1).digits; d++) {
+    assert.equal(s.roomPlan[d].budget, 0);
+    assert.equal(s.roomPlan[d].correctSeq.length, 1);
+  }
+});

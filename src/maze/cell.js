@@ -126,6 +126,18 @@ export function buildRoomPlan(rng, spec) {
   return { startExit, rooms };
 }
 
+// An off-path room's fixed layout, given the side facing back toward the room it
+// hangs off. Same shape as a buildRoomPlan entry minus the change sequence — a
+// stray room has no correct door to move — so makeCell treats both alike and the
+// room keeps one door set no matter which side you come back in through.
+export function strayRoomPlan(rng, backDir, forwardDoors) {
+  return {
+    back: backDir,
+    forwards: shuffle(ALL_DIRS.filter((d) => d !== backDir), rng).slice(0, forwardDoors),
+    correctDir: null,
+  };
+}
+
 // Generate a fresh cell as the player transitions into it. The maze is faked:
 // each cell is built on the fly from the door it was entered through.
 //   entryDir     - side the player enters from (the "back" door); null for start.

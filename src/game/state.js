@@ -4,7 +4,7 @@
 
 import { GRID, TRANSITION_MS, WIN_WIPE_MS, WIN_BLACK_MS, STATION_FREQS } from "./config.js";
 import { levelSpec, MAX_LEVEL } from "./levels.js";
-import { makeCell, buildRoomPlan, doorRole, doorEntryTile, atDoor, isFloor, OPPOSITE } from "../maze/cell.js";
+import { makeCell, buildRoomPlan, strayRoomPlan, doorRole, doorEntryTile, atDoor, isFloor, OPPOSITE } from "../maze/cell.js";
 import { makeRng, subSeed } from "../core/rng.js";
 import {
   createProgress, makeMessage, step, score, audibleDigits,
@@ -37,13 +37,16 @@ function newMaze(state) {
   state.startExit = backbone.startExit;
   state.roomPlan = backbone.rooms;
   state.roomVisits = [];
+  state.strayPath = [];
   enterCell(state, null, "start", false);
 }
 
 // Build the cell being entered and drop the player at its entry door / room.
 function enterCell(state, entryDir, kind, frontier, pending) {
-  const plan = resolvePlan(state, entryDir, kind, frontier);
-  state.cell = makeCell(entryDir, kind, state.rng, frontier, state.spec.forwardDoors, state.spec.theme, plan);
+  const stray = strayLayout(state, kind, frontier);
+  const plan = stray ? stray.plan : resolvePlan(state, entryDir, kind, frontier);
+  const rng = stray ? stray.rng : state.rng;
+  state.cell = makeCell(entryDir, kind, rng, frontier, state.spec.forwardDoors, state.spec.theme, plan);
   state.cell.pending = pending ?? null; // corridor only: the real cell beyond it
   if (kind === "start" || kind === "source") {
     state.player = { x: GRID.CX, y: GRID.CY };
@@ -54,10 +57,39 @@ function enterCell(state, entryDir, kind, frontier, pending) {
   refresh(state);
 }
 
+// An off-path room is laid out from the route that reached it, so the same wrong
+// turn always rebuilds the same room — and, like a golden-path room, it shows its
+// whole door set from whichever side you re-enter, so backing out of a deeper
+// stray finds the room you left instead of a fresh roll. Drawn off the live maze
+// RNG instead, these re-rolled on every entry: a second, unbudgeted source of
+// rooms moving, sitting next to the one honesty is meant to be the only cause of.
+// Depth is in the key because a stray hangs off the frontier room it left, and
+// the last step of the route fixes which side faces back toward that room.
+function strayLayout(state, kind, frontier) {
+  if (kind !== "interior" || frontier || !state.strayPath.length) return null;
+  const route = state.strayPath;
+  const rng = makeRng(subSeed(
+    state.seed,
+    `stray${state.level}:${state.progress.depth}:${route.join("")}`,
+  ));
+  const back = OPPOSITE[route[route.length - 1]];
+  return { rng, plan: strayRoomPlan(rng, back, state.spec.forwardDoors) };
+}
+
+// Walking off the path extends the route, walking back shortens it; regaining
+// the frontier clears it. Mirrors what step() does to progress.stray, so the
+// key always describes where the player actually is.
+function trackStray(state, dir, ev) {
+  if (ev === "stray") state.strayPath.push(dir);
+  else if (ev === "return") state.strayPath.pop();
+  else state.strayPath.length = 0;
+}
+
 // The level-plan slice for the cell being entered: the first start's fixed exit,
 // or a frontier room's current forwards + correct door. Each frontier entry
 // advances that room's change budget (clamped, so it freezes once spent).
-// Off-frontier stray cells and corridors get none — they stay faked/random.
+// Off-frontier stray cells take strayLayout's route-derived plan instead;
+// corridors get none, being pass-through scenery with no decision in them.
 function resolvePlan(state, entryDir, kind, frontier) {
   if (kind === "start" && entryDir === null) return { exit: state.startExit };
   if (kind !== "interior" || !frontier) return null;
@@ -108,11 +140,13 @@ export function tryMove(state, dir) {
         return beginTransition(state, { ...state.cell.pending, entryDir: OPPOSITE[dir] }, null);
       }
       const ev = step(state.progress, "back");
+      trackStray(state, dir, ev);
       return beginTransition(state, nextFromProgress(state, dir), ev);
     }
 
     const role = doorRole(state.cell, dir);
     const ev = step(state.progress, role);
+    trackStray(state, dir, ev);
     let next = ev === "win"
       ? { entryDir: OPPOSITE[dir], kind: "source", frontier: false }
       : nextFromProgress(state, dir);
