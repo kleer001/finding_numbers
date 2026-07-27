@@ -27,7 +27,7 @@ clip_cut() {
     title)      echo "2.0 6.0|" ;;
     core-loop)  echo "3.3 15.0|no map. the station is your compass." ;;
     wrong-turn) echo "11.9 13.6|a correct turn adds a number. a wrong one adds nothing." ;;
-    room-moved) echo "1.7 5.4|don't trust the walls to stay put." ;;
+    room-moved) echo "1.7 5.4|don't trust the walls." ;;
     pulse)      echo "9.6 6.0|" ;;
     crt-decay)  echo "4.3 18.2|dial in the decay." ;;
     jukebox)    echo "3.0 30.0|" ;;
@@ -153,6 +153,10 @@ echo "== trailer"
 # game's tone in six seconds of amber and hum, and the core loop needs its whole
 # run for the digit count to visibly climb — cut short, both read as filler.
 #
+# The pulse segment stops inside the blank the win wipe leaves behind, 5.2s in.
+# Run it the standalone clip's full 6s and the next level pops back up for a
+# beat before the end card, which reads as a dropped frame rather than an ending.
+#
 # The room is one continuous take, not two states cut together: the walk through
 # it and the static that swallows it land in the same ten seconds, so the whole
 # caption sits over the whole beat.
@@ -161,8 +165,8 @@ TRAILER=(
   "title|2.0|6.0|"
   "core-loop|3.3|15.0|no map. the station is your compass."
   "crt-decay|9.5|8.0|dial in the decay."
-  "room-moved|1.7|5.4|don't trust the walls to stay put."
-  "pulse|9.6|6.0|"
+  "room-moved|1.7|5.4|don't trust the walls."
+  "pulse|9.6|5.2|"
 )
 
 rm -f "$WORK"/*.mp4
