@@ -2,9 +2,8 @@
 // of the screen, but on a half-cell sub-grid — a finer "graphics page" density
 // inside the same strip. Time on X (one sub-column per ADVANCE_MS, peak-held
 // between advances so short utterances still register), frequency on Y (low at
-// the bottom), brightness on the block-gradient RAMP. VT323 lacks the block
-// glyphs, but they're geometric fills, so the monospace fallback face renders
-// them indistinguishably.
+// the bottom), brightness on the block-gradient RAMP, drawn as filled sub-cell
+// rects rather than glyphs so the ramp lands on exact sub-cell boundaries.
 
 import { WATERFALL } from "../game/config.js";
 

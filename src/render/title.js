@@ -7,7 +7,7 @@
 // readout, the cold-open message banner, and the PREFS box. Design lifted from
 // the sister repo's OVERRIDE 1983 title.
 
-import { CANVAS, CHAR, GRID, HUD_ROWS, STATION_FREQS, PREFS_BTN } from "../game/config.js";
+import { CANVAS, CHAR, GRID, HUD_ROWS, STATION_FREQS, PREFS_BTN, FONT_STACK } from "../game/config.js";
 import { CADENCES } from "../game/levels.js";
 import { renderIntroBanner } from "./render.js";
 
@@ -80,7 +80,7 @@ function drawFreqScroll(ctx, tint, now) {
   ctx.rect(x, y, w, h);
   ctx.clip();
   ctx.fillStyle = tint.fg;
-  ctx.font = `${CHAR.FONT}px VT323, "Courier New", monospace`;
+  ctx.font = `${CHAR.FONT}px ${FONT_STACK}`;
   ctx.textAlign = "center";
   ctx.textBaseline = "middle";
   const rows = now / FREQ_PERIOD_MS;
@@ -102,7 +102,7 @@ function drawPrefsBox(ctx, tint) {
   ctx.lineWidth = 2;
   ctx.strokeRect(b.x, b.y, b.w, b.h);
   ctx.fillStyle = tint.fg;
-  ctx.font = `${CHAR.FONT}px VT323, "Courier New", monospace`;
+  ctx.font = `${CHAR.FONT}px ${FONT_STACK}`;
   ctx.textAlign = "center";
   ctx.textBaseline = "middle";
   const label = "PREFS";
@@ -124,7 +124,7 @@ export function renderTitle(ctx, tint, level, now) {
   drawWord(ctx, "FINDING", 2 * CHAR.H);
   drawWord(ctx, "NUMBERS", 2 * CHAR.H + (GLYPH_ROWS + 1) * BP_H); // one blank block-row between
 
-  ctx.font = `${CHAR.FONT}px VT323, "Courier New", monospace`;
+  ctx.font = `${CHAR.FONT}px ${FONT_STACK}`;
   ctx.textAlign = "center";
   ctx.textBaseline = "middle";
   if (level > 1) ctx.fillText(`RESUME - LEVEL ${level}`, CANVAS.W / 2, 9.5 * CHAR.H);

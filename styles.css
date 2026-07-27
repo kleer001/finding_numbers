@@ -10,12 +10,22 @@
   box-sizing: border-box;
 }
 
+/* The one face, served from here rather than a CDN. Google splits VT323 into
+   subsets that only fetch on first use, so a glyph outside Latin-1 rendered in a
+   fallback until its subset landed -- and never, offline. block-display swaps in
+   the real face as soon as it loads instead of painting a wrong one first. */
+@font-face {
+  font-family: "Station Grid";
+  src: url("assets/fonts/station-grid.woff2") format("woff2");
+  font-display: block;
+}
+
 html,
 body {
   height: 100%;
   background: var(--bg);
   color: var(--amber);
-  font-family: "VT323", "Courier New", monospace;
+  font-family: "Station Grid", "Courier New", monospace;
 }
 
 #stage {

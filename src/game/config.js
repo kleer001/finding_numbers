@@ -15,6 +15,11 @@ export const CANVAS = { W: 800, H: 600 };
 // glyph on screen is CHAR.FONT px — one character size, no exceptions.
 export const HUD_ROWS = 3;
 export const SCREEN = { COLS: GRID.W, ROWS: GRID.H + HUD_ROWS }; // 23 x 20
+// The one font, self-hosted at assets/fonts/station-grid.woff2 (built by
+// make_font.py: VT323 plus the block glyphs it lacks). Named once so the maze
+// grid and the HUD can never drift onto different faces.
+export const FONT_STACK = '"Station Grid", "Courier New", monospace';
+
 export const CHAR = {
   W: CANVAS.W / SCREEN.COLS, // 34.78...
   H: CANVAS.H / SCREEN.ROWS, // 30
@@ -39,9 +44,9 @@ export const STATION_FREQS = [
 // flickers through this pool like a dial drifting across stations: index 0 is
 // the plain instruction (always shown first) so the player knows what to do;
 // the rest drift into station patter and foreign commands (move / listen /
-// attention / begin — languages the station voices). VT323 carries the accented
-// Latin natively; Cyrillic falls back to a mono face and reads as a different,
-// older transmitter under the CRT. Each line must fit WATERFALL.cols wide, at
+// attention / begin — languages the station voices). The shipped face carries
+// the accented Latin natively; Cyrillic falls back to a mono one and reads as a
+// different, older transmitter under the CRT — kept deliberately. Each line must fit WATERFALL.cols wide, at
 // most WATERFALL.rows lines.
 export const INTRO_MESSAGES = [
   ["MOVE TO BEGIN"],
@@ -84,7 +89,8 @@ export const INTRO_MESSAGES = [
 
 // Server-heartbeat overlay: the lost-signal bar flickers randomly through these
 // like a dying relay — the original English tag plus "signal lost" in the
-// station's languages (Latin native in VT323, Cyrillic via the mono fallback).
+// station's languages (Latin native to the shipped face, Cyrillic via the mono
+// fallback — deliberate, as in INTRO_MESSAGES).
 // Each must fit the screen width (GRID.W) on one line.
 export const SIGNAL_LOST_MESSAGES = [
   "<LOST CONNECTION>",

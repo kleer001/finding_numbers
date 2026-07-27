@@ -2,7 +2,7 @@
 // the bottom rows — every glyph the same CHAR.FONT size in one phosphor
 // color at one brightness: a character-mode monochrome monitor.
 
-import { GRID, CANVAS, GLYPH, PREFS_BTN, CHAR, SCREEN, WATERFALL, INTRO_MESSAGES, SIGNAL_LOST_MESSAGES, WIN_WIPE_MS } from "../game/config.js";
+import { GRID, CANVAS, GLYPH, PREFS_BTN, CHAR, SCREEN, WATERFALL, INTRO_MESSAGES, SIGNAL_LOST_MESSAGES, WIN_WIPE_MS, FONT_STACK } from "../game/config.js";
 import { RAMP, SUB, stepWaterfall } from "./waterfall.js";
 import { pickInterval } from "../game/levels.js";
 
@@ -20,7 +20,7 @@ export function render(ctx, state, showCount, tint, spectrum, now) {
   ctx.fillRect(0, 0, CANVAS.W, CANVAS.H);
 
   ctx.fillStyle = tint.fg;
-  ctx.font = `${CHAR.FONT}px VT323, "Courier New", monospace`; // the ONE font
+  ctx.font = `${CHAR.FONT}px ${FONT_STACK}`; // the ONE font
   ctx.textAlign = "center";
   ctx.textBaseline = "middle";
 
@@ -123,7 +123,7 @@ function introHold(interval) {
 // message pool and flicker state drive both). Sets the shared font/alignment
 // the in-game caller already has set.
 export function renderIntroBanner(ctx, tint, now, interval) {
-  ctx.font = `${CHAR.FONT}px VT323, "Courier New", monospace`;
+  ctx.font = `${CHAR.FONT}px ${FONT_STACK}`;
   ctx.textAlign = "center";
   ctx.textBaseline = "middle";
   drawIntroBanner(ctx, tint, now, interval);
@@ -190,7 +190,7 @@ export function renderLostConnection(ctx, tint, now) {
   }
   if (Math.floor(now / 300) % 2) return; // blink: text off half the time
   ctx.fillStyle = tint.fg;
-  ctx.font = `${CHAR.FONT}px VT323, "Courier New", monospace`;
+  ctx.font = `${CHAR.FONT}px ${FONT_STACK}`;
   ctx.textAlign = "center";
   ctx.textBaseline = "middle";
   drawText(ctx, lostPhrase, Math.floor((GRID.W - lostPhrase.length) / 2), row);
@@ -250,7 +250,7 @@ export function renderSpiralWipe(ctx, t, tint, now, oldCanvas, newCanvas, turns 
   ctx.restore();
 
   // The changing-number arm riding the spiral front, between the two levels.
-  ctx.font = `${CHAR.FONT}px VT323, "Courier New", monospace`;
+  ctx.font = `${CHAR.FONT}px ${FONT_STACK}`;
   ctx.textAlign = "center";
   ctx.textBaseline = "middle";
   const frame = Math.floor(now / 70); // digit shimmer

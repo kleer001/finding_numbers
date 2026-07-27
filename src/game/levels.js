@@ -65,13 +65,44 @@ export function pickInterval({ min, max, step }) {
 // it — spectrally below the voice band and hard-ducked whenever a digit plays.
 const QUIET = { wash: 0, burst: 0 };
 
-// Zone looks: wall glyph + corridor half-width (corridors are 2*half+1 wide).
-// Arrays mean "pick per cell" — the deep station can't hold itself together.
-// Non-load-bearing by design: theme never changes where the doors are.
-const CLEAR_SIGNAL = { wall: "#", half: 1 };
-const DRIFT = { wall: "▒", half: 2 }; // abandoned halls
-const INTERFERENCE = { wall: "░", half: 0 }; // claustrophobic
-const DEEP_STATION = { wall: ["#", "░", "▒", "▓"], half: [0, 1, 2] };
+// Zone looks: corridor half-width (corridors are 2*half+1 wide). Arrays mean
+// "pick per cell" — the deep station can't hold itself together. The wall glyph
+// is per level, not per zone (see WALL_RAMP). Non-load-bearing by design: theme
+// never changes where the doors are.
+const CLEAR_SIGNAL = { half: 1 };
+const DRIFT = { half: 2 }; // abandoned halls
+const INTERFERENCE = { half: 0 }; // claustrophobic
+const DEEP_STATION = { half: [0, 1, 2] };
+
+// One wall surface per level. A zone's three levels used to share a glyph, so
+// stepping up a level looked like nowhere new — level 1 to 2 read as the same
+// room with a longer number. The ramp runs clean to corroded: a crisp ASCII grid
+// near the surface, then the letterforms and currency marks a rotting terminal
+// throws up. Neighbours are picked to differ in shape, not just in density, so
+// the change registers at a glance.
+//
+// The shades carry the middle of the ramp because they are the only glyphs whose
+// difference is pure density — the eye reads ░▒▓█ as one wall getting heavier,
+// where two letterforms just read as two different letters. They exist because
+// the game ships its own font (make_font.py); stock VT323 has no block glyphs at
+// all, which is why these walls used to come out in a fallback face.
+// Ordered against the zones' corridor widths, not just by weight. How bright a
+// level burns is its glyph's density times how much wall is on screen, and the
+// two run opposite ways: DRIFT's wide corridors leave little wall, so they can
+// carry the solid block, while INTERFERENCE's narrow ones leave the screen
+// nearly all wall and need the faintest shade to stay looked-at.
+const WALL_RAMP = ["#", "%", "8", "▒", "▓", "█", "░", "Ø", "Æ"];
+const DEEPEST_MIX = 6; // most glyphs one level's walls will draw from
+
+// Past the authored zones the surface stops holding: each level mixes a wider
+// handful of the ramp, offset so no two neighbours wear the same walls. Stepping
+// by two lands on a fresh glyph every time — 2 and 9 share no factor.
+function wallFor(level) {
+  if (level <= WALL_RAMP.length) return WALL_RAMP[level - 1];
+  const count = Math.min(DEEPEST_MIX, 2 + (level - WALL_RAMP.length));
+  const start = (level - 1) % WALL_RAMP.length;
+  return Array.from({ length: count }, (_, i) => WALL_RAMP[(start + i * 2) % WALL_RAMP.length]);
+}
 
 // language: one of LANGUAGES, or "babel" = a random language per digit.
 // ordered: digits climb 0,1,2,.. (a melody you can follow); repeats: times each
@@ -117,6 +148,8 @@ export function levelSpec(level) {
           corridorChance: 0.35,
           theme: DEEP_STATION,
         };
+  // The zone supplies the corridor width, the level its own wall surface.
+  const themed = { ...spec, theme: { ...spec.theme, wall: wallFor(level) } };
   // A hand-authored `honesty` on a row wins; otherwise the curve fills it in.
-  return spec.honesty ? spec : { ...spec, honesty: honestyCurve(level, spec.digits) };
+  return themed.honesty ? themed : { ...themed, honesty: honestyCurve(level, themed.digits) };
 }
