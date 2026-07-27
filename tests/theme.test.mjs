@@ -35,8 +35,8 @@ test("the deep station stops holding one surface", () => {
 // the blocks are the ones make_font.py draws in, and nothing else is available.
 test("every wall glyph is one the shipped font actually carries", () => {
   const BLOCKS = new Set([0x2591, 0x2592, 0x2593, 0x2588, 0x2580, 0x2584, 0x258c, 0x2590,
-    0x259a, 0x1fb95]);
-  const ours = (c) => c >= 0xe000 && c <= 0xe002; // the masonry make_font.py draws
+    0x259a, 0x1fb95, 0x2571, 0x2572, 0x2573]);
+  const ours = (c) => c >= 0xe000 && c <= 0xe003; // the masonry make_font.py draws
   const served = (c) => (c >= 0x20 && c <= 0xff) || BLOCKS.has(c) || ours(c);
   for (let level = 1; level <= MAX_LEVEL; level++) {
     const w = levelSpec(level).theme.wall;

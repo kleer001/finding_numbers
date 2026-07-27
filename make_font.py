@@ -129,6 +129,41 @@ def ashlar(pen):
     vjoint(pen, 0.0, 0.0, 1.0)
 
 
+def grate(pen):
+    """A cage: joints on both axes, quartering the cell."""
+    hjoint(pen, 0.0)
+    hjoint(pen, 0.5)
+    vjoint(pen, 0.0, 0.0, 1.0)
+    vjoint(pen, 0.5, 0.0, 1.0)
+
+
+def rising(pen):
+    """Corner to corner, bottom-left to top-right. Drawn as a parallelogram that
+    stays inside the cell: ink outside it would spill into the corridors, which
+    are simply cells nobody drew a wall in. Meeting at the corners is what lets
+    neighbouring cells carry one unbroken diagonal across a whole wall."""
+    t = STROKE
+    pen.moveTo((X0, Y0))
+    pen.lineTo((X0 + t, Y0))
+    pen.lineTo((X1, Y1))
+    pen.lineTo((X1 - t, Y1))
+    pen.closePath()
+
+
+def falling(pen):
+    t = STROKE
+    pen.moveTo((X0, Y1))
+    pen.lineTo((X0 + t, Y1))
+    pen.lineTo((X1, Y0))
+    pen.lineTo((X1 - t, Y0))
+    pen.closePath()
+
+
+def crossed(pen):
+    rising(pen)
+    falling(pen)
+
+
 def plate(pen):
     """A riveted panel: an inset border with a rivet at each corner."""
     i, o = 0.08, 0.92
@@ -164,6 +199,13 @@ BLOCKS = {
     0xE000: ("wallBrick", brick),
     0xE001: ("wallAshlar", ashlar),
     0xE002: ("wallPlate", plate),
+    0xE003: ("wallGrate", grate),
+    # The box-drawing diagonals are real characters, and drawn corner to corner
+    # they are also the pair 10 PRINT flips between (PETSCII 205/206) — so the
+    # groundwork for that is here should the maze ever want it.
+    0x2571: ("uni2571", rising),   # BOX DRAWINGS LIGHT DIAGONAL LOWER LEFT TO UPPER RIGHT
+    0x2572: ("uni2572", falling),  # BOX DRAWINGS LIGHT DIAGONAL UPPER LEFT TO LOWER RIGHT
+    0x2573: ("uni2573", crossed),  # BOX DRAWINGS LIGHT DIAGONAL CROSS
 }
 
 

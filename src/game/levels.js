@@ -84,12 +84,14 @@ const DEEP_STATION = { half: [0, 1, 2] };
 const BRICK = "\uE000"; // running-bond masonry
 const ASHLAR = "\uE001"; // large dressed blocks
 const PLATE = "\uE002"; // riveted steel panel
+const GRATE = "\uE003"; // cage: joints on both axes
 
 // One wall surface per level: a zone's three levels used to share a glyph, so
 // stepping up a level looked like nowhere new. Neighbours differ in kind, not
 // just in weight, so the change registers at a glance -- CLEAR SIGNAL is built
 // structure going brick to stone to steel, DRIFT is one checkerboard at three
-// scales, INTERFERENCE the faintest shade and the letterforms.
+// scales, INTERFERENCE the zone closing in: static, then a shear across the
+// walls, then a cage.
 //
 // Ordered against the zones' corridor widths, not by weight alone. How bright a
 // level burns is its glyph's density times how much wall is on screen, and the
@@ -97,7 +99,7 @@ const PLATE = "\uE002"; // riveted steel panel
 // the checkers, while INTERFERENCE's narrow ones leave the screen nearly all wall
 // and need the faintest shade to stay looked-at. Past about half ink a level
 // stops reading as a maze and becomes a sheet of amber with a slot in it.
-const WALL_RAMP = [BRICK, ASHLAR, PLATE, "▒", "🮕", "▚", "░", "Ø", "Æ"];
+const WALL_RAMP = [BRICK, ASHLAR, PLATE, "▒", "🮕", "▚", "░", "╳", GRATE];
 
 const DEEPEST_MIX = 6; // most glyphs one level's walls will draw from
 
