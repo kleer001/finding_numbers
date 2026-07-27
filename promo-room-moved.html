@@ -38,11 +38,12 @@
       import { render, renderStatic } from "./src/render/render.js";
       import { CRTFilterWebGL } from "./src/lib/CRTFilter.js";
       import { waitForGo } from "./src/demo.js";
+      import * as station from "./src/audio/station.js";
 
       const canvas = document.getElementById("game");
       const ctx = canvas.getContext("2d");
       const tint = { fg: TINTS.amber.fg, bg: PALETTE.bg, rgb: TINTS.amber.rgb };
-      const spectrum = new Uint8Array(512);
+      const spectrum = new Uint8Array(station.SPECTRUM_BINS);
 
       // The shapes, and the whole point of the shot: a room the hero crosses as a
       // bare "-", and the same room on the way back cut as a "+". Ambiguity was
@@ -69,11 +70,31 @@
         level: 5,
         score: 3,
         goal: 8,
-        audibleDigits: [{ digit: 4 }, { digit: 1 }, { digit: 6 }],
+        // Entries carry a language as well as a digit: the station picks the voice
+        // buffer off `lang`, and without it the bed plays but nothing speaks.
+        audibleDigits: [
+          { digit: 4, lang: "italian" }, // level 5's voice
+          { digit: 1, lang: "italian" },
+          { digit: 6, lang: "italian" },
+        ],
         frequency: 4625,
         sourceGlyph: null,
-        spec: { interval: { min: 1000, max: 4000, step: 250 } },
+        spec: {
+          interval: { min: 800, max: 2500, step: 250 }, // BRISK, as level 5 runs
+          repeats: 2,
+          noise: { wash: 0.3, burst: 0 },
+        },
       };
+
+      // Real station audio under the staged picture: the same bed, voice and
+      // dread the game makes, reading off the state below. Without it the clip is
+      // a silent hole in a trailer whose other segments all carry the station.
+      station.init(() => ({
+        digits: state.audibleDigits,
+        repeats: state.spec.repeats,
+        interval: state.spec.interval,
+        noise: state.spec.noise,
+      }));
 
       const PACE = 50; // ms per step: 57 steps of corridor, and the clip is ~5s
       const CUT = 260; // matches TRANSITION_MS, so the cut lands like the game's
@@ -81,6 +102,7 @@
 
       let cutUntil = 0, cutStart = 0;
       function frame(now) {
+        station.getSpectrum(spectrum);
         if (now < cutUntil) renderStatic(ctx, (now - cutStart) / CUT, tint.rgb);
         else render(ctx, state, true, tint, spectrum, now);
         requestAnimationFrame(frame);
@@ -112,6 +134,7 @@
         await document.fonts.ready;
         // Same handshake the scripted takes use: hold until the recorder says go,
         // so the opening beat is not already over by the time ffmpeg is live.
+        await station.arm(); // capture.sh runs Chrome with the autoplay gate off
         const go = new URLSearchParams(location.search).get("go");
         if (go) await waitForGo(go);
         await sleep(300);
