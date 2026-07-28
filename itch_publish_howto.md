@@ -179,6 +179,19 @@ butler push dist/finding_numbers.zip <your-itch-username>/finding-numbers:html5
 - **Audio needs a gesture.** The station stays silent until the first tap/keypress — this
   is the browser's autoplay policy, not a bug. The "click to play" embed option makes
   that expectation obvious to players.
+- **Saving the edit page rewrites every field, not just the one you changed.** The
+  form posts the whole record from whatever the loaded page contained, so a form
+  that came up with a stale or empty field will silently write that emptiness back
+  over good data — changing one field can revert the description and tagline
+  without any error. The save reports `{"success":true}` either way. Before saving,
+  confirm the fields you are *not* editing still hold what you expect.
+- **One bad field rejects the whole form.** Validation is all-or-nothing: an
+  over-length tagline returns `short_text: expected text between 1 and 120
+  characters` and discards every other edit in the same save, so a rejected save
+  looks like the field you *were* editing simply refused to take.
+- **The description lives in a rich-text editor, not the textarea.** The backing
+  `game[description]` textarea is what gets posted; the visible editor syncs into
+  it. Setting one without the other loses the edit.
 - **The font ships with the game** (`assets/fonts/station-grid.woff2`, built by
   `make_font.py`). Nothing is fetched from a CDN, so the walls draw correctly offline and
   on a first load with a cold network. It carries block and masonry glyphs no stock face
