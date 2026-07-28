@@ -28,7 +28,7 @@ clip_cut() {
     core-loop)  echo "3.3 15.0|no map. the station is your compass." ;;
     wrong-turn) echo "11.9 13.6|a correct turn adds a number. a wrong one adds nothing." ;;
     room-moved) echo "1.7 5.4|don't trust the walls." ;;
-    pulse)      echo "9.6 6.0|" ;;
+    pulse)      echo "9.6 6.0|listen. move. arrive." ;;
     crt-decay)  echo "4.3 18.2|dial in the decay." ;;
     jukebox)    echo "3.0 30.0|" ;;
     *)          echo "" ;;
@@ -166,7 +166,7 @@ TRAILER=(
   "core-loop|3.3|15.0|no map. the station is your compass."
   "crt-decay|9.5|8.0|dial in the decay."
   "room-moved|1.7|5.4|don't trust the walls."
-  "pulse|9.6|5.2|"
+  "pulse|9.6|5.2|listen. move. arrive."
 )
 
 # The cut between segments. A hard join butts two unrelated station beds together
@@ -187,7 +187,7 @@ TRAILER=(
 # it reads as a breath rather than a hit.
 CUT_STATIC=0.230 # the game's own transition length, as recorded
 CUT_REST=0.180   # black after it, before the next caption lands
-CUT_LUFS=-21     # a clear step down from the segments' -16
+CUT_LUFS=-27     # a breath under the segments' -16, not a second voice
 
 build_cut() {
   local src="$IN/core-loop.mp4" peak from dur
