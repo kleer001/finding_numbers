@@ -169,7 +169,62 @@ TRAILER=(
   "pulse|9.6|5.2|"
 )
 
+# The cut between segments. A hard join butts two unrelated station beds together
+# and swaps the caption in the same frame, so neither the cut nor the new line
+# gets a moment to register. The game already has a vocabulary for "you have
+# moved" -- the static it throws up on a door crossing -- so the trailer borrows
+# it, then rests on black long enough for the next caption to arrive on a clear
+# frame.
+#
+# The static is lifted out of the footage rather than synthesised. Generated
+# noise comes out flat beside it: the game's gets its contrast from the CRT
+# filter, which nothing downstream can reproduce. Found by luma rather than by
+# timestamp, so re-shooting the takes cannot silently break it.
+#
+# Under it, a swell of brown noise, faded at both ends. The game plays nothing on
+# an ordinary crossing -- only a win or a level gate has a sound, and the bed just
+# carries on -- so this one is the trailer's own, kept well under the segments so
+# it reads as a breath rather than a hit.
+CUT_STATIC=0.230 # the game's own transition length, as recorded
+CUT_REST=0.180   # black after it, before the next caption lands
+CUT_LUFS=-21     # a clear step down from the segments' -16
+
+build_cut() {
+  local src="$IN/core-loop.mp4" peak from dur
+  peak=$(ffmpeg -nostdin -v error -i "$src" -vf "fps=30,scale=64:48"     -f rawvideo -pix_fmt gray - 2>/dev/null | python3 -c '
+import sys
+d = sys.stdin.buffer.read(); n = 64 * 48
+frames = len(d) // n
+if not frames: raise SystemExit("no frames to scan for static")
+lum = sorted(range(frames), key=lambda i: sum(d[i*n:(i+1)*n]))
+peak, mid = lum[-1], lum[frames // 2]
+bright = lambda i: sum(d[i*n:(i+1)*n]) / n
+# A static burst is far brighter than any maze frame. If nothing stands out,
+# the take has no crossing in it and the brightest frame is just a lit wall --
+# say so rather than cutting the trailer with a picture of a room.
+if bright(peak) < bright(mid) * 2.5:
+    raise SystemExit("no static burst found: brightest frame is not a transition")
+print("%.3f" % (peak / 30))')
+  [ -n "$peak" ] || { echo "could not find a static burst in $src" >&2; exit 1; }
+  from=$(awk -v p="$peak" -v d="$CUT_STATIC" 'BEGIN { printf "%.3f", (p - d/2 < 0 ? 0 : p - d/2) }')
+  dur=$(awk -v a="$CUT_STATIC" -v b="$CUT_REST" 'BEGIN { printf "%.3f", a + b }')
+
+  ffmpeg -v error -y -ss "$from" -t "$CUT_STATIC" -i "$src" -an "${encode[@]}" "$WORK/cut-a.mp4"
+  ffmpeg -v error -y -f lavfi -i "color=c=black:s=800x600:r=30000/1001:d=$CUT_REST"     -an "${encode[@]}" "$WORK/cut-b.mp4"
+  ffmpeg -v error -y -f lavfi     -i "anoisesrc=color=brown:duration=$dur:amplitude=0.9:sample_rate=48000:seed=7"     -af "afade=t=in:st=0:d=0.13,afade=t=out:st=$(awk -v d="$dur" 'BEGIN{printf "%.3f", d-0.13}'):d=0.13,lowpass=f=2200"     -c:a pcm_s16le "$WORK/cut.wav"
+  ffmpeg -v error -y -i "$WORK/cut-a.mp4" -i "$WORK/cut-b.mp4"     -filter_complex "[0:v][1:v]concat=n=2:v=1:a=0[v]" -map "[v]" -r 30000/1001     "${encode[@]}" "$WORK/cut-v.mp4"
+  local raw
+  raw=$(ffmpeg -nostdin -hide_banner -nostats -i "$WORK/cut.wav" -af ebur128=framelog=quiet     -f null - 2>&1 | grep -m1 -E "^ +I:" | awk '{print $2}')
+  ffmpeg -v error -y -i "$WORK/cut-v.mp4" -i "$WORK/cut.wav" -map 0:v -map 1:a -shortest     -af "volume=$(awk -v r="$raw" -v t="$CUT_LUFS" 'BEGIN{printf "%.2f", t-r}')dB"     "${encode[@]}" "$CUT"
+  rm -f "$WORK"/cut-a.mp4 "$WORK"/cut-b.mp4 "$WORK"/cut-v.mp4 "$WORK"/cut.wav
+}
+
 rm -f "$WORK"/*.mp4
+CUT="$WORK/cut.mp4"
+build_cut
+printf "   %-12s %ss  (static %ss + black %ss)\n" "cut" \
+  "$(ffprobe -v error -show_entries format=duration -of csv=p=0 "$CUT")" "$CUT_STATIC" "$CUT_REST"
+
 SEGS=()
 i=0
 for row in "${TRAILER[@]}"; do
@@ -179,6 +234,10 @@ for row in "${TRAILER[@]}"; do
   seg="$(printf "%s/%02d-%s.mp4" "$WORK" "$i" "$src")"
   ffmpeg -v error -y -ss "$ss" -t "$dur" -i "$IN/$src.mp4" -vf "$vf" \
     -af "$AUDIO_FIX,volume=$(norm_gain "$src" "$ss" "$dur")dB,$CEILING" "${encode[@]}" "$seg"
+  # A cut before every segment but the first. Not before the end card either:
+  # the pulse already lands on the win wipe's black, and that black running
+  # straight into the URL is the one piece of punctuation the trailer had.
+  [ "$i" -gt 0 ] && SEGS+=("$CUT")
   SEGS+=("$seg")
   i=$((i + 1))
 done
