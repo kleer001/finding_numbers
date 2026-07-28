@@ -1,6 +1,24 @@
 # finding_numbers
 
-TODO: describe finding_numbers
+A liminal horror maze navigated by ear. A shortwave number station reads digits
+through the static; a correct turn adds a number to the broadcast and a wrong one
+adds nothing, so the readout is the only compass. Some rooms move their exit before
+settling. Browser game, vanilla ES modules, no build step.
+
+Live: <https://kleer001.itch.io/finding-numbers>
+
+## Studio tie
+
+A daughter of [Trace ROM Studio](https://github.com/kleer001/trace_rom_studio) — the
+house platform, code conventions and release gates come from there.
+`.trace_rom_studio_version` pins which studio version this game has taken.
+
+```sh
+python3 ../trace_rom_studio/scripts/check_updates.py .   # directives since the pin
+```
+
+Each directive is a **proposal to raise with the user**, never auto-applied.
+`--mark-read` advances the pin once they are resolved.
 
 ## Quick commands
 
