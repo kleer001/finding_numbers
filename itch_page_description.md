@@ -12,7 +12,10 @@ maps cleanly onto what it allows.
   `light-mode.png`, `preferences.png` under *Screenshots*.
 - **Trailer**: `clips/out/trailer.mp4` (~44s, built by `./post.sh`). itch takes a hosted
   link rather than a file -- see `itch_publish_howto.md` section 6b.
-- **Tagline** (the one-liner under the title): `Navigate a maze by ear — a number station bleeding through the static, and rooms that don't always stay where you left them.`
+- **Tagline** (the one-liner under the title): `Navigate a maze by ear — a number station bleeding through the static, and rooms that don't stay where you left them.`
+  itch caps this field at **120 characters** and rejects the *whole* form when it
+  is over, reporting `short_text: expected text between 1 and 120 characters` and
+  silently discarding every other edit in the same save. Count before pasting.
 
 ---
 
