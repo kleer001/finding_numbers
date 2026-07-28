@@ -179,14 +179,46 @@ const CLIPS = {
     await press("ArrowRight", 3000);
   },
 
-  // 6. Jukebox: the transmitter and the waterfall, no maze. Nothing to drive —
-  // it just has to run.
+  // 6. Jukebox: the transmitter driven through its own picker, one row at a
+  // time, so every dial is on screen turning while the station answers it.
   jukebox: async (api) => {
     await begin(api);
     api.jukebox.active = true;
     api.menu.open = false;
+    await wait(JB_OPEN_HOLD);
+    for (const step of JUKEBOX_WALK) {
+      while (api.jukebox.index !== step.row) await press("ArrowDown", JB_ROW_MS);
+      for (let i = 0; i < step.times; i++) await press(step.key, step.hold);
+    }
   },
 };
+
+// The jukebox walk, as data: each step selects a row, then presses one arrow
+// `times`, resting `hold` ms after each press.
+//
+// Holds are set by what has to be *heard* before the next change, not by what
+// looks unhurried. CALM leaves up to 4000 ms between spoken digits (CADENCES in
+// levels.js), so a language given less than that can go by without ever
+// speaking — the setting changes on screen and the clip proves nothing.
+const JB_OPEN_HOLD = 2500; // panel and waterfall establish before anything moves
+const JB_ROW_MS = 600;
+
+export const JUKEBOX_WALK = [
+  // Every voice the station owns, then babel, which draws a fresh one per digit.
+  { row: 0, key: "ArrowRight", times: 6, hold: 4200 },
+  // LOOP -> RANDOM -> ORDERED. ORDERED counts 0..9, which at CALM is still too
+  // slow to hear *as* counting — the cadence step below is where it lands.
+  { row: 1, key: "ArrowRight", times: 2, hold: 5200 },
+  // CALM -> BRISK -> RAPID, against the ordered melody left running above.
+  { row: 2, key: "ArrowRight", times: 2, hold: 4200 },
+  // The dread bed up to full, then all the way off, which strips the noise from
+  // the voice and leaves it naked. Short holds: this one is heard as a sweep.
+  { row: 3, key: "ArrowRight", times: 3, hold: 1500 },
+  { row: 3, key: "ArrowLeft", times: 5, hold: 1500 },
+  // Numbers out, then back. Off against static 0 is true silence, so the hold is
+  // punctuation-length — any longer and the clip reads as a broken file.
+  { row: 4, key: "ArrowRight", times: 2, hold: 3000 },
+];
 
 export const CLIP_NAMES = Object.keys(CLIPS);
 
