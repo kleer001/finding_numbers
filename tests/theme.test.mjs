@@ -1,7 +1,7 @@
 import test from "node:test";
 import assert from "node:assert/strict";
 
-import { levelSpec, MAX_LEVEL } from "../src/game/levels.js";
+import { levelSpec, NAMED_LEVELS } from "../src/game/levels.js";
 import { buildCell, makeCell, atDoor } from "../src/maze/cell.js";
 import { makeRng } from "../src/core/rng.js";
 
@@ -19,7 +19,7 @@ test("no two neighbouring levels wear the same walls", () => {
     const w = levelSpec(level).theme.wall;
     return Array.isArray(w) ? [...w].sort().join("") : w;
   };
-  for (let level = 2; level <= MAX_LEVEL; level++) {
+  for (let level = 2; level <= NAMED_LEVELS; level++) {
     assert.notEqual(surface(level), surface(level - 1), `levels ${level - 1} and ${level} match`);
   }
 });
@@ -27,7 +27,7 @@ test("no two neighbouring levels wear the same walls", () => {
 test("the deep station stops holding one surface", () => {
   assert.equal(typeof levelSpec(1).theme.wall, "string"); // near the surface: solid
   assert.ok(Array.isArray(levelSpec(10).theme.wall)); // deep station: per cell
-  assert.ok(levelSpec(MAX_LEVEL).theme.wall.length > levelSpec(10).theme.wall.length);
+  assert.ok(levelSpec(NAMED_LEVELS).theme.wall.length > levelSpec(10).theme.wall.length);
 });
 
 // A glyph the shipped font does not carry renders in whatever fallback the OS
@@ -38,7 +38,7 @@ test("every wall glyph is one the shipped font actually carries", () => {
     0x259a, 0x1fb95, 0x2573]);
   const ours = (c) => c >= 0xe000 && c <= 0xe003; // the masonry make_font.py draws
   const served = (c) => (c >= 0x20 && c <= 0xff) || BLOCKS.has(c) || ours(c);
-  for (let level = 1; level <= MAX_LEVEL; level++) {
+  for (let level = 1; level <= NAMED_LEVELS; level++) {
     const w = levelSpec(level).theme.wall;
     for (const g of Array.isArray(w) ? w : [w]) {
       assert.ok(served(g.codePointAt(0)),

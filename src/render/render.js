@@ -2,27 +2,19 @@
 // the bottom rows — every glyph the same CHAR.FONT size in one phosphor
 // color at one brightness: a character-mode monochrome monitor.
 
-import { GRID, CANVAS, GLYPH, PREFS_BTN, CHAR, SCREEN, WATERFALL, INTRO_MESSAGES, SIGNAL_LOST_MESSAGES, WIN_WIPE_MS, FONT_STACK } from "../game/config.js";
+import { GRID, CANVAS, GLYPH, PREFS_BTN, CHAR, SCREEN, WATERFALL, INTRO_MESSAGES, WIN_WIPE_MS, FONT_STACK } from "../game/config.js";
 import { RAMP, SUB, stepWaterfall } from "./waterfall.js";
-import { pickInterval } from "../game/levels.js";
+import { pickInterval, OVERFLOW_FROM, NAMED_LEVELS } from "../game/levels.js";
+import { setGridText, drawGlyph, drawText } from "./chargrid.js";
+import { drawGlitch } from "./glitch.js";
 
-function drawGlyph(ctx, ch, gx, gy) {
-  ctx.fillText(ch, gx * CHAR.W + CHAR.W / 2, gy * CHAR.H + CHAR.H / 2);
-}
-
-function drawText(ctx, str, col, row) {
-  for (let i = 0; i < str.length; i++) drawGlyph(ctx, str[i], col + i, row);
-}
 
 // `tint` is the current phosphor {fg, rgb}; `spectrum` is the live FFT bins.
 export function render(ctx, state, showCount, tint, spectrum, now) {
   ctx.fillStyle = tint.bg;
   ctx.fillRect(0, 0, CANVAS.W, CANVAS.H);
 
-  ctx.fillStyle = tint.fg;
-  ctx.font = `${CHAR.FONT}px ${FONT_STACK}`; // the ONE font
-  ctx.textAlign = "center";
-  ctx.textBaseline = "middle";
+  setGridText(ctx, tint.fg); // the ONE font
 
   const cell = state.cell;
   for (let y = 0; y < GRID.H; y++) {
@@ -36,6 +28,11 @@ export function render(ctx, state, showCount, tint, spectrum, now) {
   drawGlyph(ctx, GLYPH.PLAYER, state.player.x, state.player.y);
 
   renderHud(ctx, state, showCount, tint, spectrum, now);
+  // Last pass, and inside render() rather than beside each of its callers: the
+  // corruption has to land on every drawn frame or a deep level shows up clean. It
+  // was three paired calls in the frame loop and the win wipe had already been
+  // caught missing one.
+  drawGlitch(ctx, state, tint, now);
 }
 
 // HUD rows 17-19: status field cols 0-4, waterfall cols 5-17, PREFS 18-22.
@@ -166,40 +163,23 @@ export function renderJukebox(ctx, tint, spectrum, now) {
   drawWaterfall(ctx, spectrum, tint, now);
 }
 
-// Server heartbeat failed: a full-width lost-signal bar across screen center,
-// drawn over whatever the loop last rendered. Flickers randomly through
-// SIGNAL_LOST_MESSAGES (English tag + "signal lost" in the station's languages)
-// and blinks, like a dying relay hunting for the carrier.
-let lostPhrase = null;
-let lostSwitchAt = 0;
-
-export function renderLostConnection(ctx, tint, now) {
-  const row = GRID.CY;
-  ctx.fillStyle = tint.bg;
-  ctx.fillRect(0, (row - 1) * CHAR.H, CANVAS.W, 3 * CHAR.H);
-  ctx.strokeStyle = tint.fg;
-  ctx.lineWidth = 2;
-  ctx.strokeRect(1, (row - 1) * CHAR.H + 1, CANVAS.W - 2, 3 * CHAR.H - 2);
-  if (lostPhrase === null || now >= lostSwitchAt) {
-    let next;
-    do {
-      next = SIGNAL_LOST_MESSAGES[Math.floor(Math.random() * SIGNAL_LOST_MESSAGES.length)];
-    } while (next === lostPhrase && SIGNAL_LOST_MESSAGES.length > 1);
-    lostPhrase = next;
-    lostSwitchAt = now + 450 + Math.random() * 450; // ~0.45-0.9s per language
-  }
-  if (Math.floor(now / 300) % 2) return; // blink: text off half the time
-  ctx.fillStyle = tint.fg;
-  ctx.font = `${CHAR.FONT}px ${FONT_STACK}`;
-  ctx.textAlign = "center";
-  ctx.textBaseline = "middle";
-  drawText(ctx, lostPhrase, Math.floor((GRID.W - lostPhrase.length) / 2), row);
+// What the badge can still say about where you are. The counter is a 4-bit field in
+// the fiction, so 16 is the largest number it holds honestly; from OVERFLOW_FROM it
+// prints hexadecimal, four bits to the digit, which is the overflow stated in the
+// counter's own notation. The five-cell field is what caps that at two digits, and
+// past NAMED_LEVELS it stops claiming a number at all — the levels keep going, the
+// counter does not.
+export function levelLabel(level) {
+  // No space before the marks: the field is five cells and "LV ???" is six.
+  if (level > NAMED_LEVELS) return "LV???";
+  if (level < OVERFLOW_FROM) return `LV ${level}`;
+  return `LV ${level.toString(16).toUpperCase()}`;
 }
 
 // Reverse-video level badge: ink-filled top HUD row of the status field,
 // page-colored letters, one per cell.
 function drawLevelBadge(ctx, level, tint) {
-  const label = `LV ${level}`;
+  const label = levelLabel(level);
   ctx.fillStyle = tint.fg;
   ctx.fillRect(0, GRID.H * CHAR.H, 5 * CHAR.W, CHAR.H);
   ctx.fillStyle = tint.bg;

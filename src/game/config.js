@@ -31,13 +31,16 @@ export const CHAR = {
 export const WATERFALL = { col: 5, row: GRID.H, cols: 13, rows: HUD_ROWS };
 
 // Real shortwave frequencies (kHz) that famous number stations broadcast on —
-// one is shown under the LV badge as radio-dial flavor. Sources: UVB-76 "The
+// one is shown under the LV badge as radio-dial flavor. Every value here is a
+// logged frequency for the station named beside it; listeners of these stations
+// are the audience, so an invented number is a bug. Sources: UVB-76 "The
 // Buzzer" 4625; Lincolnshire Poacher (E03) 11545; Cuban Atención (V02a) 7887
 // and HM01 11530; Yosemite Sam 3700/4300/6500/10500; The Pip (S30) 5448 day /
-// 3756 night; Squeaky Wheel (S32) 3895/5367/6125; The Goose 4310/3243.
+// 3756 night; Squeaky Wheel (S32) 5367 current day, 5473 / 3828 its earlier
+// day / night pair; The Goose 4310 day / 3243 night.
 export const STATION_FREQS = [
   4625, 11545, 7887, 11530, 3700, 4300, 6500, 10500,
-  5448, 3756, 3895, 5367, 6125, 4310, 3243,
+  5448, 3756, 3828, 5367, 5473, 4310, 3243,
 ];
 
 // Cold-open banner shown in the waterfall strip until the first move. It
@@ -85,23 +88,6 @@ export const INTRO_MESSAGES = [
   ["СООБЩЕНИЕ"],
   ["ГОТОВЬ"],
   ["ЖДИ"],
-];
-
-// Server-heartbeat overlay: the lost-signal bar flickers randomly through these
-// like a dying relay — the original English tag plus "signal lost" in the
-// station's languages (Latin native to the shipped face, Cyrillic via the mono
-// fallback — deliberate, as in INTRO_MESSAGES).
-// Each must fit the screen width (GRID.W) on one line.
-export const SIGNAL_LOST_MESSAGES = [
-  "<LOST CONNECTION>",
-  "SIGNAL LOST",
-  "SEÑAL PERDIDA",
-  "SEGNALE PERSO",
-  "SIGNAL VERLOREN",
-  "SIGNAL PERDU",
-  "SINAL PERDIDO",
-  "СИГНАЛ ПОТЕРЯН",
-  "НЕТ СИГНАЛА",
 ];
 
 // Bottom-right boxed "PREFS" button — also the touch tap-target.

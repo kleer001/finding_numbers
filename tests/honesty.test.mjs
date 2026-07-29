@@ -2,7 +2,7 @@ import test from "node:test";
 import assert from "node:assert/strict";
 
 import { buildRoomPlan, changeBudget, honestyAt, OPPOSITE } from "../src/maze/cell.js";
-import { levelSpec, honestyCurve, MAX_LEVEL } from "../src/game/levels.js";
+import { levelSpec, honestyCurve, NAMED_LEVELS } from "../src/game/levels.js";
 import { makeRng } from "../src/core/rng.js";
 import { createState, tryMove, update } from "../src/game/state.js";
 import { doorEntryTile, DIRS } from "../src/maze/cell.js";
@@ -118,7 +118,7 @@ test("levels 1-2 are pure: nothing lies while you learn the game", () => {
 });
 
 test("no level lies in more than half its rooms", () => {
-  for (let level = 1; level <= MAX_LEVEL; level++) {
+  for (let level = 1; level <= NAMED_LEVELS; level++) {
     const rooms = roomsOf(level);
     const lying = rooms.filter((h) => h < 1).length;
     assert.ok(lying <= Math.floor(rooms.length * 0.5), `level ${level}: ${lying}/${rooms.length}`);
@@ -126,7 +126,7 @@ test("no level lies in more than half its rooms", () => {
 });
 
 test("honesty stays on the 0.1 grid and never dips below the 0.5 floor", () => {
-  for (let level = 1; level <= MAX_LEVEL; level++) {
+  for (let level = 1; level <= NAMED_LEVELS; level++) {
     for (const h of levelSpec(level).honesty) {
       assert.ok(h >= 0.5 && h <= 1, `level ${level}: ${h}`);
       assert.equal(Math.round(h * 10), h * 10);
@@ -135,7 +135,7 @@ test("honesty stays on the 0.1 grid and never dips below the 0.5 floor", () => {
 });
 
 test("each level hides one contiguous stretch that worsens as you walk it", () => {
-  for (let level = 3; level <= MAX_LEVEL; level++) {
+  for (let level = 3; level <= NAMED_LEVELS; level++) {
     const rooms = roomsOf(level);
     const lying = rooms.map((h, i) => (h < 1 ? i : -1)).filter((i) => i >= 0);
     if (!lying.length) continue;
@@ -149,7 +149,7 @@ test("each level hides one contiguous stretch that worsens as you walk it", () =
 
 test("the unstable stretch moves around from level to level", () => {
   const starts = new Set();
-  for (let level = 3; level <= MAX_LEVEL; level++) {
+  for (let level = 3; level <= NAMED_LEVELS; level++) {
     const rooms = roomsOf(level);
     starts.add(rooms.findIndex((h) => h < 1) / rooms.length);
   }

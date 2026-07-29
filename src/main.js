@@ -1,11 +1,12 @@
 // Boot: wire canvas, input, update+render loop, the CRT filter, and prefs menu.
 
 import { CANVAS, CRT_CONFIG, CRT_NOISE_MAX, TINTS, PALETTE, LANGUAGES, DIAL_MAX } from "./game/config.js";
-import { MAX_LEVEL } from "./game/levels.js";
-import { createState, setLevel, tryMove, update, commitWin } from "./game/state.js";
+import { readoutCadence } from "./game/levels.js";
+import { createState, setLevel, setSeed, tryMove, update, commitWin } from "./game/state.js";
+import { SEED_LEN, encodeSeed, decodeSeed, normalizeSeed, cycleSeedChar, markSeedChar } from "./game/seed.js";
 import { installInput, installTouch, tapZone } from "./game/input.js";
 import { makeJukebox } from "./game/jukebox.js";
-import { render, renderStatic, renderSpiralWipe, renderBlank, renderLostConnection, renderJukebox, winWipePhase } from "./render/render.js";
+import { render, renderStatic, renderSpiralWipe, renderBlank, renderJukebox, winWipePhase } from "./render/render.js";
 import { renderMenu, menuHit } from "./render/menu.js";
 import { renderTitle, titleHit } from "./render/title.js";
 import { renderBurnIn } from "./render/burnin.js";
@@ -44,7 +45,11 @@ function loadSave() {
     crt: typeof s.crt === "boolean" ? s.crt : true,
     crtNoise: Number.isInteger(s.crtNoise) && s.crtNoise >= 0 && s.crtNoise <= DIAL_MAX ? s.crtNoise : 0,
     burnIn: typeof s.burnIn === "boolean" ? s.burnIn : false,
-    showCount: typeof s.showCount === "boolean" ? s.showCount : true,
+    // Off by default: printing the captured digits and the n/N count turns
+    // "did the station acknowledge me" into reading an integer off a status
+    // bar, and the station is the only compass the game has. Players who want
+    // the readout can switch it on; a stored choice always wins.
+    showCount: typeof s.showCount === "boolean" ? s.showCount : false,
     tint: s.tint === "green" ? "green" : "amber",
     dark: typeof s.dark === "boolean" ? s.dark : true,
     jbLang: [...LANGUAGES, "babel"].includes(s.jbLang) ? s.jbLang : "english",
@@ -54,7 +59,8 @@ function loadSave() {
     jbVoice: typeof s.jbVoice === "boolean" ? s.jbVoice : true,
     tone: ["brown", "pink", "white"].includes(s.tone) ? s.tone : "pink",
     volume: Number.isInteger(s.volume) && s.volume >= 0 && s.volume <= DIAL_MAX ? s.volume : 4,
-    level: Number.isInteger(s.level) && s.level >= 1 && s.level <= MAX_LEVEL ? s.level : 1,
+    // No upper bound: the levels do not stop, so neither does a legitimate save.
+    level: Number.isInteger(s.level) && s.level >= 1 ? s.level : 1,
   };
 }
 
@@ -66,12 +72,12 @@ function save() {
   }
 }
 
-// A `?seed=` override makes a session reproducible, so the same take can be
-// re-shot until the framing is right (see src/demo.js). Without it the seed is
-// the clock, and no two runs lay out the same maze.
+// A `?seed=` override makes a session reproducible — someone else's run, or the
+// same take re-shot until the framing is right (see src/demo.js and capture.sh).
+// Without it the seed is the clock, folded into the code space so the code shown
+// in preferences always names the seed actually in use.
 const params = new URLSearchParams(location.search);
-const seedParam = Number(params.get("seed"));
-const seed = Number.isInteger(seedParam) && seedParam > 0 ? seedParam : (performance.now() * 1000) | 0 || 1;
+const seed = decodeSeed(params.get("seed")) ?? normalizeSeed(performance.now() * 1000);
 
 const { level: startLevel, ...prefs } = loadSave();
 const state = createState(seed, startLevel);
@@ -94,12 +100,7 @@ station.init(() => {
       static: prefs.jbStatic, voice: prefs.jbVoice,
     });
   }
-  return {
-    digits: state.audibleDigits,
-    repeats: state.spec.repeats,
-    interval: state.spec.interval,
-    noise: state.spec.noise,
-  };
+  return { digits: state.audibleDigits, ...readoutCadence(state.spec) };
 });
 station.setTone(prefs.tone);
 station.setVolume(prefs.volume / DIAL_MAX);
@@ -108,6 +109,16 @@ station.setVolume(prefs.volume / DIAL_MAX);
 
 const clamp = (v, lo, hi) => Math.min(hi, Math.max(lo, v));
 const TONES = ["brown", "pink", "white"]; // TONE pref order (warm -> balanced -> bright)
+
+let seedPos = 0; // which character of the seed code the stepper edits
+
+// RESTART GAME throws away the run and overwrites the saved level, and it sits
+// one arrow-key press from its neighbours, so it asks twice: the first press
+// arms it, the second commits. Arming expires on a timer rather than on a menu
+// lifecycle hook, so no other row has to know this row exists.
+const RESTART_CONFIRM_MS = 4000;
+let restartArmedAt = -Infinity;
+const restartArmed = () => performance.now() - restartArmedAt < RESTART_CONFIRM_MS;
 
 const MENU_ROWS = [
   {
@@ -146,11 +157,6 @@ const MENU_ROWS = [
     change: () => { jukebox.active = true; menu.open = false; },
   },
   {
-    label: "LEVEL",
-    value: () => String(state.level),
-    change: (d) => setLevel(state, clamp(state.level + d, 1, MAX_LEVEL)),
-  },
-  {
     label: "TONE",
     value: () => prefs.tone.toUpperCase(),
     change: (d) => { prefs.tone = cycle(TONES, prefs.tone, d); station.setTone(prefs.tone); },
@@ -161,11 +167,35 @@ const MENU_ROWS = [
     change: (d) => { prefs.volume = clamp(prefs.volume + d, 0, DIAL_MAX); station.setVolume(prefs.volume / DIAL_MAX); },
   },
   {
-    // Tap to play the winning tones; value shows the live audio state so a
-    // silent device tells us whether the context is running or suspended.
-    label: "SOUND TEST",
-    value: () => (station.debug().ctxState ?? "off").toUpperCase(),
-    change: () => station.testTone(),
+    // The maze is generated from this, so two players on the same code walk the
+    // same rooms. Editing is one character at a time because the row only has a
+    // `<` and a `>` to work with: this row cycles the marked character, the next
+    // one moves the mark. `?seed=CODE` loads someone else's outright.
+    label: "SEED",
+    value: () => markSeedChar(encodeSeed(state.seed), seedPos),
+    change: (d) => setSeed(state, decodeSeed(cycleSeedChar(encodeSeed(state.seed), seedPos, d || 1))),
+  },
+  {
+    label: "SEED CHAR",
+    value: () => `${seedPos + 1} OF ${SEED_LEN}`,
+    change: (d) => { seedPos = (seedPos + (d || 1) + SEED_LEN) % SEED_LEN; },
+  },
+  {
+    // Same level, fresh maze — the way out of a run that has wandered past the
+    // point where the readout can guide it back.
+    label: "RESTART LEVEL",
+    value: () => "GO",
+    change: () => { setLevel(state, state.level); menu.open = false; },
+  },
+  {
+    label: "RESTART GAME",
+    value: () => (restartArmed() ? "SURE?" : "GO"),
+    change: () => {
+      if (!restartArmed()) { restartArmedAt = performance.now(); return; }
+      restartArmedAt = -Infinity;
+      setLevel(state, 1);
+      menu.open = false;
+    },
   },
 ];
 
@@ -245,7 +275,12 @@ function handleMove(dir) {
   const panel = activePanel();
   if (panel) { rowsNav(panel.rows, panel.holder, dir); return; }
   if (title.open) return; // the splash has no movement, only its buttons
+  // Any move that grows the audible count gets confirmed on the next spoken digit
+  // rather than at the end of the pass (see station.captured). Keyed off the count
+  // itself, not the event tag, so advancing and walking a stray back both qualify.
+  const heard = state.score;
   const ev = tryMove(state, dir);
+  if (state.score > heard) station.captured();
   if (ev === "win") station.victory();
   else if (ev === "reset") station.gate();
 }
@@ -322,22 +357,6 @@ function applyCrtNoise() {
   if (crt) Object.assign(crt.config, crtNoiseConfig());
 }
 
-// --- server heartbeat -------------------------------------------------------
-// A static client can't otherwise tell the dev server died; ping it and flag a
-// lost connection so the loop can overlay <LOST CONNECTION>. Any HTTP response
-// means it's up; only a network failure (server down / offline) trips it.
-
-let connectionLost = false;
-async function heartbeat() {
-  try {
-    await fetch(location.href, { method: "HEAD", cache: "no-store" });
-    connectionLost = false;
-  } catch {
-    connectionLost = true;
-  }
-}
-setInterval(heartbeat, 2000);
-
 // --- main loop ----------------------------------------------------------------
 
 const spectrum = new Uint8Array(station.SPECTRUM_BINS);
@@ -391,7 +410,6 @@ function frame(now) {
     if (menu.open) renderMenu(ctx, menu.index, MENU_ROWS.map((r) => ({ label: r.label, value: r.value() })), tint.fg, tint.bg);
   }
   if (prefs.burnIn) renderBurnIn(ctx, tint, startLevel, prefs.crt);
-  if (connectionLost) renderLostConnection(ctx, tint, now);
   requestAnimationFrame(frame);
 }
 requestAnimationFrame(frame);

@@ -1,12 +1,22 @@
 // Per-level difficulty dials. Levels 1-12 are authored (four zones: CLEAR
-// SIGNAL / DRIFT / INTERFERENCE / DEEP STATION); levels 13..MAX_LEVEL are
+// SIGNAL / DRIFT / INTERFERENCE / DEEP STATION); levels 13 and past are
 // generated — one digit longer each level, random digits, every digit voiced
 // in a random language. The transmission itself never lies (no decoys, no
 // dropped digits); difficulty comes from length, voice, repeats, and doors.
 
 import { subSeed } from "../core/rng.js";
 
-export const MAX_LEVEL = 32;
+// There is no last level. Levels 1-16 are the game as designed; the level counter
+// is a 4-bit field in the fiction, so 16 is the largest number it can hold, and
+// from OVERFLOW_FROM on the count has overflowed that field and is writing over
+// memory it does not own. NAMED_LEVELS is as far as the counter can still print a
+// number at all — past it the badge stops claiming one, and the levels keep going
+// for as long as the player does.
+//
+// Everything past OVERFLOW_FROM stays playable: the walls and the readout corrupt,
+// the transmission and the route do not.
+export const OVERFLOW_FROM = 17;
+export const NAMED_LEVELS = 64;
 
 // Honesty curve. Each level hides ONE contiguous unstable stretch of rooms; the
 // rest are pure. Two dials move with the level: how much of the level lies
@@ -99,7 +109,9 @@ const GRATE = "\uE003"; // cage: joints on both axes
 // the checkers, while INTERFERENCE's narrow ones leave the screen nearly all wall
 // and need the faintest shade to stay looked-at. Past about half ink a level
 // stops reading as a maze and becomes a sheet of amber with a slot in it.
-const WALL_RAMP = [BRICK, ASHLAR, PLATE, "▒", "🮕", "▚", "░", "╳", GRATE];
+// Exported so the overflow corruption can draw from the game's own wall set rather
+// than an invented one (see render/glitch.js).
+export const WALL_RAMP = [BRICK, ASHLAR, PLATE, "▒", "🮕", "▚", "░", "╳", GRATE];
 
 const DEEPEST_MIX = 6; // most glyphs one level's walls will draw from
 
@@ -138,27 +150,99 @@ const TABLE = [
   { digits: 10, language: "babel", repeats: 2, forwardDoors: 3, interval: BRISK, noise: { wash: 0.7, burst: 1 }, corridorChance: 0.4, theme: DEEP_STATION },
 ].map((row, i) => ({ level: i + 1, ordered: true, ...row }));
 
+// The message grows one digit per level and never stops, so at a fixed cadence the
+// time to hear a whole readout back grows with it. The player waits for a full pass
+// in every room, which makes a level's cost climb as the square of its length — and
+// nearly all of that is dead air, not difficulty.
+//
+// So the gap closes in proportion to how much there is to read. That holds a pass
+// roughly constant however long the message gets, turns the level's cost back into
+// something linear, and makes the station sound like it is running out of time to
+// finish. The floor is set where the digits overlap outright: the voice samples
+// average 1.08s, so RAPID's own 600ms minimum already slurs them, and this bottoms
+// out well inside that — the station coming apart is the point.
+const PLATEAU_DIGITS = 14; // digits at level 16 — the last message RAPID is tuned for
+const CADENCE_FLOOR = 1 / 3; // never tighter than a third of RAPID
+
+// How fast the screen rots past the overflow: 0 at OVERFLOW_FROM, 1 after this many
+// levels, and pinned there. Its own constant rather than NAMED_LEVELS, which is the
+// badge's naming ceiling — how far the counter can count and how fast the picture
+// falls apart are unrelated decisions, and sharing a number silently ties them.
+const CORRUPTION_RAMP = 48;
+
+// A readout has two kinds of silence, and they do different work: the gap between
+// the repeats of one number, and the gap between one number and the next. Holding
+// the repeats close and the numbers apart is what lets a listener count *numbers*
+// instead of utterances — it is also how a real station reads, in groups.
+//
+// These floors were set by ear against the shipped voice samples (see gap-lab.html,
+// which auditions a number in groups of four through this exact audio chain). The
+// samples run 0.60s to 1.63s, so at any gap this tight the digits already overlap;
+// the floor is not "no overlap" but the point where four repeats stop being
+// countable as four. Below them the crank-down is free to keep tightening; here it
+// stops, however long the message gets.
+export const GAP_FLOOR = { repeat: 390, group: 780 };
+
+// How corrupt a level's picture is, 0..1 (see render/glitch.js). Lives here because
+// this is where a level number becomes a dial — honesty, walls, cadence, noise and
+// doors all resolve in this module and arrive on the spec, and corruption is no
+// different for being drawn rather than heard.
+export function corruptionAt(level) {
+  if (level < OVERFLOW_FROM) return 0;
+  return Math.min(1, (level - OVERFLOW_FROM + 1) / CORRUPTION_RAMP);
+}
+
+// The slice of a level spec the station reads to speak it. Assembled in one place so
+// the audio takes its cadence from the spec rather than from a hand-copied subset:
+// a second gap was once added here and the readout kept forwarding only the first,
+// computing the tighter gap correctly and then discarding it. Deliberately a subset —
+// digits, honesty and theme are none of the audio's business.
+export function readoutCadence(spec) {
+  return {
+    repeats: spec.repeats,
+    interval: spec.interval,
+    repeatInterval: spec.repeatInterval,
+    noise: spec.noise,
+  };
+}
+
+// The two gaps for a message of `digits`, scaled by the same crank-down and then
+// held at their floors.
+export function overflowGaps(digits) {
+  const k = Math.min(1, Math.max(CADENCE_FLOOR, PLATEAU_DIGITS / digits));
+  const scaled = (floor) => {
+    const q = (v) => Math.round((v * k) / 50) * 50;
+    const min = Math.max(floor, q(RAPID.min));
+    return { min, max: Math.max(min, q(RAPID.max)), step: Math.max(50, q(RAPID.step)) };
+  };
+  return { interval: scaled(GAP_FLOOR.group), repeatInterval: scaled(GAP_FLOOR.repeat) };
+}
+
 export function levelSpec(level) {
-  if (!Number.isInteger(level) || level < 1 || level > MAX_LEVEL) {
+  if (!Number.isInteger(level) || level < 1) {
     throw new Error(`level out of range: ${level}`);
   }
+  const digits = 10 + (level - TABLE.length);
   const spec =
     level <= TABLE.length
       ? TABLE[level - 1]
       : {
           level,
-          digits: 10 + (level - TABLE.length),
+          digits,
           language: "babel",
           ordered: false,
           repeats: 2,
           forwardDoors: 3,
-          interval: RAPID,
+          // Past the overflow the two gaps part company; before it, one gap does
+          // both jobs exactly as the authored levels always have.
+          ...(level >= OVERFLOW_FROM ? overflowGaps(digits) : { interval: RAPID }),
           noise: { wash: 0.7, burst: 1 },
           corridorChance: 0.35,
           theme: DEEP_STATION,
         };
-  // The zone supplies the corridor width, the level its own wall surface.
-  const themed = { ...spec, theme: { ...spec.theme, wall: wallFor(level) } };
+  // The zone supplies the corridor width, the level its own wall surface and how far
+  // its picture has come apart.
+  const themed = { ...spec, corruption: corruptionAt(level), theme: { ...spec.theme, wall: wallFor(level) } };
   // A hand-authored `honesty` on a row wins; otherwise the curve fills it in.
   return themed.honesty ? themed : { ...themed, honesty: honestyCurve(level, themed.digits) };
 }

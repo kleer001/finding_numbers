@@ -85,7 +85,7 @@ page, below *Visibility & access* — widen the window if you'd rather see it be
 - **Cover image** (required): `docs/img/cover.png` — 630×500, itch's recommended size at
   the required 315:250 aspect ratio.
 - **Screenshots** (the *add screenshots* button under the cover): `docs/img/gameplay.png`,
-  `jukebox.png`, `signal-lost.png`, `light-mode.png`, `preferences.png`. Any size is fine;
+  `jukebox.png`, `light-mode.png`, `preferences.png`. Any size is fine;
   itch suggests 3–5.
 - Screenshots only render on the public page if the theme puts them there: **View page →
   Edit theme → Layout → Sidebar**. Any other layout hides them.

@@ -37,10 +37,17 @@ body {
 }
 
 /* Match by element, not #game: the CRT filter swaps in its own canvas that
-   carries no id, and it must scale down on phones too. */
+   carries no id, and it must scale on phones too.
+
+   The canvas is a fixed 800x600 buffer; this grows it to fill whichever axis
+   runs out first. Left at its intrinsic size it sits as a small bright island
+   in a black field on a desktop monitor, which argues against a game about
+   being inside the screen. 128vh is 96vh at the 4:3 buffer ratio, so the two
+   terms of the min() are the same box measured off different axes, and
+   `height: auto` keeps the ratio without restating it. */
 #stage canvas {
   background: #000;
   image-rendering: pixelated;
-  max-width: 100vw;
-  max-height: 96vh;
+  width: min(100vw, 128vh);
+  height: auto;
 }

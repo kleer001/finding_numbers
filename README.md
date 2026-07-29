@@ -49,6 +49,9 @@ The whole game is a number station built in WebAudio — many voices, a
 brown-noise dread that circles the signal without ever swallowing it, and a dial
 tuned to frequencies that really broadcast into the dark.
 
+The station greets you before your first step and drifts between tongues as you
+play.
+
 **Jukebox mode** plays it on its own, no maze: tune the transmitter and let it run.
 
 </td>
@@ -68,10 +71,11 @@ One font, one phosphor color, one glyph grid — a text-mode monitor bent throug
 WebGL CRT filter, the signal scrolling as a live spectrogram in the HUD. Dial the
 decay up until the picture barely holds.
 
-Every level wears its own walls: brick, dressed stone, riveted plate, three
-scales of checker, static, shear, cage. The game ships the font that draws them
-(`make_font.py` builds it), because no stock face has the glyphs and a fallback
-would put a second typeface in the middle of the grid.
+The early levels each wear their own walls in turn — brick, dressed stone,
+riveted plate, three scales of checker, static, shear, cage — and once the ramp
+runs out, deeper levels stop holding one surface and mix them. The game ships the
+font that draws them (`make_font.py` builds it), because no stock face has the
+glyphs and a fallback would put a second typeface in the middle of the grid.
 
 </td>
 <td width="66%" valign="top">
@@ -83,27 +87,16 @@ would put a second typeface in the middle of the grid.
 </td>
 </tr>
 
-<tr>
-<td width="34%" valign="top">
-
-### Multilingual signal — and warnings
-
-The station greets you before your first step, and drifts between tongues as you
-play. When it loses you, it says so — in all of them.
-
-</td>
-<td width="66%" valign="top">
-
-<img src="docs/img/signal-lost.png" width="600" alt="A SIGNAL LOST warning in Russian — СИГНАЛ ПОТЕРЯН">
-
-</td>
-</tr>
 </table>
 
-### 32 levels of decay
+### 16 levels of decay
 
-It gets stranger the deeper you go — other tongues, more doors, the walls losing
-their nerve. Thirty-two levels down, the signal can barely hold itself together.
+It gets stranger the deeper you go — a longer message to capture, other tongues,
+a faster readout, more of the dread under it, and more of each level you can't
+trust to stay put. Sixteen levels down, the signal can barely hold itself
+together.
+
+Whether anything is under the sixteenth is not documented.
 
 ---
 
@@ -122,9 +115,10 @@ their nerve. Thirty-two levels down, the signal can barely hold itself together.
 - **[P]** (top-right corner) — open preferences; menu rows are tappable
   (`<` / `>` steppers, tap outside to close)
 
-Preferences — CRT effect, CRT noise (0–5), on-screen numbers, tint (amber/green),
-mode (dark/light), jukebox, and a level select (1–32) for experts — are saved
-locally along with your current level.
+Preferences — CRT effect, CRT noise (0–5), burn-in, on-screen numbers, tint
+(amber/green), mode (dark/light), jukebox, noise tone, volume, the run's seed,
+and restart level / restart game — are saved locally along with your current
+level. On-screen numbers start **off**: the station is meant to be the compass.
 
 ## How to play
 

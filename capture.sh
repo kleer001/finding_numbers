@@ -10,11 +10,13 @@
 # src/demo.js and stops recording on its own; without one you play by hand and
 # stop with 'q'+Enter or Ctrl-C. Either way the game window stays open after.
 #
-# Usage: ./capture.sh [-s] [-t SECONDS] [--seed N] [clip] [output_dir]
+# Usage: ./capture.sh [-s] [-t SECONDS] [--seed CODE] [clip] [output_dir]
 #   -s           start recording immediately (manual takes only; a clip always
 #                starts immediately and waits for the recorder before playing)
 #   -t SECONDS   override the clip's recording length
-#   --seed N     pin the maze layout, so the same take can be re-shot verbatim
+#   --seed CODE  pin the maze layout, so the same take can be re-shot verbatim.
+#                A four-character seed code (0-9A-Z) as shown in preferences; a
+#                plain number still works and still pins deterministically.
 #   clip         one of: title core-loop wrong-turn room-moved pulse crt-decay
 #                jukebox   (see video_shot_list.md)
 #   output_dir   where the MP4 lands (default: current dir)

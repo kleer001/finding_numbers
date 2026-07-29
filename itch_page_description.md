@@ -8,8 +8,8 @@ editor has an **Edit as HTML** toggle if you'd rather paste markup; the markdown
 maps cleanly onto what it allows.
 
 - **Cover image**: `docs/img/cover.png` (630×500) → *Edit game → Cover image*.
-- **Screenshots**: add `docs/img/gameplay.png`, `jukebox.png`, `signal-lost.png`,
-  `light-mode.png`, `preferences.png` under *Screenshots*.
+- **Screenshots**: add `docs/img/gameplay.png`, `jukebox.png`, `light-mode.png`,
+  `preferences.png` under *Screenshots*.
 - **Trailer**: `clips/out/trailer.mp4` (~44s, built by `./post.sh`). itch takes a hosted
   link rather than a file -- see `itch_publish_howto.md` section 6b.
 - **Tagline** (the one-liner under the title): `Navigate a maze by ear — a number station bleeding through the static, and rooms that don't stay where you left them.`
@@ -47,11 +47,14 @@ reach the source of the transmission — it will pull you somewhere new.
 - **A character-mode CRT** — one font, one phosphor color, one glyph grid, bent through
   a WebGL CRT filter, with the signal scrolling as a live spectrogram. Dial the decay up
   until the picture barely holds.
-- **Walls that tell you how deep you are** — every level wears its own: brick near the
-  surface, then dressed stone, riveted plate, checkers that coarsen as they go, static,
-  shear, and finally a cage.
-- **32 levels of decay** — six languages, more doors, and walls that lose their nerve
-  the deeper you go. Thirty-two levels down, the signal can barely hold itself together.
+- **Walls that change under you** — the early levels each wear their own surface in
+  turn: brick near the top, then dressed stone, riveted plate, checkers that coarsen as
+  they go, static, shear, and a cage. Deeper down the walls stop holding one surface and
+  mix.
+- **16 levels of decay** — six languages, a longer message and a faster readout the
+  deeper you go, more dread under the voice, and more of each level you can't trust to
+  stay put. Sixteen levels down, the signal can barely hold itself together. Whether
+  anything is under the sixteenth is not documented.
 
 ## Controls
 

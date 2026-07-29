@@ -43,6 +43,7 @@ export function debug() {
     ctxState: ctx && ctx.state,
     langsLoaded: Object.keys(buffers).filter((l) => buffers[l].every(Boolean)).length,
     digitsPlayed: counter,
+    readIdx,
     noise: washLevel && {
       wash: washLevel.gain.value,
       burst: burstGain.gain.value,
@@ -419,8 +420,40 @@ function playDigit(entry) {
   src.start();
 }
 
+// Where the cursor has to sit for the next digit spoken to be the newest one.
+// Pure so the arithmetic can be tested without an AudioContext.
+export function capturedIdx(count, repeats) {
+  return (count - 1) * repeats;
+}
+
+// A digit was just captured. The readout runs strictly in order and wraps, so the
+// newest digit is the last one spoken in a pass — which means confirming a correct
+// turn costs the player half a readout on average, and that wait grows with the
+// message. Deep levels were mostly spent waiting for a number to come round.
+//
+// Moving the cursor onto the new digit pays that confirmation at once and then
+// carries on in order, so the message is still read whole, in sequence, the same
+// number of times. Nothing is dropped, reordered or said less often — the only
+// thing that changes is how long the player stands still to learn what the station
+// already knows.
+export function captured() {
+  const { digits, repeats } = getReadout();
+  if (digits.length) readIdx = capturedIdx(digits.length, repeats);
+}
+
+// Which silence goes before the next utterance. `idx` is the cursor for the digit
+// about to be spoken, so it starting a fresh multiple of `repeats` means a new
+// number is beginning and gets the wider group gap; anything else is a repeat of
+// the number already sounding and gets the tighter one. A readout with no separate
+// repeat gap (every authored level) falls back to its one interval unchanged.
+export function gapFor(idx, repeats, interval, repeatInterval) {
+  if (!repeatInterval) return interval; // authored levels: one gap does both jobs
+  return idx % repeats === 0 ? interval : repeatInterval; // repeats === 1 -> always interval
+}
+
 function scheduleNext() {
-  const wait = pickInterval(getReadout().interval);
+  const r = getReadout();
+  const wait = pickInterval(gapFor(readIdx, r.repeats, r.interval, r.repeatInterval));
   scheduleBurst(wait);
   setTimeout(() => {
     const { digits, repeats } = getReadout();
@@ -443,13 +476,6 @@ export const VICTORY_NOTES = [523.25, 587.33, 659.25, 783.99, 880, 1046.5, 1174.
 
 // Stepping over the number gate is the winning climb running the other way.
 export const GATE_NOTES = [...VICTORY_NOTES].reverse();
-
-// Prefs SOUND TEST: resume the context (mobile may have suspended it), then
-// play the winning tones once it is actually running.
-export function testTone() {
-  if (!ctx) return;
-  ctx.resume().then(victory);
-}
 
 export function victory() {
   arpeggio(VICTORY_NOTES);
