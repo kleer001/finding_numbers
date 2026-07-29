@@ -1,0 +1,284 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1" />
+<title>digit gap tuner — finding_numbers</title>
+<style>
+  :root { color-scheme: light; }
+  html, body { height: auto; background: #fafafa; }
+  body { margin: 0; font-family: system-ui, sans-serif; color: #1a1a1a;
+         display: flex; flex-wrap: wrap; gap: 30px; padding: 26px; align-items: flex-start; }
+  .panel { flex: 1 1 400px; min-width: 320px; max-width: 520px; }
+  h1 { font-size: 20px; margin: 0 0 6px; }
+  h2 { font-size: 12px; margin: 24px 0 10px; text-transform: uppercase;
+       letter-spacing: .09em; color: #444; border-bottom: 1px solid #ddd; padding-bottom: 5px; }
+  p.sub { margin: 0 0 18px; color: #555; font-size: 13px; line-height: 1.55; }
+  .row { margin: 16px 0; }
+  .row label { display: flex; justify-content: space-between; align-items: baseline;
+               font-size: 13px; font-weight: 600; margin-bottom: 6px; gap: 10px; }
+  .row label .val { font-family: ui-monospace, monospace; color: #a15c00; font-weight: 400; }
+  .row .hint { font-size: 12px; color: #666; line-height: 1.45; margin: 4px 0 0; }
+  input[type=range] { width: 100%; }
+  input[type=range].big { height: 34px; }
+  select, input[type=number] { font: inherit; font-size: 13px; padding: 3px 6px; }
+  button { font: inherit; font-size: 14px; padding: 9px 20px; border: 1px solid #999;
+           border-radius: 7px; background: #fff; cursor: pointer; font-weight: 600; }
+  button:hover { background: #f0f0f0; }
+  button.go { background: #1a1a1a; color: #fff; border-color: #1a1a1a; }
+  button.small { font-size: 12px; padding: 4px 10px; font-weight: 400; }
+  .controls { display: flex; gap: 10px; align-items: center; flex-wrap: wrap; margin: 18px 0; }
+  .pulse { display: flex; gap: 7px; margin: 16px 0 8px; }
+  .dot { width: 34px; height: 34px; border-radius: 6px; border: 2px solid #bbb; background: #fff;
+         display: grid; place-items: center; font: 600 13px ui-monospace, monospace; color: #999; }
+  .dot.lit { background: #1a1a1a; border-color: #1a1a1a; color: #fff; }
+  table { border-collapse: collapse; font-size: 12px; width: 100%; }
+  th, td { text-align: left; padding: 4px 8px; border-bottom: 1px solid #e6e6e6; }
+  th { color: #555; font-weight: 600; }
+  td.n, th.n { text-align: right; font-family: ui-monospace, monospace; }
+  .over { color: #a11500; font-weight: 600; }
+  .ok { color: #1c6b1c; }
+  .verdict { background: #fff; border: 1px solid #ddd; border-radius: 8px; padding: 14px 16px; margin: 14px 0; }
+  .verdict .big { font-size: 26px; font-family: ui-monospace, monospace; margin-bottom: 4px; }
+  .scroll { max-height: 340px; overflow-y: auto; border: 1px solid #ddd; border-radius: 8px; }
+</style>
+</head>
+<body>
+
+<div class="panel">
+  <h1>Digit gap tuner</h1>
+  <p class="sub">
+    One digit, over and over, in groups of four, through the game's real audio chain —
+    the same band-limiting, saturation, ducking and deep-level noise bed a level-40
+    readout goes through. Find the tightest gap where you can still count four, and
+    tell me the number.
+  </p>
+  <p class="sub">
+    <b>Gap is onset to onset</b>, not silence between. The voice samples run
+    <b>0.60s to 1.63s</b> — every one of them longer than this slider's maximum — so at
+    any setting here the digits overlap. There is no "clean" end of this dial; the
+    question is only how deep the stack can go before four stops being four.
+  </p>
+
+  <div class="controls">
+    <button id="start" class="go">▶ Start</button>
+    <button id="stop">■ Stop</button>
+  </div>
+
+  <div class="pulse" id="pulse"></div>
+  <p class="hint" id="pulsenote" style="font-size:12px;color:#666;margin:0">
+    Four lamps, one group. The gap before lamp 1 is the group gap.
+  </p>
+
+  <div class="row" style="margin-top:22px">
+    <label>GAP BETWEEN DIGITS <span class="val" id="v-gap">—</span></label>
+    <input id="gap" class="big" type="range" min="100" max="500" step="10" value="390" />
+    <p class="hint">Set by ear at <b>390 ms</b>, and that is now the floor in
+      <code>GAP_FLOOR.repeat</code> — the tightest the station will read the repeats of
+      one number however deep the level goes. Drag below it to hear why.</p>
+  </div>
+
+  <div class="row">
+    <label>GAP BETWEEN GROUPS <span class="val" id="v-group">—</span></label>
+    <input id="groupgap" type="range" min="200" max="2000" step="10" value="780" />
+    <p class="hint">Set by ear at <b>780 ms</b> — <code>GAP_FLOOR.group</code>, the gap
+      the game leaves before a new number begins.</p>
+  </div>
+
+  <h2>what you're listening to</h2>
+  <div class="row">
+    <label>voice <span class="val"></span></label>
+    <select id="lang"></select>
+    <select id="digit"></select>
+    <button id="worst" class="small">pick the longest sample</button>
+  </div>
+  <div class="row">
+    <label><input id="noise" type="checkbox" checked /> deep-level noise bed (wash 0.7, burst 1.0)</label>
+    <p class="hint">On by default because that is the condition the overflow levels
+      actually play under. Clean is easier to count and would flatter the answer.</p>
+  </div>
+  <div class="row">
+    <label>volume <span class="val" id="v-vol">4</span></label>
+    <input id="vol" type="range" min="0" max="5" step="1" value="4" />
+  </div>
+</div>
+
+<div class="panel">
+  <div class="verdict">
+    <div class="big" id="verdict-gap">—</div>
+    <div id="verdict-text" style="font-size:13px;line-height:1.6;color:#333">
+      Press start.
+    </div>
+  </div>
+
+  <h2>every sample against this gap</h2>
+  <p class="sub" style="margin-bottom:10px">
+    Measured in this page from the shipped WAVs. <b>Overlap</b> is how many copies of a
+    sample are sounding at once at the current gap — 1.0 means each finishes before the
+    next starts.
+  </p>
+  <div class="scroll">
+    <table>
+      <thead><tr><th>voice</th><th class="n">shortest</th><th class="n">longest</th><th class="n">overlap at gap</th></tr></thead>
+      <tbody id="table"></tbody>
+    </table>
+  </div>
+</div>
+
+<script type="module">
+import * as station from "./src/audio/station.js";
+import { LANGUAGES, DIAL_MAX } from "./src/game/config.js";
+
+const GROUP = 4; // digits per group, as asked
+const el = (id) => document.getElementById(id);
+
+const state = { digit: 4, lang: "english", running: false };
+
+// --- controls ---------------------------------------------------------------
+
+for (const l of LANGUAGES) {
+  const o = document.createElement("option");
+  o.value = l; o.textContent = l;
+  el("lang").appendChild(o);
+}
+for (let d = 0; d <= 9; d++) {
+  const o = document.createElement("option");
+  o.value = String(d); o.textContent = `digit ${d}`;
+  el("digit").appendChild(o);
+}
+el("lang").value = state.lang;
+el("digit").value = String(state.digit);
+
+el("lang").addEventListener("change", () => { state.lang = el("lang").value; sync(); });
+el("digit").addEventListener("change", () => { state.digit = Number(el("digit").value); sync(); });
+el("vol").addEventListener("input", () => {
+  station.setVolume(Number(el("vol").value) / DIAL_MAX);
+  el("v-vol").textContent = el("vol").value;
+});
+for (const id of ["gap", "groupgap", "noise"]) el(id).addEventListener("input", sync);
+
+// --- the readout the station reads ------------------------------------------
+//
+// digits is one entry and repeats is GROUP, so the station speaks the same number
+// four times and wraps — its own scheduler does the timing, which is the point:
+// this is the real chain, not a mock of it. The wait is chosen per utterance off
+// the cursor, so the first digit of a group gets the longer group gap.
+station.init(() => {
+  const idx = station.debug().readIdx ?? 0;
+  const ms = idx % GROUP === 0 ? Number(el("groupgap").value) : Number(el("gap").value);
+  return {
+    digits: [{ digit: state.digit, lang: state.lang }],
+    repeats: GROUP,
+    interval: { min: ms, max: ms, step: 1 }, // min === max: exact, no jitter
+    noise: el("noise").checked ? { wash: 0.7, burst: 1 } : { wash: 0, burst: 0 },
+  };
+});
+
+el("start").onclick = async () => {
+  await station.arm();
+  station.setVolume(Number(el("vol").value) / DIAL_MAX);
+  state.running = true;
+  measureAll();
+  sync();
+};
+el("stop").onclick = () => { station.setVolume(0); state.running = false; sync(); };
+
+// --- sample durations, measured here ----------------------------------------
+//
+// Playback goes through the game's chain; measuring only needs the decoded length,
+// so it uses a context of its own rather than reaching into the station's buffers.
+const durations = {}; // lang -> number[10]
+let measured = false;
+
+async function measureAll() {
+  if (measured) return;
+  const AC = window.AudioContext || window.webkitAudioContext;
+  const ctx = new AC();
+  await Promise.all(LANGUAGES.flatMap((lang) => {
+    durations[lang] = new Array(10).fill(0);
+    return Array.from({ length: 10 }, (_, n) =>
+      fetch(`assets/audio/${lang}_0${n}.wav`)
+        .then((r) => r.arrayBuffer())
+        .then((b) => ctx.decodeAudioData(b))
+        .then((buf) => { durations[lang][n] = buf.duration; }));
+  }));
+  ctx.close();
+  measured = true;
+  sync();
+}
+
+el("worst").onclick = () => {
+  if (!measured) return;
+  let best = { lang: state.lang, digit: state.digit, d: -1 };
+  for (const lang of LANGUAGES) {
+    durations[lang].forEach((d, n) => { if (d > best.d) best = { lang, digit: n, d }; });
+  }
+  state.lang = best.lang; state.digit = best.digit;
+  el("lang").value = best.lang; el("digit").value = String(best.digit);
+  sync();
+};
+
+// --- readout ----------------------------------------------------------------
+
+function sync() {
+  const gap = Number(el("gap").value);
+  el("v-gap").textContent = `${gap} ms`;
+  el("v-group").textContent = `${el("groupgap").value} ms`;
+
+  const cur = measured ? durations[state.lang][state.digit] : null;
+  el("verdict-gap").textContent = `${gap} ms`;
+
+  if (!measured) {
+    el("verdict-text").textContent = state.running
+      ? "Measuring samples…" : "Press start.";
+  } else {
+    const all = LANGUAGES.flatMap((l) => durations[l]);
+    const overlapping = all.filter((d) => d > gap / 1000).length;
+    const deepest = Math.max(...all) / (gap / 1000);
+    el("verdict-text").innerHTML =
+      `Current voice <b>${state.lang} ${state.digit}</b> runs <b>${cur.toFixed(3)}s</b>, `
+      + `so ${(cur / (gap / 1000)).toFixed(1)} copies sound at once.<br>`
+      + `<b>${overlapping} of ${all.length}</b> samples overlap at this gap; `
+      + `the worst stacks <b>${deepest.toFixed(1)}</b> deep.<br>`
+      + `One group of ${GROUP} lasts <b>${((GROUP - 1) * gap / 1000 + cur).toFixed(2)}s</b>.`;
+  }
+
+  const rows = LANGUAGES.map((lang) => {
+    const ds = durations[lang] ?? [];
+    if (!ds.length) return `<tr><td>${lang}</td><td class="n">—</td><td class="n">—</td><td class="n">—</td></tr>`;
+    const lo = Math.min(...ds), hi = Math.max(...ds);
+    const ov = hi / (gap / 1000);
+    const cls = ov > 1 ? "over" : "ok";
+    return `<tr><td>${lang}</td><td class="n">${lo.toFixed(2)}s</td>`
+      + `<td class="n">${hi.toFixed(2)}s</td>`
+      + `<td class="n ${cls}">${ov.toFixed(1)}×</td></tr>`;
+  });
+  el("table").innerHTML = rows.join("");
+}
+
+// --- group lamps ------------------------------------------------------------
+
+const dots = Array.from({ length: GROUP }, (_, i) => {
+  const d = document.createElement("div");
+  d.className = "dot";
+  d.textContent = String(i + 1);
+  el("pulse").appendChild(d);
+  return d;
+});
+
+let lastPlayed = -1;
+function tick() {
+  const dbg = station.debug();
+  if (dbg.digitsPlayed !== lastPlayed) {
+    lastPlayed = dbg.digitsPlayed;
+    const pos = ((dbg.readIdx ?? 1) - 1 + GROUP) % GROUP;
+    dots.forEach((d, i) => d.classList.toggle("lit", state.running && i === pos));
+  }
+  requestAnimationFrame(tick);
+}
+requestAnimationFrame(tick);
+
+sync();
+</script>
+</body>
+</html>

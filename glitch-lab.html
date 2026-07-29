@@ -1,0 +1,671 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1" />
+<title>overflow glitch lab — finding_numbers</title>
+<style>
+  /* The game's own face, declared here rather than by linking styles.css — that
+     sheet also styles body and would put the maze font through the whole page. */
+  @font-face {
+    font-family: "Station Grid";
+    src: url("assets/fonts/station-grid.woff2") format("woff2");
+    font-display: block;
+  }
+  :root { color-scheme: light; }
+  html, body { height: auto; background: #fafafa; }
+  body { margin: 0; font-family: system-ui, sans-serif; color: #1a1a1a;
+         display: flex; flex-wrap: wrap; gap: 28px; padding: 24px; align-items: flex-start; }
+  #stagewrap { flex: 1 1 640px; min-width: 320px; max-width: 860px; }
+  #stage { background: #000; width: 100%; height: auto; aspect-ratio: 4 / 3;
+           border: 1px solid #ccc; image-rendering: pixelated; display: block; }
+  .panel { flex: 1 1 340px; min-width: 300px; max-width: 460px; }
+  h1 { font-size: 19px; margin: 0 0 4px; }
+  h2 { font-size: 13px; margin: 26px 0 10px; text-transform: uppercase;
+       letter-spacing: .08em; color: #444; border-bottom: 1px solid #ddd; padding-bottom: 5px; }
+  p.sub { margin: 0 0 18px; color: #555; font-size: 13px; line-height: 1.55; }
+  .row { margin: 13px 0; }
+  .row label { display: flex; justify-content: space-between; align-items: baseline;
+               font-size: 13px; font-weight: 600; margin-bottom: 5px; gap: 10px; }
+  .row label .val { font-family: ui-monospace, monospace; color: #a15c00; font-weight: 400; }
+  .row .hint { font-size: 12px; color: #666; line-height: 1.45; margin: 3px 0 0; }
+  input[type=range] { width: 100%; }
+  .toggle { display: flex; align-items: center; gap: 8px; font-size: 14px; font-weight: 700; margin-top: 20px; }
+  .toggle input { width: 16px; height: 16px; }
+  fieldset { border: 1px solid #ddd; border-radius: 8px; padding: 4px 14px 14px; margin: 0 0 14px; }
+  fieldset[data-off="1"] { opacity: .45; }
+  legend { font-size: 13px; font-weight: 700; padding: 0 6px; }
+  .presets { display: flex; gap: 8px; flex-wrap: wrap; margin: 6px 0 20px; }
+  button { font: inherit; font-size: 13px; padding: 5px 11px; border: 1px solid #999;
+           border-radius: 6px; background: #fff; cursor: pointer; }
+  button:hover { background: #f0f0f0; }
+  button.active { background: #1a1a1a; color: #fff; border-color: #1a1a1a; }
+  select { font: inherit; font-size: 13px; padding: 3px 6px; }
+  .meta { display: flex; gap: 14px; align-items: center; flex-wrap: wrap; font-size: 13px; margin-bottom: 8px; }
+  pre { background: #f0efec; border: 1px solid #ddd; border-radius: 6px; padding: 10px 12px;
+        font-size: 12px; line-height: 1.5; overflow-x: auto; white-space: pre-wrap; word-break: break-word; }
+</style>
+</head>
+<body>
+
+<div id="stagewrap">
+  <canvas id="stage" width="800" height="600"></canvas>
+  <div class="meta" style="margin-top:12px">
+    <label>level <input id="level" type="number" min="1" max="64" value="40" style="width:60px" /></label>
+    <button id="reroll">re-roll room</button>
+    <label><input id="showcount" type="checkbox" /> show numbers</label>
+    <label><input id="freeze" type="checkbox" /> freeze motion</label>
+  </div>
+  <p class="sub" style="margin-top:10px">
+    The frame under the glitch is the real renderer with the real level spec — walls,
+    corridor width and HUD all come from <code>levelSpec()</code>. What the shipped
+    game adds on top of this is the WebGL CRT pass, which softens everything here by
+    roughly one notch.
+  </p>
+  <h2>settings</h2>
+  <pre id="dump"></pre>
+</div>
+
+<div class="panel">
+  <h1>Overflow glitch lab</h1>
+  <p class="sub">
+    Candidate treatments for levels past the authored range — the arcade board that
+    keeps running after it has walked off the end of its own level table. Two families:
+    <b>static corruption</b>, which is set once per room and holds still (this is what
+    the Pac-Man 256 screen actually looks like), and <b>raster faults</b>, which move.
+    Static reads as a broken machine; motion reads as a broken signal. Mixing too much
+    of both reads as neither.
+  </p>
+
+  <div class="presets" id="presets"></div>
+
+  <div class="row">
+    <label>OVERFLOW DEPTH <span class="val" id="v-depth"></span></label>
+    <input id="depth" type="range" min="0" max="100" value="45" />
+    <p class="hint">Master scale on every enabled effect. This is the dial a level number
+      would drive: level 17 sits near the bottom, and it climbs from there.</p>
+  </div>
+
+  <fieldset id="fs-sacred">
+    <legend><label class="toggle" style="margin:0"><input id="on-sacred" type="checkbox" checked /> SACRED PATHWAYS</label></legend>
+    <p class="hint" style="margin:2px 0 10px">
+      Two guarantees, both required for the level to stay playable. Corruption is
+      <b>masked off</b> the walkable cells, and then the walkable cells are
+      <b>repainted last</b>, after every other pass — so no effect, in any combination,
+      can put ink where the player has to walk.
+    </p>
+    <div class="row">
+      <label><input id="edge-guard" type="checkbox" checked /> guard the corridor lip</label>
+      <p class="hint">Also protects the ring of wall cells touching a corridor. Without
+        this, DROPOUT punches holes in the wall right at a corridor edge and they read as
+        doors — a hole you cannot walk through is a lie the player can't act on, which is
+        a different thing from a room that moves its exit.</p>
+    </div>
+    <div class="row">
+      <label><input id="show-mask" type="checkbox" /> show the protected mask</label>
+      <p class="hint">Diagnostic only — outlines what corruption may not touch.</p>
+    </div>
+  </fieldset>
+
+  <h2>static corruption — set per room, holds still</h2>
+
+  <fieldset id="fs-rot">
+    <legend><label class="toggle" style="margin:0"><input id="on-rot" type="checkbox" checked /> TILE ROT</label></legend>
+    <div class="row">
+      <label>density <span class="val" id="v-rot"></span></label>
+      <input id="rot" type="range" min="0" max="100" value="35" />
+    </div>
+    <div class="row">
+      <label>region <span class="val"></span></label>
+      <select id="rot-region">
+        <option value="scatter">scattered over the whole screen</option>
+        <option value="right" selected>right half only (Pac-Man 256)</option>
+        <option value="band">a horizontal band</option>
+        <option value="corner">bottom-right quadrant</option>
+      </select>
+      <p class="hint">Pac-Man's level-256 screen corrupts one contiguous half and leaves
+        the rest playable. A contiguous region reads as a memory fault; scatter reads as
+        noise.</p>
+    </div>
+    <div class="row">
+      <label>churn <span class="val" id="v-churn"></span></label>
+      <input id="churn" type="range" min="0" max="100" value="0" />
+      <p class="hint">0 = frozen: the same cells stay wrong for as long as you stand in
+        the room. Above 0 the corrupt set re-rolls, which stops reading as a broken board
+        and starts reading as television static.</p>
+    </div>
+  </fieldset>
+
+  <fieldset id="fs-drop">
+    <legend><label class="toggle" style="margin:0"><input id="on-drop" type="checkbox" /> DROPOUT</label></legend>
+    <div class="row">
+      <label>density <span class="val" id="v-drop"></span></label>
+      <input id="drop" type="range" min="0" max="100" value="20" />
+      <p class="hint">Wall cells blanked to the page color — the wall eaten through in
+        patches. Cheapest effect here, and the only one that changes what the maze
+        <i>looks</i> passable through without changing where the doors are.</p>
+    </div>
+  </fieldset>
+
+  <fieldset id="fs-clash">
+    <legend><label class="toggle" style="margin:0"><input id="on-clash" type="checkbox" /> ATTRIBUTE CLASH</label></legend>
+    <div class="row">
+      <label>density <span class="val" id="v-clash"></span></label>
+      <input id="clash" type="range" min="0" max="100" value="18" />
+    </div>
+    <div class="row">
+      <label>block size <span class="val" id="v-clashsize"></span></label>
+      <input id="clashsize" type="range" min="1" max="6" value="2" />
+      <p class="hint">Reverse-video patches: ink and page swapped over a block of cells,
+        the way an 8-bit machine corrupts colour RAM independently of the character RAM.</p>
+    </div>
+  </fieldset>
+
+  <fieldset id="fs-hud">
+    <legend><label class="toggle" style="margin:0"><input id="on-hud" type="checkbox" checked /> READOUT DECAY</label></legend>
+    <div class="row">
+      <label>captured digits <span class="val" id="v-huddigits"></span></label>
+      <input id="huddigits" type="range" min="3" max="48" value="22" />
+      <p class="hint">How many numbers the station has read back. The status field is
+        <b>five columns wide</b>, so anything past about five digits already has nowhere
+        to go — the readout runs out of box on its own, well before any effect is applied.</p>
+    </div>
+    <div class="row">
+      <label>LV badge notation <span class="val"></span></label>
+      <select id="badge-mode">
+        <option value="plain">plain — LV 40, the counter still works</option>
+        <option value="hex" selected>HEX — LV 28 at level 40; each hex digit is 4 bits</option>
+        <option value="wrap">4-BIT WRAP — the count rolls at 16 and starts again</option>
+        <option value="spill">4-BIT + SPILL — wraps, and the 5th bit shows as a glyph</option>
+      </select>
+      <p class="hint">The counter is a 4-bit field, so 16 is the largest number it can
+        hold. What it prints from 17 on is the whole conceit in five characters.</p>
+    </div>
+    <div class="row">
+      <label>readout mode <span class="val"></span></label>
+      <select id="hud-mode">
+        <option value="overrun" selected>OVERRUN — let it spill across the waterfall</option>
+        <option value="xx">XX / XX — the count stops being a number</option>
+        <option value="garble">GARBLE — characters rot into the wall set</option>
+        <option value="wrap">WRAP — the string folds down into the HUD band</option>
+      </select>
+    </div>
+    <div class="row">
+      <label>severity <span class="val" id="v-hud"></span></label>
+      <input id="hud" type="range" min="0" max="100" value="60" />
+    </div>
+    <div class="row">
+      <label><input id="hud-badge" type="checkbox" /> corrupt the LV badge too</label>
+      <p class="hint">The level number is the one thing on screen that claims the machine
+        still knows where it is.</p>
+    </div>
+  </fieldset>
+
+  <h2>raster faults — moving</h2>
+
+  <fieldset id="fs-shear">
+    <legend><label class="toggle" style="margin:0"><input id="on-shear" type="checkbox" checked /> ROW SHEAR</label></legend>
+    <div class="row">
+      <label>amount <span class="val" id="v-shear"></span></label>
+      <input id="shear" type="range" min="0" max="100" value="30" />
+    </div>
+    <div class="row">
+      <label>rate <span class="val" id="v-shearrate"></span></label>
+      <input id="shearrate" type="range" min="0" max="100" value="25" />
+      <p class="hint">Character rows slid sideways, horizontal sync giving up. The CRT
+        filter already has a hairline version of this; the slider goes far past it.</p>
+    </div>
+  </fieldset>
+
+  <fieldset id="fs-roll">
+    <legend><label class="toggle" style="margin:0"><input id="on-roll" type="checkbox" /> VERTICAL ROLL</label></legend>
+    <div class="row">
+      <label>speed <span class="val" id="v-roll"></span></label>
+      <input id="roll" type="range" min="0" max="100" value="20" />
+      <p class="hint">The picture creeps upward and wraps — vertical hold slipping. Legible
+        at low speed, unplayable above about 40, and the tear line is the tell.</p>
+    </div>
+  </fieldset>
+
+  <fieldset id="fs-ghost">
+    <legend><label class="toggle" style="margin:0"><input id="on-ghost" type="checkbox" /> GHOST</label></legend>
+    <div class="row">
+      <label>persistence <span class="val" id="v-ghost"></span></label>
+      <input id="ghost" type="range" min="0" max="100" value="35" />
+      <p class="hint">The previous frame left on the phosphor, offset a little. Reads as a
+        dying tube rather than a dying program — closest to the existing BURN-IN pref, so
+        the two may not be worth having both.</p>
+    </div>
+  </fieldset>
+</div>
+
+<script type="module">
+import { CANVAS, CHAR, GRID, SCREEN, TINTS, PALETTE, GLYPH, FONT_STACK } from "./src/game/config.js";
+import { createState, update } from "./src/game/state.js";
+import { levelSpec, NAMED_LEVELS as MAX_LEVEL } from "./src/game/levels.js";
+import { render } from "./src/render/render.js";
+import { makeRng, subSeed } from "./src/core/rng.js";
+
+const view = document.getElementById("stage");
+const vctx = view.getContext("2d", { willReadFrequently: true });
+
+const layer = (w = CANVAS.W, h = CANVAS.H) => {
+  const c = document.createElement("canvas");
+  c.width = w; c.height = h;
+  return c.getContext("2d");
+};
+const clean = layer();   // the honest frame
+const prev = layer();    // last composited frame, for GHOST
+
+// Every wall glyph the game can draw, harvested from the real level table, plus
+// the digits — a corrupt cell should pull from the machine's own character ROM,
+// not from an invented set.
+const GLYPH_POOL = (() => {
+  const set = new Set("0123456789".split(""));
+  for (let l = 1; l <= MAX_LEVEL; l++) {
+    const w = levelSpec(l).theme.wall;
+    for (const g of Array.isArray(w) ? w : [w]) set.add(g);
+  }
+  return [...set];
+})();
+
+// Dark-mode amber, assembled the way the frame loop assembles it: phosphor ink
+// on a black page. TINTS carries no `bg` of its own.
+const tint = { fg: TINTS.amber.fg, bg: PALETTE.bg, rgb: TINTS.amber.rgb };
+const spectrum = new Uint8Array(512);
+let state = null;
+let roomNonce = 0;
+
+function newRoom() {
+  const lv = Math.min(MAX_LEVEL, Math.max(1, Number(el.level.value) || 1));
+  state = createState((Math.random() * 1e6) | 0 || 7, lv);
+  state.started = true;
+  roomNonce++;
+}
+
+// --- controls ---------------------------------------------------------------
+
+const el = {};
+for (const id of ["level", "reroll", "showcount", "freeze", "depth", "dump", "presets",
+  "on-rot", "rot", "rot-region", "churn", "on-drop", "drop", "on-clash", "clash", "clashsize",
+  "on-shear", "shear", "shearrate", "on-roll", "roll", "on-ghost", "ghost",
+  "on-hud", "huddigits", "hud-mode", "hud", "hud-badge", "badge-mode",
+  "on-sacred", "edge-guard", "show-mask",
+  "v-depth", "v-rot", "v-churn", "v-drop", "v-clash", "v-clashsize", "v-shear",
+  "v-shearrate", "v-roll", "v-ghost", "v-hud", "v-huddigits"]) {
+  el[id] = document.getElementById(id);
+}
+const num = (id) => Number(el[id].value) / 100;
+
+function settings() {
+  return {
+    depth: num("depth"),
+    tileRot: el["on-rot"].checked ? { density: num("rot"), region: el["rot-region"].value, churn: num("churn") } : null,
+    dropout: el["on-drop"].checked ? { density: num("drop") } : null,
+    clash: el["on-clash"].checked ? { density: num("clash"), block: Number(el.clashsize.value) } : null,
+    readout: el["on-hud"].checked ? { digits: Number(el.huddigits.value), mode: el["hud-mode"].value,
+      severity: num("hud"), badge: el["hud-badge"].checked, badgeMode: el["badge-mode"].value } : null,
+    sacred: el["on-sacred"].checked ? { edgeGuard: el["edge-guard"].checked } : null,
+    rowShear: el["on-shear"].checked ? { amount: num("shear"), rate: num("shearrate") } : null,
+    roll: el["on-roll"].checked ? { speed: num("roll") } : null,
+    ghost: el["on-ghost"].checked ? { persistence: num("ghost") } : null,
+  };
+}
+
+const PRESETS = {
+  "CLEAN": { depth: 0, "on-hud": 0 },
+  "★ CHOSEN": { depth: 50, "on-sacred": 1, "edge-guard": 1,
+    "on-rot": 1, rot: 50, "rot-region": "scatter", churn: 50,
+    "on-drop": 1, drop: 50, "on-clash": 1, clash: 22, clashsize: 4,
+    "on-hud": 1, huddigits: 26, "hud-mode": "overrun", hud: 60, "hud-badge": 1,
+    "on-shear": 0, "on-roll": 0, "on-ghost": 0 },
+  "READOUT ONLY": { depth: 100, "on-rot": 0, "on-drop": 0, "on-clash": 0, "on-shear": 0,
+    "on-roll": 0, "on-ghost": 0, "on-hud": 1, huddigits: 26, "hud-mode": "overrun", hud: 60 },
+  "PAC-MAN 256": { depth: 100, "on-rot": 1, rot: 55, "rot-region": "right", churn: 0,
+    "on-drop": 0, "on-clash": 0, "on-shear": 0, "on-roll": 0, "on-ghost": 0 },
+  "TORN RASTER": { depth: 55, "on-rot": 0, "on-drop": 0, "on-clash": 0,
+    "on-shear": 1, shear: 60, shearrate: 45, "on-roll": 0, "on-ghost": 1, ghost: 25 },
+  "VERTICAL HOLD": { depth: 50, "on-rot": 0, "on-drop": 0, "on-clash": 0,
+    "on-shear": 1, shear: 18, shearrate: 12, "on-roll": 1, roll: 28, "on-ghost": 1, ghost: 40 },
+  "ROTTING BOARD": { depth: 60, "on-rot": 1, rot: 30, "rot-region": "scatter", churn: 0,
+    "on-drop": 1, drop: 28, "on-clash": 0, "on-shear": 0, "on-roll": 0, "on-ghost": 0 },
+  "CLASH": { depth: 60, "on-rot": 0, "on-drop": 0, "on-clash": 1, clash: 30, clashsize: 3,
+    "on-shear": 0, "on-roll": 0, "on-ghost": 0 },
+  "FULL OVERFLOW": { depth: 85, "on-rot": 1, rot: 40, "rot-region": "scatter", churn: 12,
+    "on-drop": 1, drop: 22, "on-clash": 1, clash: 22, clashsize: 2,
+    "on-shear": 1, shear: 45, shearrate: 35, "on-roll": 1, roll: 15, "on-ghost": 1, ghost: 45 },
+};
+
+for (const name of Object.keys(PRESETS)) {
+  const b = document.createElement("button");
+  b.textContent = name;
+  b.onclick = () => {
+    for (const [k, v] of Object.entries(PRESETS[name])) {
+      const node = el[k];
+      if (!node) continue;
+      if (node.type === "checkbox") node.checked = !!v;
+      else node.value = v;
+    }
+    [...el.presets.children].forEach((c) => c.classList.toggle("active", c === b));
+    sync();
+  };
+  el.presets.appendChild(b);
+}
+
+function sync() {
+  el["v-depth"].textContent = `${el.depth.value}%`;
+  el["v-rot"].textContent = `${el.rot.value}% of cells`;
+  el["v-churn"].textContent = el.churn.value === "0" ? "frozen" : `${el.churn.value}%`;
+  el["v-drop"].textContent = `${el.drop.value}%`;
+  el["v-clash"].textContent = `${el.clash.value}%`;
+  el["v-clashsize"].textContent = `${el.clashsize.value}x${el.clashsize.value} cells`;
+  el["v-huddigits"].textContent = `${el.huddigits.value} digits`;
+  el["v-hud"].textContent = `${el.hud.value}%`;
+  el["v-shear"].textContent = `${el.shear.value}%`;
+  el["v-shearrate"].textContent = el.shearrate.value === "0" ? "still" : `${el.shearrate.value}%`;
+  el["v-roll"].textContent = `${el.roll.value}%`;
+  el["v-ghost"].textContent = `${el.ghost.value}%`;
+  for (const [fs, on] of [["fs-rot", "on-rot"], ["fs-drop", "on-drop"], ["fs-clash", "on-clash"],
+    ["fs-hud", "on-hud"], ["fs-shear", "on-shear"], ["fs-roll", "on-roll"],
+    ["fs-ghost", "on-ghost"], ["fs-sacred", "on-sacred"]]) {
+    document.getElementById(fs).dataset.off = el[on].checked ? "0" : "1";
+  }
+  el.dump.textContent = JSON.stringify(settings(), null, 2);
+}
+
+document.querySelectorAll("input, select").forEach((n) => n.addEventListener("input", sync));
+el.level.addEventListener("change", newRoom);
+el.reroll.onclick = newRoom;
+
+// --- static corruption: one seeded set per room, per churn tick ---------------
+
+// Which cells are corrupt is drawn from a seeded stream keyed to the room and the
+// churn tick, so a given room corrupts the same way every frame it is standing
+// still — the machine is broken in a fixed place, not shimmering.
+function staticSet(kind, tick, pick) {
+  const rng = makeRng(subSeed(roomNonce * 7919 + tick, kind));
+  const out = [];
+  for (let y = 0; y < GRID.H; y++) {
+    for (let x = 0; x < GRID.W; x++) {
+      const r = pick(x, y, rng);
+      if (r) out.push(r);
+    }
+  }
+  return out;
+}
+
+// --- sacred pathways ---------------------------------------------------------
+//
+// Everything the player can stand on, and optionally the ring of wall cells that
+// touches it. Corruption consults this before it draws, and `repaintPaths` runs
+// after every pass to put the walkable cells back — belt and braces, because the
+// effects compose and one of them reaching the floor makes a level unplayable
+// rather than merely ugly.
+function protectedMask(edgeGuard) {
+  const mask = new Set();
+  const key = (x, y) => `${x},${y}`;
+  const floors = [];
+  for (let y = 0; y < GRID.H; y++) {
+    for (let x = 0; x < GRID.W; x++) {
+      if (state.cell.grid[y][x] !== GLYPH.WALL) { mask.add(key(x, y)); floors.push([x, y]); }
+    }
+  }
+  if (edgeGuard) {
+    for (const [x, y] of floors) {
+      for (const [dx, dy] of [[1, 0], [-1, 0], [0, 1], [0, -1]]) mask.add(key(x + dx, y + dy));
+    }
+  }
+  return mask;
+}
+
+// The floor is drawn as void in this game, so putting a path back is a fill in the
+// page color — then the two glyphs that must always be findable go on top.
+function repaintPaths(ctx, mask, showMask) {
+  ctx.fillStyle = tint.bg;
+  for (let y = 0; y < GRID.H; y++) {
+    for (let x = 0; x < GRID.W; x++) {
+      if (state.cell.grid[y][x] === GLYPH.WALL) continue;
+      ctx.fillRect(x * CHAR.W, y * CHAR.H, CHAR.W, CHAR.H);
+    }
+  }
+  if (showMask) {
+    ctx.strokeStyle = tint.fg;
+    ctx.lineWidth = 1;
+    for (const k of mask) {
+      const [x, y] = k.split(",").map(Number);
+      ctx.strokeRect(x * CHAR.W + 0.5, y * CHAR.H + 0.5, CHAR.W - 1, CHAR.H - 1);
+    }
+  }
+  ctx.fillStyle = tint.fg;
+  ctx.textAlign = "center";
+  ctx.textBaseline = "middle";
+  const src = state.cell.kind === "source";
+  if (src) cells(ctx, state.sourceGlyph ?? "*", GRID.CX, GRID.CY);
+  cells(ctx, GLYPH.PLAYER, state.player.x, state.player.y);
+}
+
+const inRegion = (region, x, y) => {
+  if (region === "right") return x >= GRID.W / 2;
+  if (region === "band") return y >= GRID.CY - 3 && y <= GRID.CY + 3;
+  if (region === "corner") return x >= GRID.W / 2 && y >= GRID.CY;
+  return true;
+};
+
+function drawStatic(ctx, s, now, mask) {
+  const d = s.depth;
+  const free = (x, y) => !mask.has(`${x},${y}`);
+  ctx.font = `${CHAR.FONT}px ${FONT_STACK}`;
+  ctx.textAlign = "center";
+  ctx.textBaseline = "middle";
+
+  if (s.tileRot) {
+    const tick = s.tileRot.churn > 0 ? Math.floor(now / (2400 - s.tileRot.churn * 2200)) : 0;
+    const density = s.tileRot.density * d;
+    ctx.fillStyle = tint.fg;
+    for (const c of staticSet("rot", tick, (x, y, rng) =>
+      free(x, y) && inRegion(s.tileRot.region, x, y) && rng.chance(density)
+        ? { x, y, g: rng.pick(GLYPH_POOL) } : null)) {
+      ctx.fillStyle = tint.bg;
+      ctx.fillRect(c.x * CHAR.W, c.y * CHAR.H, CHAR.W, CHAR.H);
+      ctx.fillStyle = tint.fg;
+      ctx.fillText(c.g, c.x * CHAR.W + CHAR.W / 2, c.y * CHAR.H + CHAR.H / 2);
+    }
+  }
+
+  if (s.dropout) {
+    ctx.fillStyle = tint.bg;
+    for (const c of staticSet("drop", 0, (x, y, rng) =>
+      free(x, y) && state.cell.grid[y][x] === GLYPH.WALL
+        && rng.chance(s.dropout.density * d) ? { x, y } : null)) {
+      ctx.fillRect(c.x * CHAR.W, c.y * CHAR.H, CHAR.W, CHAR.H);
+    }
+  }
+
+  if (s.clash) {
+    const b = s.clash.block;
+    for (const c of staticSet("clash", 0, (x, y, rng) =>
+      x % b === 0 && y % b === 0 && rng.chance(s.clash.density * d) ? { x, y } : null)) {
+      // a clash block may straddle a corridor; the repaint pass clears whatever
+      // part of it lands on floor, so the block itself needs no mask test
+      const px = c.x * CHAR.W, py = c.y * CHAR.H;
+      const w = Math.min(b * CHAR.W, CANVAS.W - px), h = Math.min(b * CHAR.H, CANVAS.H - py);
+      if (w <= 0 || h <= 0) continue;
+      const img = ctx.getImageData(px, py, w, h);
+      swapInkAndPage(img.data);
+      ctx.putImageData(img, px, py);
+    }
+  }
+}
+
+// --- readout decay -----------------------------------------------------------
+//
+// The status field is cols 0-4 of the HUD band: LV badge on row 17, the captured
+// digits on 18, the score on 19. Five columns hold five characters. A level deep
+// enough to have read back twenty numbers has nothing to draw them in, so the
+// readout coming apart is not an effect added to the game — it is what the field
+// already does once the message outgrows it, authored instead of accidental.
+const FIELD_COLS = 5;
+const OVERFLOW_AT = 17; // the first level the 4-bit counter cannot hold
+
+// What the badge prints. Below the overflow it is the level, plainly. At and past
+// it the field is showing the low four bits of a number that no longer fits, and
+// each mode is a different account of what the missing bit did.
+function badgeText(level, mode) {
+  if (level < OVERFLOW_AT || mode === "plain") return `LV ${level}`;
+  const low = ((level - 1) % 16) + 1; // what four bits can still say
+  if (mode === "hex") return `LV ${level.toString(16).toUpperCase()}`;
+  if (mode === "wrap") return `LV ${low}`;
+  return `LV ${low}${GLYPH_POOL[level % GLYPH_POOL.length]}`; // spill
+}
+
+function drawReadout(ctx, r, now) {
+  const count = r.digits;
+  const rng = makeRng(subSeed(roomNonce * 31 + Math.floor(now / 600), "hud"));
+  const rot = (str) => [...str].map((c) => (rng.chance(r.severity) ? rng.pick(GLYPH_POOL) : c)).join("");
+
+  // clear the field, leaving the waterfall and PREFS box alone unless a mode
+  // deliberately reaches into them
+  ctx.fillStyle = tint.bg;
+  ctx.fillRect(0, GRID.H * CHAR.H, FIELD_COLS * CHAR.W, 3 * CHAR.H);
+
+  // LV badge: reverse video, page-colored letters
+  const badge = r.badge ? rot(badgeText(state.level, r.badgeMode)) : badgeText(state.level, r.badgeMode);
+  ctx.fillStyle = tint.fg;
+  ctx.fillRect(0, GRID.H * CHAR.H, FIELD_COLS * CHAR.W, CHAR.H);
+  ctx.fillStyle = tint.bg;
+  ctx.textAlign = "center";
+  ctx.textBaseline = "middle";
+  cells(ctx, badge, Math.max(0, Math.floor((FIELD_COLS - badge.length) / 2)), GRID.H);
+
+  ctx.fillStyle = tint.fg;
+  const digits = Array.from({ length: count }, () => String(rng.int(10))).join("");
+
+  if (r.mode === "xx") {
+    const x = "X".repeat(Math.min(FIELD_COLS, 2));
+    cells(ctx, x, 0, GRID.H + 1);
+    cells(ctx, `${x}/${x}`.slice(0, FIELD_COLS), 0, GRID.H + 2);
+    return;
+  }
+
+  if (r.mode === "wrap") {
+    // fold the string down through the HUD band, eating the waterfall row by row
+    const perRow = Math.floor(SCREEN.COLS * r.severity) || FIELD_COLS;
+    for (let i = 0, row = GRID.H + 1; i < digits.length && row < SCREEN.ROWS; i += perRow, row++) {
+      cells(ctx, rot(digits.slice(i, i + perRow)), 0, row);
+    }
+    return;
+  }
+
+  // overrun / garble both draw on one line with the renderer's own natural glyph
+  // advance; overrun simply does not stop at the field edge
+  const line = r.mode === "garble" ? rot(digits) : digits;
+  ctx.textAlign = "left";
+  ctx.fillText(line, 6, (GRID.H + 1.5) * CHAR.H);
+  ctx.fillText(`${Math.floor(count * 0.7)} / ${count}`, 6, (GRID.H + 2.5) * CHAR.H);
+  ctx.textAlign = "center";
+}
+
+// Per-cell text, the way the renderer lays out the grid. Iterated by code point,
+// not by code unit: one of the wall glyphs (U+1FB95) is a surrogate pair, and
+// indexing it with str[i] hands fillText half a character, which draws as tofu.
+function cells(ctx, str, col, row) {
+  [...str].forEach((ch, i) => {
+    ctx.fillText(ch, (col + i) * CHAR.W + CHAR.W / 2, row * CHAR.H + CHAR.H / 2);
+  });
+}
+
+const INK = rgbOf(tint.fg);
+const PAGE = rgbOf(tint.bg);
+const lum = ([r, g, b]) => 0.299 * r + 0.587 * g + 0.114 * b;
+const LUM_INK = lum(INK), LUM_PAGE = lum(PAGE);
+
+function rgbOf(hex) {
+  const n = parseInt(hex.slice(1), 16);
+  return [(n >> 16) & 255, (n >> 8) & 255, n & 255];
+}
+
+// Reverse video without leaving the monochrome palette. An RGB invert would turn
+// amber into blue, and the screen is one phosphor with no exceptions — so read how
+// much ink each pixel carries and give it back the complement, along the same
+// page-to-ink ramp.
+function swapInkAndPage(p) {
+  const span = LUM_INK - LUM_PAGE || 1;
+  for (let i = 0; i < p.length; i += 4) {
+    const t = Math.min(1, Math.max(0, (lum([p[i], p[i + 1], p[i + 2]]) - LUM_PAGE) / span));
+    const u = 1 - t;
+    p[i] = PAGE[0] + (INK[0] - PAGE[0]) * u;
+    p[i + 1] = PAGE[1] + (INK[1] - PAGE[1]) * u;
+    p[i + 2] = PAGE[2] + (INK[2] - PAGE[2]) * u;
+  }
+}
+
+// --- raster faults ------------------------------------------------------------
+
+function composite(dst, src, s, now) {
+  const d = s.depth;
+  dst.fillStyle = tint.bg;
+  dst.fillRect(0, 0, CANVAS.W, CANVAS.H);
+
+  const rollPx = s.roll ? Math.floor((now * 0.06 * s.roll.speed * d) % CANVAS.H) : 0;
+
+  if (s.rowShear) {
+    const tick = Math.floor(now / (900 - s.rowShear.rate * 850));
+    const rng = makeRng(subSeed(tick, "shear"));
+    const max = s.rowShear.amount * d * CHAR.W * 6;
+    for (let r = 0; r < SCREEN.ROWS; r++) {
+      const dx = rng.chance(0.45) ? (rng.next() * 2 - 1) * max : 0;
+      const y = r * CHAR.H;
+      blit(dst, src, 0, y, CANVAS.W, CHAR.H, dx, rollPx);
+    }
+  } else {
+    blit(dst, src, 0, 0, CANVAS.W, CANVAS.H, 0, rollPx);
+  }
+
+  if (s.ghost) {
+    dst.globalAlpha = s.ghost.persistence * d * 0.8;
+    dst.drawImage(prev.canvas, 2, -2);
+    dst.globalAlpha = 1;
+  }
+  prev.clearRect(0, 0, CANVAS.W, CANVAS.H);
+  prev.drawImage(dst.canvas, 0, 0);
+}
+
+// One horizontal band, slid sideways and wrapped, with the whole picture rolled
+// vertically by `dy` — both axes wrap, so nothing ever shows a blank edge.
+function blit(dst, src, sx, sy, w, h, dx, dy) {
+  for (const ox of [dx - CANVAS.W, dx, dx + CANVAS.W]) {
+    for (const oy of [dy - CANVAS.H, dy]) {
+      dst.drawImage(src.canvas, sx, sy, w, h, sx + ox, sy + oy, w, h);
+    }
+  }
+}
+
+// --- loop ---------------------------------------------------------------------
+
+let t0 = performance.now();
+let frozenAt = 0;
+function frame(real) {
+  const now = el.freeze.checked ? (frozenAt || (frozenAt = real)) : (frozenAt = 0, real);
+  const s = settings();
+
+  for (let i = 0; i < spectrum.length; i++) {
+    spectrum[i] = Math.max(0, 190 * Math.exp(-i / 90) * (0.55 + 0.45 * Math.sin(now / 260 + i / 14)));
+  }
+  update(state, 16, now);
+  render(clean, state, el.showcount.checked, tint, spectrum, now);
+  // The route is protected before anything corrupts, and repainted after — the
+  // glitch is the only thing on screen allowed to be unreliable.
+  const mask = s.sacred ? protectedMask(s.sacred.edgeGuard) : new Set();
+  drawStatic(clean, s, now, mask);
+  if (s.sacred) repaintPaths(clean, mask, el["show-mask"].checked);
+  if (s.readout) drawReadout(clean, s.readout, now);
+  composite(vctx, clean, s, now);
+  requestAnimationFrame(frame);
+}
+
+newRoom();
+sync();
+requestAnimationFrame(frame);
+</script>
+</body>
+</html>
