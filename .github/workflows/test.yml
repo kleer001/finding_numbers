@@ -8,5 +8,7 @@ jobs:
       - uses: actions/setup-node@v4
         with:
           node-version: '22'
-      # No dependencies to install — tests use Node's built-in runner.
+      # The game itself has no dependencies, but the audio tests render the
+      # station through node-web-audio-api, so the devDependency has to be here.
+      - run: npm ci
       - run: npm test
