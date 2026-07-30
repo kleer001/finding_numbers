@@ -141,16 +141,17 @@ Headers**, plus a **Banner** and **Background** image and a **Layout** control.
 ## Path B — butler CLI (fast updates & automation)
 
 [butler](https://itch.io/docs/butler/) is itch's command-line uploader. Use it once
-the page exists (you still set **Kind = HTML** and tick the browser checkbox once, in
-the dashboard — butler pushes builds, it doesn't set page type).
+the page exists and its **Kind of project** is **HTML**. Kind is a project setting, not a
+per-file one: with it already set, a butler build is browser-playable the moment it lands
+— there is no checkbox to tick for it.
 
 ```sh
-# one-time: install butler, then authenticate
-butler login
+# one-time per shell: authenticate from the stored key, never echoed
+export BUTLER_API_KEY=$(tr -d '\n\r' < ~/Dropbox/ai/code/itch_io_api_secret.txt)
 
 # build, then push the zip to the html5 channel
 ./package.sh
-butler push dist/finding_numbers.zip <your-itch-username>/finding-numbers:html5
+butler push dist/finding_numbers.zip kleer001/finding-numbers:html5
 ```
 
 - `<user>/<game>` is all lowercase and matches your project URL slug.
@@ -164,41 +165,50 @@ butler push dist/finding_numbers.zip <your-itch-username>/finding-numbers:html5
 
 ## Updating later
 
+Three commands, no dashboard step and no flag to re-tick:
+
 1. `./package.sh`
-2. Note the archive's byte count — `stat -c %s dist/finding_numbers.zip`. Step 4 needs it.
-3. Upload the new `dist/finding_numbers.zip` (dashboard) **or** `butler push …` (CLI).
-4. **Verify server-side, then check the browser-playable flag.** See below. Do not treat
-   the dashboard's own display as evidence, and do not assume "no page edits needed" —
-   a same-named replacement swaps the live game the moment the transfer finishes, with
-   no staged state to review.
+2. `butler push dist/finding_numbers.zip kleer001/finding-numbers:html5`
+3. Confirm `type=html` from the read-only API (below), and that the build id matches
+   `butler status kleer001/finding-numbers`.
+
+`BUTLER_API_KEY` comes from `~/Dropbox/ai/code/itch_io_api_secret.txt`. Read it into an
+environment variable; never echo it and never put it in a URL that gets logged.
 
 ### Verify a release from the API
 
-The dashboard shows what it loaded, not what is live. Two checks actually prove a release:
+The dashboard shows what it loaded, not what is live. The read-only `uploads` endpoint
+shows what players get:
 
 ```sh
-KEY=$(cat ~/Dropbox/ai/code/itch_io_api_secret.txt)   # never echo it, never put it in a URL that gets logged
+KEY=$(tr -d '\n\r' < ~/Dropbox/ai/code/itch_io_api_secret.txt)
 curl -sS "https://itch.io/api/1/$KEY/game/4800315/uploads"
 ```
 
 - **`type` must be `html`.** Anything else means the page is serving a download instead
   of a game.
-- **`size` must equal the local archive's byte count.** This is the only proof that the
-  build people can play is the build that was packaged.
+- **`size` matching the local archive's byte count proves a *dashboard* upload, and only
+  that.** It does not apply to butler builds — butler uploads the extracted files and itch
+  re-zips them, so the stored size legitimately differs from the local zip (for this game,
+  `1552275` stored against `1545777` on disk). For a butler build the proof is `type=html`
+  plus a build id that matches `butler status`.
 
-### The browser-playable flag on a replacement
+### The browser-playable flag
 
-A zip uploaded under the same filename replaces the existing upload in place — one row,
-new upload id. Whether that replacement keeps the "This file will be played in the
-browser" flag is **unsettled**: Trace ROM Studio's `PUBLISHING-RUNBOOK.md` states in one
-section that the replacement arrives as `type=default` and loses the flag, and in another
-that a dashboard replacement preserves the existing upload's flags. Both cannot be true,
-and the contradiction has not been resolved against a real upload.
+**A dashboard replacement loses the flag.** Uploading a zip under the same filename
+through the dashboard replaces the upload in place — one row, but a new upload id (an
+observed replacement went `18581437` → `18598567`) — and the new upload comes back as
+`type=default`, not `html`. The public page then serves a download link instead of an
+embedded player. Anyone uploading through the dashboard must re-tick "This file will be
+played in the browser", save, and re-run the `uploads` check.
 
-So do not rely on either claim. Run the `uploads` check above after every build
-replacement; if `type` is not `html`, re-tick the checkbox and save. `butler push`
-sidesteps the question for later updates, but its *first* push creates a new channel
-whose upload is not browser-playable until the flag is set once in the dashboard.
+**A butler push is browser-playable immediately.** On a project whose Kind is already
+HTML, even the *first* push to a new channel reports `type=html` with no dashboard tick.
+This has been observed on repeat pushes; itch's own butler documentation implies a manual
+step is still required, and the live API contradicts it.
+
+That asymmetry is the reason the update path above is butler-only. Going through the
+dashboard costs a flag reset every time.
 
 ---
 
