@@ -1,4 +1,4 @@
-fresh
+stale
 
 ## Summary
 The studio panel was convened for the first time (post-release) and its findings worked
@@ -53,17 +53,23 @@ and looks different now.
 ## Todos
 
 ### Ship the change — the promo work waits on this
-- [ ] #1 `./package.sh`, then upload `dist/finding_numbers.zip`. Read
-  `itch_publish_howto.md` (Gotchas) first. A dashboard re-upload of a same-named zip
-  reportedly arrives **without** the browser-playable flag (studio 0.3.0 directive), so
-  verify the flag afterwards — or use `butler push`, which sidesteps it.
+- [ ] #1 **Upload `dist/finding_numbers.zip`.** The zip is built and audited: index.html
+  at the root, no heartbeat/SIGNAL_LOST/renderLostConnection anywhere in it, the three new
+  modules present, labs and REVIEW-LOG excluded, 96 files. Served from a fresh unzip it
+  boots, defaults SHOW NUMBERS off, reports NAMED_LEVELS 64 / OVERFLOW_FROM 17, has no
+  `state.rng`, and made **0 network requests in 5 s**. Only the upload is left, and it is
+  left on purpose — publishing to a live storefront is yours to trigger. Then run the
+  uploads-API check in `itch_publish_howto.md`; do not trust the dashboard.
 - [ ] #2 (needs: #1) Update the itch page: remove the `signal-lost.png` screenshot (feature
   and file both deleted) and paste the revised `itch_page_description.md` — now "16 levels
   of decay", with the overflow deliberately undocumented.
-- [ ] #3 (needs: #1) Re-capture promo clips. Everything in `clips/` predates this session:
-  SHOW NUMBERS on, the old framing, the old cadence.
+- [ ] #3 Re-capture promo clips — everything in `clips/` predates this session (SHOW
+  NUMBERS on, old framing, old cadence). **Needs you at the machine**, not #1:
+  `capture.sh` opens a visible Chrome window on `DISPLAY=:0` and records it with system
+  audio, so an unattended run would take over your desktop and record whatever it is
+  playing. The clips themselves are gitignored throwaway until reviewed.
 
-### Promo — the launch window is open
+### Promo — the launch window is open (all of it needs #1 live and #3 re-shot)
 - [ ] #4 (needs: #3) Post the core-loop clip to the genre communities under Channels in
   `../trace_rom_studio/MARKETING-PLAN.md`. None have seen it.
 - [ ] #5 (needs: #3) Post a devlog with `clips/out/core-loop.gif` and `pulse.gif`.
@@ -84,21 +90,12 @@ and looks different now.
 - [ ] #10 `pickThemed` in `maze/cell.js` still resolves theme arrays, shadowed now that
   `state.js` pre-resolves per room. Left alone deliberately: fixing it changes `makeCell`'s
   contract and rewrites a test asserting a real invariant, for no behavioural gain.
-- [ ] #11 Convene a Session 2 panel now that the overflow levels exist. `REVIEW-LOG.md`'s
-  retroactive release checklist is dated and partly stale — two of its items are closed.
 
 ### Studio paperwork — none of it reaches a player
 - [ ] #12 Commit and push `../trace_rom_studio`: the VERSION bump to 0.5.0, the 0.5.0
   honest-copy directive, and `template/.claude/skills/honest-copy/`. **Left uncommitted on
   purpose** — that CHANGELOG also holds your own in-progress 0.4.0 and 0.3.1 entries, and I
   wasn't going to commit those for you. Decide: all of it, or only the honest-copy files.
-- [ ] #13 Add the two gaps the studio 0.3.0 directive names to `itch_publish_howto.md`: the
-  same-named-zip browser-playable flag, and the server-side verification pass (not shipped
-  until the uploads API reports `type=html` and a `size` matching the local archive's
-  bytes). Its "Updating later" section currently claims the opposite — "no page edits
-  needed" — so this is a correction, not an addition.
-- [ ] #14 Write `ITCH-PAGE.md` and `MARKETING-PLAN.md` in the studio's shape.
-  `itch_page_description.md` holds the live copy verbatim — transcription, no new decisions.
 - [ ] #15 Decide who writes `GAME-SHEET.md` and `SPEC-SHEET.md` — a spec precise enough to
   implement from is reverse-engineering, and the pitch should be the author's intent.
 - [ ] #16 Rule on the studio 0.2.0 compositor directive. Reviewed this session;
@@ -112,6 +109,11 @@ and looks different now.
   `../trace_rom_studio` — scripted self-recording takes have no studio equivalent.
 - [ ] #19 Record the studio's contribution convention in its `CLAUDE.md`; right now it is
   only inferable from one commit.
+- [ ] #21 Raise upstream: `../trace_rom_studio/template/PUBLISHING-RUNBOOK.md` contradicts
+  itself on whether a same-named dashboard replacement keeps the browser-playable flag —
+  §"replacing a build" says it arrives as `type=default`, §"Choosing" says dashboard
+  replacement preserves flags. Both cannot be true, and the 0.3.0 directive rests on the
+  first. `itch_publish_howto.md` documents the contradiction rather than picking a side.
 - [ ] #20 (needs: #16) `python3 ../trace_rom_studio/scripts/check_updates.py . --mark-read`
   to advance the pin from 0.1.0 once the outstanding directives are resolved.
 
@@ -142,8 +144,13 @@ and looks different now.
   depth with the CRT on.
 
 ## Next Step
-`./package.sh` and get the new build onto itch (#1). The published game is the pre-session
-one — every promo todo would currently advertise a game that isn't live, and every existing
-clip shows a HUD that no longer appears by default.
+Upload `dist/finding_numbers.zip` (#1) — it is built, audited and verified to run from a
+fresh unzip, and the only reason it is not live is that publishing to a storefront is your
+call. Everything in the promo section is dead weight until it lands, and every existing
+screenshot and clip shows a HUD a new player will not see.
+
+Note: this file was loaded with `--go`, so line 1 reads `stale`. The content below is
+current as of 2026-07-30 — a plain `/bob` will warn before overwriting it; use
+`/bob --force` if you want it replaced.
 
 /home/menser/Dropbox/ai/code/finding_numbers
