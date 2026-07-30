@@ -83,6 +83,12 @@
           interval: { min: 800, max: 2500, step: 250 }, // BRISK, as level 5 runs
           repeats: 2,
           noise: { wash: 0.3, burst: 0 },
+          // The real spec carries this on every level (`corruptionAt`); it is 0 for
+          // anything below the overflow, and the glitch pass reads it before it
+          // reads anything else. Omitting it leaves the pass building corruption
+          // this level does not have, off room state the staged page has no reason
+          // to hold.
+          corruption: 0,
         },
       };
 
