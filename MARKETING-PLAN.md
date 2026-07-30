@@ -48,7 +48,7 @@ Each has to be demonstrable in a clip or a screenshot.
       `SHOW NUMBERS` defaulting off and the canvas scaling, so they show a HUD a new
       player will not see
 - [ ] One animated GIF of the core loop (`clips/out/core-loop.gif`) — needs re-capture
-- [x] Trailer hosted: <https://youtu.be/B6LhrtK0SJs> — also predates the current build
+- [x] Trailer hosted: <https://youtu.be/3_maIo0cYAk> — cut from the current build
 - [ ] Three title variants testing *different* hypotheses, plus three 1280×720
       thumbnails (`clips/out/thumbs/`), for YouTube Test & Compare
 - [x] `promo.html` landing page
@@ -61,19 +61,85 @@ Everything unchecked above is gated on re-capturing from the current build. `cli
 ## Channels
 
 The store page is home base; the rest is where this specific scene gathers. Read each
-community's self-promotion rules before posting — several ban devs posting their own work
-outside a weekly thread.
+community's self-promotion rules before posting — the gates below run from wide open to a
+flat ban. Check fit before gate: read a sub's top posts of the year and ask whether that
+audience wants *this*, because a sub can be on-genre by name and off-genre by taste.
 
 - **itch.io** — devlogs enabled. The devlog is the only surface that takes images
   inline, so GIFs are the only in-page motion.
-- **Genre communities** — the liminal/analog-horror and itch-horror subreddits, Discords
-  and forums. *These still need naming specifically; a channel list without real names
-  is not a plan.*
+- **Genre communities** — grouped by gate, because the gate decides *when* a channel can
+  be used, not just how. None of these runs a weekly dev-promo thread, so nothing here is
+  thread-only. Everything still listed is postable at launch; what came off the list came
+  off on audience fit and standing policy, not on effort.
+
+  *Open — postable at launch, format permitting:*
+  - `r/WebGames` (~140k) — the best structural fit there is. Direct link to the game
+    itself, free, no signup wall, and the title must *begin* with the game's name;
+    `[HORROR]` and `[HTML5]` tags may precede it. No repost inside three months. No rule
+    against devs posting their own work, and no stated karma or account-age minimum.
+  - `r/itchio` (~56k) — devs post their own pages all day; the only rules are no NSFW and
+    a support-ticket ID for account complaints. No sidebar gate.
+  - `r/playmygame` (~136k) — flair is required (`[Web]` / `PC (Web)`), the game must be
+    free and playable *now*, its link comes before any other link, you must be on the dev
+    team, horror must be NSFW-flagged, one post per game per month. The pinned warning is
+    the real hazard and it is site-wide, not local: Reddit's own filter shadowbans accounts
+    whose first posts are links, so the posting account needs ordinary comment history
+    before it drops a link. A shadowbanned post is indistinguishable from one nobody upvoted.
+  - `r/analoghorror` (~63k) — permissive, confirmed: the sidebar invites people to share
+    their projects and the only promo rule bans *stealth* promo, so own the post rather
+    than "finding" it. A plain description is enough; no karma or tenure gate is stated.
+    Temper the expectation — the feed is video series, and game posts land but score in
+    single digits where series work scores in the hundreds. Reach, not conversion.
+  - `r/numberstations` (~18k) — small, slow, and the people who know the real stations.
+    The only rules cover unrelated and unproven content; no self-promo rule is stated, and
+    a hobbyist's own number-station app has been posted there without trouble.
+  - itch.io's **Release Announcements** board (`itch.io/board/10022/release-announcements`)
+    — "announce and promote your own projects here". A post needs the page link, a summary
+    and at least one embedded image or video.
+
+  *Ruled out — the audience is wrong, not the gate:*
+  - `r/HorrorGames` (~82k) — cut deliberately, and not because of its rule 4 (three months
+    as an active member, nine comments or submissions per self-promotion post, manual
+    approval). Its top posts over a year are actual-horror — monsters, gore, jump scares —
+    not liminal horror. Three months of earned participation would buy a post to people who
+    came for a different genre. Read the top of the year before paying a tenure gate: a
+    subreddit's name and size say less about fit than what its audience actually upvotes.
+  - `r/LiminalSpace` (1.1M) — the tempting one, and taste-matched, but self-promotion is
+    banned outright and images may not contain people, creatures or edited text. Aesthetic
+    overlap is not a channel.
+
+  *Rule not verified — behind a join gate:*
+  - **Haunted PS1** Discord (`discord.gg/YpBQZdeXxP`, ~5k members, ~1.8k online) — the
+    lo-fi horror dev scene, and the host of the Demo Disc and Madvent jams on itch. Its
+    posting rules are only readable from inside, so join and read before promoting.
+  - **Priyom** (`priyom.org`; Discord `discord.gg/788JPdSgsd`, bridged to `#priyom` on
+    Libera IRC) — shortwave monitors, not players. Not a promo channel under any gate:
+    this is where the dial gets checked before copy ships, per the honesty guardrails.
 - **Fediverse / Bluesky** — `#gamedev`, `#screenshotsaturday`, horror and liminal tags;
   post the GIF, not a link.
 - **Short video** — the three `clips/out/*-9x16.mp4` verticals. Never the itch trailer
   slot: a 9:16 cut uploads as a Short, and Shorts cannot be A/B tested.
-- **Curators / streamers** — a shortlist who cover short free browser horror. Not built yet.
+- **Curators / streamers** — all open, all cold pitches; none has a queue you can jump, so
+  send once and move on.
+  - **Warp Door** (`warpdoor.com`) — near-daily writeups of small, strange, free games,
+    stated interests including computer art, glitches and "small and strange games". The
+    closest editorial match this game has. `warpdoor@gmail.com`, Bluesky `@warpdoor.com`.
+  - **Free Game Planet** (`freegameplanet.com`) — free games, browser games and a steady
+    diet of indie horror. Suggest via `admin@freegameplanet.com` or `@FreeGamePlanet`; the
+    contact page promises only that they'll look.
+  - **Alpha Beta Gamer** (`alphabetagamer.com`) — free demos, betas and browser games,
+    posting daily. Its "Game Submissions" link goes to a contact page; no criteria beyond
+    that are published.
+  - **ManlyBadassHero** (YouTube, ~2.5M subs) — a short indie horror game every two or
+    three days, which is exactly this game's shape. The only route is the business email on
+    his channel's About page: no submission form, no published policy. A lottery ticket
+    that costs one email, not a plan.
+  - **Jupiter Hadley** (`@JupiterHadley`) — plays *every* entry in the jams she covers,
+    which is the way in: enter a jam she is covering rather than pitch a released game.
+    Small channel; treat it as coverage, not reach.
+  - **Game Devs x Streamers** Discord (`discord.gg/7wtAVM6`, ~3.8k members) — the server
+    `r/playmygame` points devs at, for matching games to streamers. Rules behind the join
+    gate: not verified.
 
 ## Launch beats
 

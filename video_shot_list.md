@@ -143,7 +143,9 @@ Clip 3 appears twice — how the room looked, cut straight to how it came back, 
 its caption split across the two. Played whole, the walk out and back eats twenty
 seconds of a forty-second trailer; cut together, the two states of one room stand
 side by side, which is the whole point.
-Keep it under 45 seconds; the first five seconds decide whether the rest is watched.
+Aim for about 45 seconds. A second or two over is not worth a recut — retime from the
+tables in `post.sh` if it matters. The first five seconds decide whether the rest is
+watched.
 
 Clip 2 is deliberately absent. Its beat is a number that fails to arrive, which needs
 more setup than a trailer segment can give it and reads as nothing happening without

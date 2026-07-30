@@ -45,12 +45,16 @@ Live: <https://kleer001.itch.io/finding-numbers>
 - **Cover image:** `docs/img/cover.png`, 630×500.
 - **Screenshots:** `docs/img/gameplay.png`, `jukebox.png`, `light-mode.png`,
   `preferences.png`. All from the real build.
-- **Trailer:** <https://youtu.be/B6LhrtK0SJs> — itch takes a hosted link, not a file,
-  so the video has to be up before this field can be filled.
+- **Trailer:** <https://youtu.be/3_maIo0cYAk> — itch takes a hosted link, not a file,
+  so the video has to be up before this field can be filled. YouTube cannot swap a
+  file on an existing upload, so a corrected trailer is always a new video and a new
+  URL: re-point this field, and expect any A/B test on the old upload to end with it.
 
-**Both of these are stale as of the current build** and need re-capturing before the
-next page edit: the screenshots and the trailer predate `SHOW NUMBERS` defaulting off,
-the canvas scaling to the viewport, and the readout's new cadence.
+**The screenshots are stale** and need re-capturing before the next page edit: they
+predate `SHOW NUMBERS` defaulting off, the canvas scaling to the viewport, and the
+readout's new cadence. Judge a still or a clip by whether it shows the player
+something the build no longer does — footage of a removed preferences row is a
+false claim in a way that a merely older maze layout is not.
 
 ---
 
