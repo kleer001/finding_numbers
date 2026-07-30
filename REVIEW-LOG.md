@@ -267,3 +267,138 @@ Run against the current `main` and the shipped zip, with what the panel found:
 - [ ] **Release gate cleared** — not cleared. The game is live and the panel is not
       asking for it to come down; the two open items above are what a Session 2
       should close.
+
+---
+
+## Session 2 — Post-overflow review · Gate 2
+
+Date: 2026-07-30 — the overflow levels are built, the readout has been retimed, and the
+build is packaged but **not yet uploaded**. Each persona rereads Session 1 and reports
+whether their first read held up. What was measured is marked as measured; the rest is
+judgement.
+
+### The Shipper
+
+**Held up.** All four of her findings were real and three are closed outright.
+
+1. **CI** — fixed with one `npm ci` step. Green on the release commit, and green from a
+   dependency-free copy, which is the path CI actually takes. 117 tests.
+2. **The heartbeat** — gone. Verified in the *artifact*, not the source: the packaged zip
+   served from a fresh unzip made **0 network requests in 5 seconds**, where the old build
+   made one every 2 s.
+3. **The canvas** — scales to the viewport, 4:3 held; 1600×1000 gives 1280×960.
+4. **The tail** — her diagnosis held and the resolution went the opposite way to her
+   prescription. She wanted levels 20–32 cut; instead the tail became unbounded. She'll
+   take it, on her own metric: what she objected to was twenty levels that differed in two
+   variables and cost the player dead air. Levels 17+ now differ visually by a real dial,
+   and the minimum to clear level 64 went from ~38m45s to ~1m44s (modelled from the
+   shipped constants, with walking assumed at 30 steps/sec — that assumption is now the
+   largest term at depth and is a player-machine setting, not something measured here).
+
+**State of things.** It builds, it tests, it packages, the zip runs from a fresh unzip.
+The one thing she will not sign is a build that exists only on this disk: **the live page
+is still the pre-session game.** Nothing in the promo list should move until that does.
+
+**Verdict — keep going.** With the upload as the immediate next act, not a later one.
+
+### The Critic
+
+**Held up, and his one change was made.** `SHOW NUMBERS` ships off, so the station is the
+compass on a fresh save. He notes without satisfaction that this is also the change most
+likely to be reverted by a player who finds the game opaque, and that whether the loop is
+legible without the readout is now the single biggest open question in the design — and
+one only players can answer.
+
+**Where he is unsatisfied.**
+
+- **The signature mechanic is still gated behind playing badly.** A room only moves on
+  re-entry, and re-entry needs a wrong turn or a retreat. A careful player still never
+  sees the thing the store page leads with. Untouched since Session 1; he raised it, it
+  was heard, nothing was done. He is not calling that a failure — it is a design decision
+  someone has to make — but it should not quietly become a settled question.
+- **The ending is better and still not an ending.** The `Math.min` clamp is gone, which
+  removes his specific complaint: the last statement is no longer an off-by-one. What
+  replaces it is a counter that gives up — hex from 17, `LV???` past 64, levels running
+  as long as the player does. That is authored, and it is the right *kind* of answer for
+  this game. Whether "forever, and the machine stops naming where you are" reads as a
+  statement or as an absence of one, he cannot tell from the code; it needs someone to
+  reach it.
+
+**State of things.** The game is more itself than it was. The corruption is the strongest
+new thing in it precisely because it is disciplined — the route is masked and repainted
+last, so the picture falls apart while the thing the player needs stays legible. That is
+the game's own argument (the station never lies) restated in the renderer.
+
+**Verdict — keep going.** With the two items above logged as open, not closed.
+
+### The Archivist
+
+**Held up; his corrections were taken, and he has new ones.**
+
+- The two unsourced frequencies are gone, replaced with documented Squeaky Wheel values,
+  and the comment now says why an invented number here is a bug rather than a detail.
+- The lineage in Session 1 is now sourced inline — Wumpus, Rogue, P.T., Papa Sangre,
+  Signalis, each checked against a primary source rather than recalled. Two came back
+  stronger than first written. The unfalsifiable "nobody has done this before" is cut.
+- The wall-progression and door-count claims are narrowed to what the build keeps.
+
+**New finding, and it is the same class as the old one.** Shipping a changed build makes
+the *existing* marketing false. The four screenshots and the trailer predate
+`SHOW NUMBERS` defaulting off, the canvas scaling and the new cadence — so the page now
+depicts a HUD a new player will not see. Nothing was fabricated; the copy simply outlived
+the build, which is exactly the fifth honest-copy test. `ITCH-PAGE.md` and
+`MARKETING-PLAN.md` both record the staleness rather than papering it.
+
+**Second new finding, upstream.** Trace ROM Studio's own `PUBLISHING-RUNBOOK.md`
+contradicts itself on whether a same-named dashboard replacement keeps the
+browser-playable flag — one section says it arrives as `type=default`, another says
+dashboard replacement preserves flags. He will not let either into this game's runbook as
+fact. `itch_publish_howto.md` now documents the contradiction and the API check that
+settles it empirically, which is the only honest move available without uploading.
+
+**Verdict — keep going.** Re-capture before the page is edited, and raise the runbook
+contradiction with the studio.
+
+### The Superfan
+
+**Mostly held up, and the thing she most wanted exists.**
+
+- **Seeds are shareable and, more to the point, reproducible.** They were not before: the
+  maze came off one advancing stream, so the same seed gave different rooms depending on
+  how many moves had been made. Now a run is a pure function of a four-character code.
+  That is the mastery hook she asked for, and it cost less than she expected.
+- **There is a way home.** RESTART LEVEL and RESTART GAME exist; the soft-lock she called
+  the place streamers quit is gone.
+- **The level select is gone rather than gated.** She wanted the descent protected and it
+  is — better than gated, since it also can't be used to peek. The Shipper's ordering
+  concern (don't lock the only escape hatch before adding a restart) was respected.
+
+**Where her objection partly stands.** She said level 32 was "impossible with numbers off,
+a spreadsheet with them on". The *time* half is fixed and measured. The *memory* half is
+not: past roughly twenty digits, holding a random babel message in the ear is still the
+task, and `SHOW NUMBERS` now defaults off. The retimed readout helps — repeats cluster at
+390 ms and numbers separate at 780 ms, so you count numbers rather than utterances, which
+is a real legibility gain and the reason those floors were set by ear rather than guessed.
+Whether it is enough is unproven. Nobody has played a deep level end to end.
+
+**She also flags a new one.** The readout-overrun effect she liked in the lab is invisible
+to the default player, who sees `kHz` instead of digits. The most visible piece of the
+overflow's HUD story currently only exists for players who turned the numbers on.
+
+**Verdict — keep going**, and get it in front of someone who will actually descend.
+
+**Gate 2 — direction chosen:** keep going. Ship the packaged build, re-capture the media
+it invalidated, then find out whether the ear-only loop is legible. The two design calls
+the Critic and the Superfan left open (the mechanic gated behind mistakes; whether the
+overflow's readout decay should move to the frequency field) are decisions for the author,
+recorded here rather than resolved.
+
+### Session 1 checklist, revisited
+
+- `npm test` green and CI green on the release commit — **now closed.** 117 tests, green
+  locally and from a clean checkout; CI green for the first time.
+- No fabricated history or specs — **now closed** for the two frequencies and the two
+  overstated build claims. Reopened in a new place: the screenshots and trailer no longer
+  match the build.
+- **Release gate:** still not formally cleared, and now for a different reason than in
+  Session 1. The code is ready; the published page is behind it and its media is stale.

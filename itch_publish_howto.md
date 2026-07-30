@@ -165,8 +165,40 @@ butler push dist/finding_numbers.zip <your-itch-username>/finding-numbers:html5
 ## Updating later
 
 1. `./package.sh`
-2. Upload the new `dist/finding_numbers.zip` (dashboard) **or** `butler push …` (CLI).
-3. Players get the new build immediately — no page edits needed.
+2. Note the archive's byte count — `stat -c %s dist/finding_numbers.zip`. Step 4 needs it.
+3. Upload the new `dist/finding_numbers.zip` (dashboard) **or** `butler push …` (CLI).
+4. **Verify server-side, then check the browser-playable flag.** See below. Do not treat
+   the dashboard's own display as evidence, and do not assume "no page edits needed" —
+   a same-named replacement swaps the live game the moment the transfer finishes, with
+   no staged state to review.
+
+### Verify a release from the API
+
+The dashboard shows what it loaded, not what is live. Two checks actually prove a release:
+
+```sh
+KEY=$(cat ~/Dropbox/ai/code/itch_io_api_secret.txt)   # never echo it, never put it in a URL that gets logged
+curl -sS "https://itch.io/api/1/$KEY/game/4800315/uploads"
+```
+
+- **`type` must be `html`.** Anything else means the page is serving a download instead
+  of a game.
+- **`size` must equal the local archive's byte count.** This is the only proof that the
+  build people can play is the build that was packaged.
+
+### The browser-playable flag on a replacement
+
+A zip uploaded under the same filename replaces the existing upload in place — one row,
+new upload id. Whether that replacement keeps the "This file will be played in the
+browser" flag is **unsettled**: Trace ROM Studio's `PUBLISHING-RUNBOOK.md` states in one
+section that the replacement arrives as `type=default` and loses the flag, and in another
+that a dashboard replacement preserves the existing upload's flags. Both cannot be true,
+and the contradiction has not been resolved against a real upload.
+
+So do not rely on either claim. Run the `uploads` check above after every build
+replacement; if `type` is not `html`, re-tick the checkbox and save. `butler push`
+sidesteps the question for later updates, but its *first* push creates a new channel
+whose upload is not browser-playable until the flag is set once in the dashboard.
 
 ---
 
