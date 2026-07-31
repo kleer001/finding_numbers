@@ -110,8 +110,8 @@ https://kleer001.itch.io/finding-numbers — free, HTML5, no signup.
 
 A shortwave station reads digits through the static while you walk a maze of
 near-identical rooms. A correct turn adds a number to the broadcast; a wrong one adds
-nothing, and nothing else tells you. No buzzer, no red flash, no fail state — the only
-thing the game does to you is stop acknowledging you.
+nothing, and nothing else tells you. Nothing is hunting you and nothing can kill you —
+the only thing the game does to you is stop acknowledging you.
 
 Vanilla ES modules, no build step. The whole station is WebAudio: digits in six
 languages over a synthesized noise bed, rendered with Kokoro-82M, one voicepack per
@@ -229,7 +229,8 @@ how coherent the message is, how fast it reads, how much static sits on top. The
 it running.
 
 The game part is a maze you navigate by ear — a correct turn adds a number to the
-broadcast, a wrong one adds nothing.
+broadcast, a wrong one adds nothing. Nothing chases you and there's no way to lose.
+It isn't that kind of game.
 ```
 
 ---
@@ -252,7 +253,10 @@ https://kleer001.itch.io/finding-numbers
 
 Free, browser, no signup. A shortwave number station reads digits through the static
 while you walk a maze of near-identical rooms. A correct turn adds a number to the
-broadcast; a wrong one adds nothing. No buzzer, no red flash, no fail state.
+broadcast; a wrong one adds nothing. No buzzer and no red flash.
+
+There is no monster here, nothing pursuing you and no way to die. The station going
+quiet is the whole of it.
 
 Most of the maze holds still and can be learned. Some stretches move their exit a few
 times before settling. There are sixteen levels. The later ones read faster, in a
@@ -313,7 +317,8 @@ one.
 ```
 A maze with no map. A shortwave number station reads digits through the static, and it
 is the only compass you get: a correct turn adds a number to the broadcast, a wrong one
-adds nothing. No buzzer, no red flash. Free in a browser. Headphones.
+adds nothing. No buzzer, no red flash, nothing behind you. Free in a browser.
+Headphones.
 
 #gamedev #horror #liminal
 ```
@@ -344,7 +349,8 @@ becomes a Short, and Shorts cannot be A/B tested.
 - `pulse-9x16.mp4` — "Reach the source of the transmission and it pulls you somewhere
   new."
 
-Each caption ends with: `Free in a browser — headphones. finding_numbers on itch.`
+Each caption ends with: `Nothing chases you. Free in a browser — headphones.
+finding_numbers on itch.`
 
 ---
 
@@ -362,6 +368,9 @@ finding_numbers is a free browser game about walking a maze of near-identical ro
 while a shortwave number station reads digits through the static. The station is the
 only compass: a correct turn adds a number to the broadcast, a wrong one adds nothing.
 There's no buzzer and no red flash, so a mistake is silence rather than a signal.
+
+It sits on the liminal-horror shelf, but there's no monster in it and no way to die.
+The dread is that the station can stop acknowledging you.
 
 It's one character grid bent through a WebGL CRT filter. Underneath is WebAudio: digit
 samples in six languages, rendered with Kokoro-82M, over a synthesized noise bed, with

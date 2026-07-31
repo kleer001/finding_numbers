@@ -72,6 +72,8 @@ reviewed without opening it:
 
 - Navigate by ear; a correct turn adds a number to the broadcast and a wrong one adds
   nothing. Nothing buzzes and nothing turns red.
+- No monster, no chase, no fail state — stated early, because the page is tagged
+  Horror and that tag promises a threat this game does not have.
 - Some stretches of a level move their exit a few times before settling; most of the
   maze holds still and can be learned.
 - The station is built in WebAudio, tuned to frequencies real number stations

@@ -28,6 +28,9 @@ You are `@`, lost in a shifting maze of near-identical rooms, listening to a sta
 read numbers through the noise. Walk toward the signal, capture the whole message, and
 reach the source of the transmission — it will pull you somewhere new.
 
+Nothing chases you and nothing can kill you. There is no fail state at all. The dread
+here is that the station stops counting you, not that something is coming.
+
 > **Put on headphones.** The voice is faint and buried in noise on purpose. This game
 > is played with your ears as much as your eyes.
 

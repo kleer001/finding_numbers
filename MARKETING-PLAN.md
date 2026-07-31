@@ -167,6 +167,12 @@ The page is already live, so the pre-launch beat is spent. What remains:
   source and had to be corrected; the audience for this game contains people who know
   the real stations better than we do.
 - No superlatives the game can't earn. No "first", no "only".
+- **The genre label carries a contract.** There is no enemy, no chase, no death, no
+  timer and no fail state anywhere in `src/`. "Liminal horror" and "analog horror" name
+  a shelf and are fair; bare "horror" promises a threat, so every surface that uses it
+  says early that nothing chases you and nothing can kill you. "Suspense" and "thriller"
+  are ruled out entirely — they promise stakes and a clock the game does not have. The
+  register is dread, which is anticipation; the copy never sells a scare.
 - The copy speaks to the genre without promising depth that is not there: this is a
   short strange thing, not a 40-hour game, and the store page should not imply one.
 - Claims about progression get re-checked against the build whenever levels change —
