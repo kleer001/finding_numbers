@@ -21,65 +21,32 @@ maps cleanly onto what it allows.
 
 ## A liminal horror maze you navigate **by ear**
 
-A shortwave number station is bleeding through the static, and some of these rooms
-don't stay where you left them.
-
-You are `@`, lost in a shifting maze of near-identical rooms, listening to a station
-read numbers through the noise. Walk toward the signal, capture the whole message, and
-reach the source of the transmission — it will pull you somewhere new.
-
-Nothing chases you and nothing can kill you. There is no fail state at all. The dread
-here is that the station stops counting you, not that something is coming.
-
-> **Put on headphones.** The voice comes through loud and overdriven, and the noise
-> ducks out of its way every time it speaks. What you're listening for isn't a faint
-> signal — it's whether a number arrives at all.
+You are `@`, lost in near-identical rooms while a shortwave number station reads digits
+through the static. Nothing chases you and nothing can kill you — the station going
+quiet is the only way to lose.
 
 ## What's inside
 
-- **Navigate by ear** — there is no map and nothing marks the right door. The station
-  is your only compass: a correct turn adds a number to the broadcast, a wrong one
-  adds nothing. Nothing buzzes and nothing turns red — you find out by what never
-  arrives.
-- **Rooms that lie — but not all of them** — most of the maze holds still and can be
-  learned. Some stretches can't: a room will move its exit on you a few times before
-  it settles for good. The further you get, the more of a level can lie to you — up to
-  half of it, and never more than half.
-- **A station that sounds real** — the whole game is a number station built in WebAudio.
-  Many voices, a brown-noise dread that circles the signal without ever swallowing it,
-  and a dial tuned to frequencies that really broadcast into the dark.
-- **Jukebox mode** — no maze, just the transmitter. Tune it and let it run.
-- **A character-mode CRT** — one font, one phosphor color, one glyph grid, bent through
-  a WebGL CRT filter, with the signal scrolling as a live spectrogram. Dial the decay up
-  until the picture barely holds.
-- **Walls that change under you** — each early level wears its own surface. Brick first,
-  then dressed stone, riveted plate, checkers that coarsen as they go, static, shear,
-  and a cage. Later on the walls stop holding one surface and mix.
-- **16 levels of decay** — the message grows from three digits to fourteen, and the
-  station tightens its gaps as it grows, so a longer message never buys you more time.
-  Six languages: past the opening stretch the language changes level to level, until
-  every digit picks its own. The dread under the voice thickens until
-  it tops out. By the sixteenth the signal can barely hold itself together, and whether
-  anything lies beyond it is not documented.
+- **Navigate by ear.** No map, nothing marks the right door.
+- **A correct turn adds a number. A wrong one adds nothing.** No buzzer, no red flash.
+- **Rooms that lie.** Some move their exit before settling — never more than half a level.
+- **A real station.** WebAudio, six languages, tuned to frequencies that really broadcast.
+- **Jukebox mode.** The transmitter, no maze.
+- **A character-mode CRT.** One glyph grid through a WebGL filter, the signal as a live
+  spectrogram.
+- **16 levels.** Three digits at the start, fourteen by the end, the gaps tightening to
+  match. What's past the sixteenth isn't documented.
 
 ## Controls
 
-**Desktop:** arrow keys / WASD / HJKL to move · **C** toggles the CRT · **P** for
-preferences · **Esc** closes a panel.
+**Desktop:** arrows / WASD / HJKL · **C** CRT · **P** preferences · **Esc** closes.
 
-**Mobile:** tap the top / bottom / left / right of the screen to step that way · **[P]**
-in the corner opens preferences.
+**Mobile:** tap the screen edges · **[P]** for preferences.
 
-## How to play
-
-Take a turn, then listen — the broadcast tells you whether you're getting warmer. Reach
-the source and step onto the pulse to move on. The rest is yours to work out.
-
-**Headphones strongly recommended.**
+Headphones. The game can't be played without sound.
 
 ## Credits
 
-- Number-station voices rendered with Kokoro-82M, one voicepack per language, via the
-  `voice_loom` project — which is also the sound-design reference.
+- Voices: Kokoro-82M via the `voice_loom` project.
 - CRT effect: [CRTFilterWebGL](https://github.com/Ichiaka/CRTFilterWebGL) (MIT).
 - Source: [github.com/kleer001/finding_numbers](https://github.com/kleer001/finding_numbers) · MIT licensed.
