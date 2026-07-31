@@ -303,10 +303,9 @@ one.
 **Post 1** — attach `clips/out/core-loop.gif`:
 
 ```
-A maze with no map. A shortwave number station reads digits through the static, and it
-is the only compass you get: a correct turn adds a number to the broadcast, a wrong one
-adds nothing. No buzzer, no red flash, nothing behind you. Free in a browser.
-Headphones.
+A maze with no map. A shortwave number station reads digits through the static, and
+it's the only compass: a correct turn adds a number, a wrong one adds nothing. No
+buzzer, no red flash, nothing behind you. Free in a browser. Headphones.
 
 #gamedev #horror #liminal
 ```
