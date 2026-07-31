@@ -24,14 +24,14 @@ What the build keeps, and therefore what any post may say:
   wrong one adds nothing. Nothing buzzes, nothing turns red, and there is no fail state.
 - Most of the maze holds still and can be learned. Some stretches move their exit a few
   times before settling.
-- The station is built in WebAudio — recorded digit samples in six languages, a
-  synthesized noise bed under them, and a dial reading a frequency real number stations
-  are logged on, one drawn per level.
+- The station is built in WebAudio — digit samples in six languages, a synthesized noise
+  bed under them, and a dial reading a frequency real number stations are logged on, one
+  drawn per level. The digits were rendered with Kokoro-82M, one voicepack per language.
 - Jukebox mode is the transmitter with no maze.
 - One character grid, one phosphor color, bent through a WebGL CRT filter, with the
   signal drawn as a live spectrogram.
-- Sixteen levels are the game as designed. Whether anything is under the sixteenth is
-  not documented.
+- Sixteen levels are the game as designed. Whether anything lies beyond the sixteenth is
+  not documented, and posts do not answer it.
 - It cannot be played without sound. Headphones are the intended way in.
 
 Not claimable: any "first" or "only", any comparison to another game's quality, any
@@ -91,10 +91,10 @@ near-identical rooms. A correct turn adds a number to the broadcast; a wrong one
 nothing, and nothing else tells you. No buzzer, no red flash, no fail state — the only
 thing the game does to you is stop acknowledging you.
 
-Vanilla ES modules, no build step, and the whole station is WebAudio: recorded digits
-in six languages over a synthesized noise bed, and a dial reading a frequency real
-number stations are logged on. Source is MIT:
-https://github.com/kleer001/finding_numbers
+Vanilla ES modules, no build step, and the whole station is WebAudio: digits in six
+languages over a synthesized noise bed, and a dial reading a frequency real number
+stations are logged on. The digits were rendered with Kokoro-82M, one voicepack per
+language. Source is MIT: https://github.com/kleer001/finding_numbers
 
 Headphones. It cannot be played without sound.
 ```
@@ -184,12 +184,18 @@ Browser game built around a WebAudio number station — the dial cycles frequenc
 ```
 https://kleer001.itch.io/finding-numbers — free, runs in a browser.
 
-The station is built in WebAudio: recorded digit samples in six languages over a
-synthesized noise bed, and a dial whose values are frequencies logged for real
-stations — UVB-76 on 4625, the Lincolnshire Poacher on 11545, HM01 on 11530, the Cuban
-V02a on 7887, The Pip, the Squeaky Wheel, the Goose, Yosemite Sam. One is drawn per
-level and shown under the level badge: flavour on the HUD, not a simulation of any one
-station's schedule or format. If I've got a value wrong I'd rather hear it than not.
+The station is built in WebAudio: digit samples in six languages over a synthesized
+noise bed, and a dial whose values are frequencies logged for real stations — UVB-76 on
+4625, the Lincolnshire Poacher on 11545, HM01 on 11530, the Cuban V02a on 7887, The Pip,
+the Squeaky Wheel, the Goose, Yosemite Sam. One is drawn per level and shown under the
+level badge: flavour on the HUD, not a simulation of any one station's schedule or
+format. If I've got a value wrong I'd rather hear it than not.
+
+The voices are Kokoro-82M, one voicepack per language, reading number words rather than
+digits so the readings are the ones a station would use — yon for 4, nana for 7, kyuu
+for 9 in the Japanese set. German and Russian were on the original list; Kokoro-82M has
+voices for neither, which is why the set runs English, Spanish, Italian, Japanese,
+Chinese and Hindi.
 
 There's a jukebox mode that is only the transmitter, no game around it: pick a
 language, set how coherent the message is, how fast it reads, and how much static sits
@@ -222,7 +228,7 @@ while you walk a maze of near-identical rooms. A correct turn adds a number to t
 broadcast; a wrong one adds nothing. No buzzer, no red flash, no fail state.
 
 Most of the maze holds still and can be learned. Some stretches move their exit a few
-times before settling. Sixteen levels are the game as designed; the deeper ones read
+times before settling. Sixteen levels are the game as designed; the later ones read
 faster, in a different voice each time, and eventually in a new language per digit —
 with more of the level you can't trust to stay put.
 
@@ -239,33 +245,29 @@ Headphones — it cannot be played without sound. Source is MIT.
 Descriptions take images, not video, so the GIFs are the only motion available:
 `clips/out/core-loop.gif` and `clips/out/pulse.gif`.
 
+The point of this one is to say that there is something to find without saying what it
+is. Nothing here names a level number, a threshold, or an effect — a reader who has not
+played should finish it knowing only that the sixteenth level is not a wall.
+
 **Title:**
 
 ```
-The counter runs out of bits
+Sixteen is the largest number the counter can hold
 ```
 
 **Body:**
 
 ```
-The level counter is a four-bit field in the fiction. Sixteen is the largest number it
-can hold, and sixteen levels are the game as designed — so the sixteenth is the last
-level that was designed, not the last one that exists.
+The level counter is a four-bit field. Sixteen levels are the game as designed, and
+sixteen is the most that field can count to — which are two different facts that happen
+to land on the same number.
 
-Past it the badge stops printing a decimal number and starts printing the field's
-contents, which is not the same thing. Keep going far enough and it stops claiming a
-number at all. The picture comes apart alongside it, through a pass of its own that
-draws from the game's own character set — the walls it already ships, plus the digits,
-which are the only other thing the machine knows.
+The station is the part I'd trust. However far you get, a correct turn adds a number to
+the broadcast and a wrong one adds nothing. The route is honest by construction, not by
+discipline: nothing that happens to the picture is allowed to touch it.
 
-What does not come apart is the route. Corruption never selects a cell you can stand on
-or the wall ring touching one, and the walkable cells are repainted after every pass, so
-a dropout can't open at a corridor edge and read as a door. The station still adds a
-number for a correct turn and still adds nothing for a wrong one. The maze stays as
-navigable as it ever was while everything drawn around it stops being trustworthy.
-
-That's the whole change, and finding where it starts is the point, so it isn't written
-down here or on the store page.
+I'm not going to say what the sixteenth level is the last of. If you get there, I'd
+like to hear what you make of what's on the other side of it.
 
 [core-loop.gif]
 
@@ -313,8 +315,8 @@ becomes a Short, and Shorts cannot be A/B tested.
   does."
 - `room-moved-9x16.mp4` — "You leave a room. You come back. The exit isn't where you
   left it."
-- `pulse-9x16.mp4` — "Reach the source of the transmission and it pulls you down a
-  level."
+- `pulse-9x16.mp4` — "Reach the source of the transmission and it pulls you somewhere
+  new."
 
 Each caption ends with: `Free in a browser — headphones. finding_numbers on itch.`
 

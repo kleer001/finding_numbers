@@ -153,9 +153,10 @@ The page is already live, so the pre-launch beat is spent. What remains:
 - **Re-launch the current build:** package, upload, verify the API reports `type=html`
   and a matching size, refresh screenshots, then post. Posting before this advertises a
   game that is not the one live.
-- **Devlog on what changed:** the overflow past level 16 is the story — a counter that
-  runs out of bits and a picture that comes apart while the route stays honest. Do not
-  spoil where it starts; the store copy deliberately does not.
+- **Devlog:** say there is something to find without saying what it is. The counter is a
+  four-bit field and sixteen is the most it can hold; that fact is the whole tease. Name
+  no threshold and no effect — what happens past the sixteenth level is for players to
+  find, and neither the store copy nor a devlog answers it.
 - **Post-launch:** note which channel actually brought players, and fold what they say
   about navigating by ear into the next pass.
 
