@@ -17,8 +17,10 @@ Live: <https://kleer001.itch.io/finding-numbers>
 - **Short description / tagline:** `Navigate a maze by ear — a number station bleeding through the static, and rooms that don't stay where you left them.` — 118 characters. itch's **hard limit is 120**; over it the whole form is rejected and every other edit in that save is discarded. Count before pasting.
 - **Classification:** Game
 - **Kind of project:** HTML — "This file will be played in the browser"
-- **Pricing:** free, no donations. It is a short strange thing; a payment wall would
-  cost it the audience that would actually play it.
+- **Pricing:** `$0 or donate`, with a $2.99 suggested donation. Free to play with no
+  wall in front of it — the donation prompt only appears on *download*, and a browser
+  game is played rather than downloaded, so it never stands between a player and the
+  game.
 - **Uploads:** `dist/finding_numbers.zip` (`./package.sh`; `index.html` at the zip
   root). Verify `type=html` and a matching `size` from the uploads API after **every**
   replacement — see `itch_publish_howto.md`.
