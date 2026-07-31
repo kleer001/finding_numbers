@@ -37,6 +37,25 @@ What the build keeps, and therefore what any post may say:
 Not claimable: any "first" or "only", any comparison to another game's quality, any
 length of playtime beyond "a few minutes a run", and anything about what players feel.
 
+## Naming the genre
+
+There is no enemy, no chase, no death, no timer and no fail state. Nothing in `src/`
+implements damage, health, pursuit or a loss condition. The register is dread, which is
+anticipation — not terror, which is the moment before impact, and not horror, which is
+the aftermath. This game holds the first and never delivers the other two. That is the
+design, not a gap in it.
+
+- **"Liminal horror" and "analog horror" are fair.** They name a shelf, not a scare.
+  That shelf is where dread without a monster lives, and this belongs on it.
+- **Bare "horror" carries the contract with it.** Where a post or a tag says only
+  "horror", say within a line or two that nothing chases you and nothing can kill you.
+  That turns away the reader who came for a monster before they bounce, and it is the
+  hook for the reader who came for the other thing.
+- **Never "suspense" or "thriller".** Those promise stakes and a clock, and this game
+  has neither. They over-promise harder than horror does, not more gently.
+- **Never promise a scare.** No "terrifying", "creepy", "chilling", "nightmare". Copy
+  may build unease. It may not sell a jump.
+
 ---
 
 ## r/WebGames
@@ -61,6 +80,9 @@ You are @ in a maze of near-identical rooms while a shortwave number station rea
 digits through the static. The station is the only compass: take the correct door
 and a number is added to the broadcast, take a wrong one and nothing is added. There
 is no buzzer and nothing turns red — you find out by what never arrives.
+
+Nothing chases you and nothing can kill you. The worst the game does is stop counting
+you.
 
 Most of the maze holds still and can be learned. Some stretches move their exit a
 few times before settling.
@@ -126,6 +148,10 @@ station reads digits through the static, and it is the only feedback you get. Co
 turn, a number is added to the broadcast. Wrong turn, nothing is added. No buzzer and
 no red flash — you learn by what never arrives. Most of the maze holds still and can
 be learned; some stretches move their exit a few times before settling.
+
+Worth saying up front, since it's tagged horror: nothing chases you and nothing can
+kill you. There's no fail state at all. The dread is that the station stops counting
+you, not that something is coming.
 
 Controls: arrows / WASD / HJKL on desktop, tap the screen edges on touch. P opens
 preferences.
