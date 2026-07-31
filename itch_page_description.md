@@ -42,22 +42,24 @@ here is that the station stops counting you, not that something is coming.
   arrives.
 - **Rooms that lie — but not all of them** — most of the maze holds still and can be
   learned. Some stretches can't: a room will move its exit on you a few times before
-  it settles for good. The deeper you go, the more of each level you can't trust.
-- **A station that sounds real** — the whole game is a number station built in WebAudio:
-  many voices, a brown-noise dread that circles the signal without ever swallowing it,
+  it settles for good. The further you get, the more of a level can lie to you — up to
+  half of it, and never more than half.
+- **A station that sounds real** — the whole game is a number station built in WebAudio.
+  Many voices, a brown-noise dread that circles the signal without ever swallowing it,
   and a dial tuned to frequencies that really broadcast into the dark.
 - **Jukebox mode** — no maze, just the transmitter. Tune it and let it run.
 - **A character-mode CRT** — one font, one phosphor color, one glyph grid, bent through
   a WebGL CRT filter, with the signal scrolling as a live spectrogram. Dial the decay up
   until the picture barely holds.
-- **Walls that change under you** — the early levels each wear their own surface in
-  turn: brick near the top, then dressed stone, riveted plate, checkers that coarsen as
-  they go, static, shear, and a cage. Deeper down the walls stop holding one surface and
-  mix.
-- **16 levels of decay** — six languages, a longer message and a faster readout the
-  deeper you go, more dread under the voice, and more of each level you can't trust to
-  stay put. Sixteen levels down, the signal can barely hold itself together. Whether
-  anything is under the sixteenth is not documented.
+- **Walls that change under you** — each early level wears its own surface. Brick first,
+  then dressed stone, riveted plate, checkers that coarsen as they go, static, shear,
+  and a cage. Later on the walls stop holding one surface and mix.
+- **16 levels of decay** — the message grows from three digits to fourteen, and the
+  station tightens its gaps as it grows, so a longer message never buys you more time.
+  Six languages: past the opening stretch the language changes level to level, until
+  every digit picks its own. The dread under the voice thickens until
+  it tops out. By the sixteenth the signal can barely hold itself together, and whether
+  anything lies beyond it is not documented.
 
 ## Controls
 
@@ -70,12 +72,13 @@ in the corner opens preferences.
 ## How to play
 
 Take a turn, then listen — the broadcast tells you whether you're getting warmer. Reach
-the source and step onto the pulse to go deeper. The rest is yours to work out.
+the source and step onto the pulse to move on. The rest is yours to work out.
 
 **Headphones strongly recommended.**
 
 ## Credits
 
-- Number-station voice samples and sound-design reference from the `voice_loom` project.
+- Number-station voices rendered with Kokoro-82M, one voicepack per language, via the
+  `voice_loom` project — which is also the sound-design reference.
 - CRT effect: [CRTFilterWebGL](https://github.com/Ichiaka/CRTFilterWebGL) (MIT).
 - Source: [github.com/kleer001/finding_numbers](https://github.com/kleer001/finding_numbers) · MIT licensed.
