@@ -12,8 +12,9 @@ What this measures that a ban-list linter cannot: reading grade, sentence-length
 spread, nominalization load, tricolon habit, and repeated sentence openings.
 
 Usage:
-  ./check.py path/to/copy.md            # whole file, markdown syntax stripped
-  ./check.py --fenced path/to/copy.md   # only ``` blocks, each its own document
+  ./check.py path/to/copy.md                     # whole file, markdown stripped
+  ./check.py --fenced path/to/copy.md            # only ``` blocks, each its own doc
+  ./check.py --budget 200 path/to/copy.md        # fail over a word budget
 """
 import re
 import statistics
@@ -30,6 +31,10 @@ NOMINALIZATION = re.compile(
 
 # "A, B, and C" -- the tricolon. One is rhetoric; four in a page is a machine.
 TRICOLON = re.compile(r"\b[\w'-]+, [\w'-]+,? and [\w'-]+\b")
+
+# A bullet carries one claim. Past this it has grown an explanatory paragraph and
+# stopped being scannable, which is the whole reason the list exists.
+BULLET_MAX = 25
 
 VOWELS = "aeiouy"
 
@@ -84,21 +89,44 @@ def strip_markdown(raw):
     return re.sub(r"[`*_>]", "", raw)
 
 
-def load(path, fenced_only):
+def drop_bullets(raw):
+    """Strip list items, leaving running prose. Rhythm is a property of prose: a
+    scannable list is *meant* to be uniform, so measuring its cadence would
+    punish exactly the shape a store page wants."""
+    keep, in_item = [], False
+    for line in raw.splitlines():
+        if re.match(r"^\s*[-*+]\s+\S", line):
+            in_item = True
+            continue
+        if in_item and line.startswith(("  ", "\t")) and line.strip():
+            continue
+        in_item = False
+        keep.append(line)
+    return "\n".join(keep)
+
+
+def load(path, fenced_only, prose_only=False):
     """The documents to measure. Fenced mode yields one per block: separate posts
     are allowed to repeat each other, and one post is not."""
     raw = Path(path).read_text(encoding="utf-8")
+    prep = (lambda t: strip_markdown(drop_bullets(t))) if prose_only else strip_markdown
     if not fenced_only:
-        return [strip_markdown(raw)]
+        return [prep(raw)]
     blocks = re.findall(r"^```[^\n]*\n(.*?)^```", raw, re.M | re.S)
     if not blocks:
         sys.exit(f"{path}: no fenced blocks found")
-    return [strip_markdown(b) for b in blocks]
+    return [prep(b) for b in blocks]
 
 
 def sentences(text):
     parts = re.split(r"(?<=[.!?])[\s\n]+", text)
     return [s.strip() for s in parts if len(s.strip().split()) > 1]
+
+
+def raw_words(docs):
+    """Every word in the copy, including headlines and one-line blocks that the
+    readability pass sets aside. Length is length."""
+    return [w for d in docs for w in d.split()]
 
 
 def report(label, hits, limit=12):
@@ -108,20 +136,50 @@ def report(label, hits, limit=12):
             print(f"    {h}")
 
 
+def bullets(path, fenced):
+    """Bullet lines with their wrapped continuations folded back in. A bullet is
+    a claim, not a paragraph with a dot in front of it."""
+    raw = Path(path).read_text(encoding="utf-8")
+    if fenced:
+        raw = "\n\n".join(re.findall(r"^```[^\n]*\n(.*?)^```", raw, re.M | re.S))
+    out, current = [], None
+    for line in raw.splitlines():
+        if re.match(r"^\s*[-*+]\s+\S", line):
+            if current:
+                out.append(current)
+            current = re.sub(r"^\s*[-*+]\s+", "", line)
+        elif current is not None and line.startswith(("  ", "\t")) and line.strip():
+            current += " " + line.strip()
+        else:
+            if current:
+                out.append(current)
+            current = None
+    if current:
+        out.append(current)
+    return [strip_markdown(b).strip() for b in out]
+
+
 def main():
-    args = [a for a in sys.argv[1:] if a != "--fenced"]
-    fenced = "--fenced" in sys.argv
+    argv = [a for a in sys.argv[1:]]
+    fenced = "--fenced" in argv
+    budget = None
+    if "--budget" in argv:
+        i = argv.index("--budget")
+        budget = int(argv[i + 1])
+        del argv[i:i + 2]
+    args = [a for a in argv if a != "--fenced"]
     if len(args) != 1:
         sys.exit(__doc__)
     path = args[0]
     docs = load(path, fenced)
+    prose_docs = load(path, fenced, prose_only=True)
     word_bans, word_warns, structural, hedges = parse_banned(BANNED)
 
     text = "\n\n".join(docs)
     # Split per document: a block ending without a full stop -- a headline, a
     # caption -- would otherwise run into the next block and measure as one
     # enormous sentence.
-    per_doc = [sentences(doc) for doc in docs]
+    per_doc = [sentences(doc) for doc in prose_docs]
     # Readability is a claim about running prose. A one-sentence block is a
     # headline or a caption, which is meant to be short, and averaging it in
     # drags the grade under the floor for the wrong reason. Ban checks still
@@ -130,7 +188,9 @@ def main():
     skipped = len(per_doc) - len(prose)
     sents = [s for d in prose for s in d]
     if not sents:
-        sys.exit(f"{path}: nothing long enough to measure")
+        sys.exit(f"{path}: no running prose to measure")
+    # Too little prose to characterise a rhythm. Report it, don't gate on it.
+    thin_prose = len(sents) < 5
 
     lengths = [len(s.split()) for s in sents]
     words = [w for s in sents for w in s.split()]
@@ -148,14 +208,45 @@ def main():
     print(f"  length spread (stdev)  {spread:5.1f}   want >= 6 -- flat rhythm reads as machine")
     print(f"  shortest / longest     {min(lengths)} / {max(lengths)} words")
 
+    # Total length. Nobody reads a store page; they scan it and leave. See the
+    # budgets in SKILL.md -- pass one with --budget to make it a hard gate.
+    # In fenced mode the budget is per block: each block is its own post, and a
+    # file of twenty posts is not a twenty-times-longer post.
+    total = len(raw_words(docs))
+    per_block = [len(d.split()) for d in docs]
+    if fenced:
+        print(f"  total words            {total:5d}   longest post {max(per_block)}"
+              f"{f' / budget {budget}' if budget else ''}")
+    else:
+        print(f"  total words            {total:5d}   "
+              f"{'budget ' + str(budget) if budget else 'no budget set'}")
+    bul = bullets(path, fenced)
+    long_bullets = [(len(b.split()), b) for b in bul if len(b.split()) > BULLET_MAX]
+    if bul:
+        avg = sum(len(b.split()) for b in bul) / len(bul)
+        print(f"  {len(bul)} bullets, {avg:.0f} words each   ceiling {BULLET_MAX}")
+
     fails = []
+    if budget:
+        if fenced:
+            for i, n in enumerate(per_block, 1):
+                if n > budget:
+                    fails.append(f"block {i}: {n} words against a {budget} budget "
+                                 f"-- cut {n - budget}")
+        elif total > budget:
+            fails.append(f"{total} words against a {budget} budget -- cut {total - budget}")
+    for n, b in long_bullets:
+        fails.append(f"{n}-word bullet (ceiling {BULLET_MAX}): {b[:60]}...")
     # Grade 9 is a ceiling, not a band. A low score is only a problem when the
     # sentences are also all the same length -- that combination is the chop.
     # Plain short prose that still varies is the target, not a failure: much
     # published writing people admire scores under 6.
     if grade > 9:
         fails.append(f"grade {grade:.1f} -- too dense to read once")
-    if spread < 6:
+    if thin_prose:
+        print(f"\n  note: only {len(sents)} prose sentences (bullets aren't prose) "
+              "-- rhythm not gated")
+    elif spread < 6:
         fails.append(f"length spread {spread:.1f} -- the sentences are too alike")
     elif grade < 6:
         print(f"\n  note: grade {grade:.1f} is plain, and the spread carries it. "

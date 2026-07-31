@@ -2,11 +2,12 @@
 name: humanized-copy
 description: >-
   Rewrite public-facing copy so it reads like a person wrote it — store pages,
-  forum posts, captions, release notes, emails. Strips machine tells, fixes
-  stiff grammar, and holds an 8th-grade reading level with varied sentence
-  length. TRIGGER when the user asks to humanize, de-slop, tighten, or
-  plain-language any copy, when copy reads stilted or AI-written, and at the
-  release gate alongside honest-copy.
+  forum posts, captions, release notes, emails. Cuts it to a length people will
+  actually scan, strips machine tells, fixes stiff grammar, and holds an
+  8th-grade reading level with varied sentence length. TRIGGER when the user
+  asks to humanize, de-slop, tighten, shorten or plain-language any copy, when
+  copy reads stilted, bloated or AI-written, and at the release gate alongside
+  honest-copy.
 argument-hint: "[path/to/copy.md or inline copy]"
 allowed-tools: Read, Write, Edit, Grep, Glob, Bash
 ---
@@ -27,15 +28,51 @@ and its longer ban list in `reference/voice_template.md`, which covers
 show-don't-tell, interiority and emotional-channel rotation. None of that applies to
 a Reddit post.
 
-## 1. Measure first
+## 1. Length is a rule, not a preference
+
+Nobody reads promo copy. They scan it, decide, and leave. Anything longer than the
+budget is not thoroughness — it is a wall that gets skipped whole, taking the good
+sentences with it.
+
+Cut to the budget **before** editing anything for rhythm or vocabulary. Polishing a
+sentence you are about to delete is wasted work, and a long draft hides its own worst
+line.
+
+| Surface | Budget |
+|---|---|
+| Store description | 200 words |
+| Forum / subreddit post | 150 |
+| Curator or press email | 150 |
+| Social post | 50 |
+| Video caption | 25 |
+| README, before the first heading | 80 |
+
+**A bullet is a claim, not a paragraph with a dot in front of it.** One bolded claim
+plus at most one supporting clause — 25 words, hard ceiling. The moment a list grows
+explanatory tails it has stopped being scannable, which was the only reason to make it
+a list. `check.py` fails on any bullet over the ceiling and reports the average.
+
+What earns its place: what the thing is, what it does that others don't, what it costs,
+how to get it. What doesn't: restating the headline in prose, explaining a feature the
+reader can see in the screenshot, or telling players something they already assume.
+
+## 2. Measure first
 
 ```sh
-.claude/skills/humanized-copy/check.py --fenced path/to/copy.md
+.claude/skills/humanized-copy/check.py --budget 200 --fenced path/to/copy.md
 ```
 
 Drop `--fenced` for ordinary prose. Use it when the copy lives in ``` blocks; each
 block is then scored as its own post, so two posts may open the same way and one
-post may not.
+post may not. `--budget` turns the table above into a gate.
+
+When a file mixes internal notes with paste-ready copy, measure only the copy — the
+notes are not what a reader sees, and counting them makes the budget meaningless:
+
+```sh
+python3 -c "print(open('itch_page_description.md').read().split('---',1)[1])" > /tmp/body.md
+.claude/skills/humanized-copy/check.py --budget 200 /tmp/body.md
+```
 
 The script reports reading grade, mean sentence length, length spread, and hits
 against `banned.md`. It exits 1 on a hard failure. Fix what it names before reading
@@ -46,7 +83,7 @@ Rules live in `banned.md`, not in the script. Add a ban by editing that file. Ke
 banned word only by adding it to `## Exceptions` with the reason it is load-bearing;
 an exception is a decision on the record.
 
-## 2. The tells
+## 3. The tells
 
 Ranked by how strongly readers weight them. The first two are `honest-copy`'s
 department and are listed only so the split is clear.
@@ -76,7 +113,7 @@ Structural habits the measured signature adds:
 - **Adjective inflation** on abstract nouns.
 - **The connector.** *"It's not just X, it's Y."* Banned outright.
 
-## 3. Grammar and reading level
+## 4. Grammar and reading level
 
 **Flesch–Kincaid grade 9 is the ceiling**, and 8 is the number to aim at. That is not
 writing for a child; it is where most published journalism sits.
@@ -103,12 +140,13 @@ The craft rules behind these live in `../writing_advice/master_list.md`, section
 **Words** and **Sentences & sound** — Twain, Orwell, Strunk, Le Guin, Maugham,
 Leonard. The rest of that file is fiction craft and does not apply here.
 
-## 4. Rewrite
+## 5. Rewrite
 
 One pass per problem, in this order. Mixing them produces mush.
 
-1. **Cut.** Delete every stock phrase `check.py` named. Do not replace them yet —
-   most sentences read better with the phrase simply gone.
+1. **Cut to the budget.** Whole sections first, then stock phrases. Do not replace
+   anything yet — most sentences read better with the phrase simply gone, and the
+   rest you are about to delete anyway.
 2. **Break the rhythm.** Split the long sentences. Then find a place for a short
    one. Read the paragraph and listen for the metronome.
 3. **Replace precisely.** Now fill the gaps left by step 1. Choose the word this
@@ -117,7 +155,7 @@ One pass per problem, in this order. Mixing them produces mush.
 4. **Add what only you know.** A number, a name, a decision and its cost. Specifics
    cannot be generated, which is exactly why they read as human.
 
-## 5. Read it aloud
+## 6. Read it aloud
 
 Literally. Every sentence you stumble on is broken, and it is broken at the place
 you stumbled. This catches what no measurement does.
