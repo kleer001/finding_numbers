@@ -44,21 +44,26 @@ Each has to be demonstrable in a clip or a screenshot.
 ## Assets
 
 - [x] Cover image, 630×500 (`docs/img/cover.png`)
-- [ ] 3–5 screenshots of the **current** build (`docs/img/`) — the existing four predate
-      `SHOW NUMBERS` defaulting off and the canvas scaling, so they show a HUD a new
-      player will not see
-- [ ] One animated GIF of the core loop (`clips/out/core-loop.gif`) — needs re-capture
+- [x] Four screenshots of the current build (`docs/img/`) — 800×600, the canvas's native
+      buffer, showing the defaults a new player meets
+- [x] One animated GIF of the core loop (`clips/out/core-loop.gif`)
 - [x] Trailer hosted: <https://youtu.be/3_maIo0cYAk> — cut from the current build
 - [ ] Three title variants testing *different* hypotheses, plus three 1280×720
       thumbnails (`clips/out/thumbs/`), for YouTube Test & Compare
 - [x] `promo.html` landing page
 - [x] `ITCH-PAGE.md` finalized; description source is `itch_page_description.md`
-- [ ] Social share card (`og:image` in `promo.html`)
+- [x] Social share card, 1200×630 (`docs/img/share-card.png`), wired as `og:image` in
+      `promo.html` alongside the rest of the Open Graph block
 
-Everything unchecked above is gated on re-capturing from the current build. `clips/` and
-`clips/out/` are gitignored and rebuilt by `./capture.sh <clip>` then `./post.sh`.
+`clips/` and `clips/out/` are gitignored and rebuilt by `./capture.sh <clip>` then
+`./post.sh`. The screenshots are captured from a browser at the native buffer size; a
+browser whose device pixel ratio is not 1 paints the canvas at a fraction of its CSS
+box, so size the window until the canvas's device pixels equal 800×600 and crop, rather
+than scaling a mismatched capture back up.
 
 ## Channels
+
+Paste-ready copy for every channel below lives in `OUTREACH-COPY.md`.
 
 The store page is home base; the rest is where this specific scene gathers. Read each
 community's self-promotion rules before posting — the gates below run from wide open to a

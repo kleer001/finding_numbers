@@ -50,11 +50,16 @@ Live: <https://kleer001.itch.io/finding-numbers>
   file on an existing upload, so a corrected trailer is always a new video and a new
   URL: re-point this field, and expect any A/B test on the old upload to end with it.
 
-**The screenshots are stale** and need re-capturing before the next page edit: they
-predate `SHOW NUMBERS` defaulting off, the canvas scaling to the viewport, and the
-readout's new cadence. Judge a still or a clip by whether it shows the player
-something the build no longer does — footage of a removed preferences row is a
-false claim in a way that a merely older maze layout is not.
+All four screenshots are 800×600, the canvas's native buffer, captured 1:1 so nothing
+is resampled. They show the defaults a new player meets: `SHOW NUMBERS` off, so the
+status field reads a frequency in kHz rather than a digit count.
+
+Judge a still or a clip by whether it shows the player something the build no longer
+does — footage of a removed preferences row is a false claim in a way that a merely
+older maze layout is not.
+
+**The cover still shows the digit readout** (`01`, `2 / 3`), which is a real option but
+no longer the default look. Not a false claim; a decision about what the page leads with.
 
 ---
 
