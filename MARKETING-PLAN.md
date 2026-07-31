@@ -36,9 +36,11 @@ Each has to be demonstrable in a clip or a screenshot.
    learned. Some stretches move their exit a few times before settling — and only after
    you have doubted them, since a room changes on re-entry.
    *Demonstrable:* `clips/room-moved.mp4`.
-3. **A station that sounds real.** The whole thing is WebAudio — many voices, a brown-noise
-   dread that circles the signal without swallowing it, and a dial on frequencies real
-   stations broadcast on. Jukebox mode ships it as a standalone toy.
+3. **A station of its own.** The whole thing is WebAudio — spoken digits in six
+   languages over a brown-noise dread that circles the signal without swallowing it.
+   A tribute, not a recording, and copy says so rather than naming real stations:
+   naming them promises audio this game does not have. Jukebox mode ships it as a
+   standalone toy.
    *Demonstrable:* `clips/jukebox.mp4` and the live spectrogram in the HUD.
 
 ## Assets

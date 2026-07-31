@@ -27,15 +27,13 @@ quiet is the only way to lose.
 
 ## What's inside
 
-- **Navigate by ear.** No map, nothing marks the right door.
-- **A correct turn adds a number. A wrong one adds nothing.** No buzzer, no red flash.
-- **Rooms that lie.** Some move their exit before settling — never more than half a level.
-- **A real station.** WebAudio, six languages, tuned to frequencies that really broadcast.
-- **Jukebox mode.** The transmitter, no maze.
-- **A character-mode CRT.** One glyph grid through a WebGL filter, the signal as a live
-  spectrogram.
-- **16 levels.** Three digits at the start, fourteen by the end, the gaps tightening to
-  match. What's past the sixteenth isn't documented.
+- No map, and nothing marks the right door.
+- A correct turn adds a number. A wrong one adds nothing.
+- Rooms that move their exit before settling.
+- Spoken digits in six languages.
+- Jukebox mode: the transmitter, no maze.
+- A character-mode CRT through a WebGL filter.
+- 16 levels. What's past the sixteenth isn't documented.
 
 ## Controls
 
@@ -43,7 +41,7 @@ quiet is the only way to lose.
 
 **Mobile:** tap the screen edges · **[P]** for preferences.
 
-Headphones. The game can't be played without sound.
+The game can't be played without sound.
 
 ## Credits
 

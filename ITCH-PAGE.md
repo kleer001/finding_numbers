@@ -78,8 +78,8 @@ reviewed without opening it:
   Horror and that tag promises a threat this game does not have.
 - Some stretches of a level move their exit a few times before settling; most of the
   maze holds still and can be learned.
-- The station is built in WebAudio, tuned to frequencies real number stations
-  broadcast on.
+- The station is built in WebAudio: spoken digits in six languages. A tribute, not a
+  recording — the page does not name real stations or dial frequencies.
 - Jukebox mode: the transmitter with no maze.
 - A character-mode CRT through a WebGL filter, with the signal as a live spectrogram.
 - Walls change under you: the early levels each wear their own surface, deeper ones mix.

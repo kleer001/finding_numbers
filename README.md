@@ -6,8 +6,8 @@ chases you and nothing can kill you — the station going quiet is the only way 
 
 ## ▶ [Play it here](https://kleer001.github.io/finding_numbers/) · [on itch.io](https://kleer001.itch.io/finding-numbers)
 
-Press any key to start the audio and **put on headphones**. What you're listening for
-is whether a number arrives at all.
+Press any key to start the audio. What you're listening for is whether a number
+arrives at all — the game can't be played without sound.
 
 ---
 
@@ -34,11 +34,10 @@ still and can be learned; some move their exit before settling.
 <tr>
 <td width="34%" valign="top">
 
-### A station that sounds real
+### A station of its own
 
-A number station built in WebAudio — six languages, a brown-noise bed that
-circles the signal without swallowing it, and a dial tuned to frequencies that
-really broadcast.
+Built in WebAudio — spoken digits in six languages over a brown-noise bed that
+circles the signal without swallowing it. A tribute, not a recording.
 
 **Jukebox mode** plays it on its own, no maze.
 
@@ -107,7 +106,7 @@ is meant to be the compass.
 ## How to play
 
 Take a turn, then listen. Reach the source and step onto the pulse to move on. The
-rest is yours to work out. The game can't be played without sound.
+rest is yours to work out.
 
 ## Run locally
 

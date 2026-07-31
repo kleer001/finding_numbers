@@ -24,18 +24,21 @@ What the build keeps, and therefore what any post may say:
   wrong one adds nothing. Nothing buzzes, nothing turns red, and there is no fail state.
 - Most of the maze holds still and can be learned. Some stretches move their exit a few
   times before settling.
-- The station is built in WebAudio — digit samples in six languages, a synthesized noise
-  bed under them, and a dial reading a frequency real number stations are logged on, one
-  drawn per level. The digits were rendered with Kokoro-82M, one voicepack per language.
+- The station is built in WebAudio — digit samples in six languages over a synthesized
+  noise bed, rendered with Kokoro-82M, one voicepack per language. A tribute, not a
+  recording.
 - Jukebox mode is the transmitter with no maze.
 - One character grid, one phosphor color, bent through a WebGL CRT filter, with the
   signal drawn as a live spectrogram.
 - The game was designed as sixteen levels. Whether anything lies beyond the sixteenth
   isn't documented, and no post answers it.
-- It cannot be played without sound. Headphones are the intended way in.
+- It cannot be played without sound.
 
 Not claimable: any "first" or "only", any comparison to another game's quality, any
 length of playtime beyond "a few minutes a run", and anything about what players feel.
+
+Real station names and dial frequencies stay out of copy. Naming them promises audio
+this game does not have.
 
 ## Naming the genre
 
@@ -74,7 +77,7 @@ link to the game, no repost inside three months.
 **First comment:**
 
 ```
-Free, browser, no signup. Headphones — the game cannot be played without sound.
+Free, browser, no signup. The game cannot be played without sound.
 
 You are @ in a maze of near-identical rooms while a shortwave number station reads
 digits through the static. The station is the only compass: take the correct door
@@ -115,11 +118,11 @@ the only thing the game does to you is stop acknowledging you.
 
 Vanilla ES modules, no build step. The whole station is WebAudio: digits in six
 languages over a synthesized noise bed, rendered with Kokoro-82M, one voicepack per
-language. The dial reads a frequency real number stations are logged on.
+language.
 
 Source is MIT: https://github.com/kleer001/finding_numbers
 
-Headphones. It cannot be played without sound.
+It cannot be played without sound.
 ```
 
 ---
@@ -147,7 +150,7 @@ No map, no minimap, nothing marks the right door. A shortwave number station rea
 digits through the static and it's the only feedback you get. Correct turn, a number
 is added. Wrong turn, nothing is. You learn by what never arrives.
 
-It's tagged horror, so: nothing chases you and nothing can kill you. There's no fail
+It's tagged horror, but nothing chases you and nothing can kill you. There's no fail
 state. The dread is that the station stops counting you.
 
 Arrows / WASD / HJKL, or tap the screen edges. P opens preferences.
@@ -155,7 +158,7 @@ Arrows / WASD / HJKL, or tap the screen edges. P opens preferences.
 What I'd most like to know is whether the navigate-by-ear loop reads without the
 on-screen digit count, which is off by default.
 
-Headphones — the game cannot be played without sound.
+The game cannot be played without sound.
 ```
 
 ---
@@ -185,20 +188,20 @@ Wander far enough and the broadcast empties — the station stops reading number
 and you're alone in the hiss with nothing to steer by. Nothing kills you and nothing is
 timing you. The game's only move is to stop acknowledging you.
 
-Sound is not optional; it's the whole interface. Headphones.
+Sound is not optional; it's the whole interface.
 ```
 
 ---
 
 ## r/numberstations
 
-The people who know the real stations. Lead with the dial and the audio, not the maze,
-and do not claim to reproduce any particular station.
+The one audience that will know immediately this isn't real station audio. Say so first,
+in the title, so nobody arrives expecting recordings. Lead with how it was built.
 
 **Title:**
 
 ```
-Browser game built around a WebAudio number station — the dial cycles frequencies these stations are logged on
+I built a number station in WebAudio — synthesized, not recorded — and made a game you play by listening to it
 ```
 
 **Body:** attach or link `clips/out/jukebox.mp4`.
@@ -206,15 +209,15 @@ Browser game built around a WebAudio number station — the dial cycles frequenc
 ```
 https://kleer001.itch.io/finding-numbers — free, runs in a browser.
 
-The station is WebAudio: digit samples in six languages over a noise bed. The dial
-values are frequencies logged for real stations. UVB-76 on 4625, the
-Lincolnshire Poacher on 11545, HM01 on 11530, the Cuban V02a on 7887. The Pip, the
-Squeaky Wheel, the Goose and Yosemite Sam are on there too. If I've got one wrong I'd
-rather hear it.
+Up front: this is a tribute, not a recording. Nothing in it came off the air.
 
 The voices are Kokoro-82M, one voicepack per language, reading number words rather
 than digits — yon for 4, nana for 7, kyuu for 9. German and Russian were on the
-original list; Kokoro has voices for neither.
+original list; Kokoro has voices for neither, so it runs English, Spanish, Italian,
+Japanese, Chinese and Hindi.
+
+Under them is a synthesized noise bed, lowpassed below the voice and ducked whenever a
+digit speaks, so it crowds the signal without ever burying it.
 
 There's a jukebox mode that's only the transmitter: pick a language, set how coherent
 the message is, how fast it reads, how much static sits on top.
@@ -254,7 +257,7 @@ times before settling. Sixteen levels — the message grows and the gaps tighten
 Also in there: a jukebox mode that's just the transmitter, and a CRT decay dial you can
 turn up until the picture barely holds.
 
-Headphones — it cannot be played without sound. Source is MIT.
+It cannot be played without sound. Source is MIT.
 ```
 
 ---
@@ -305,7 +308,7 @@ one.
 ```
 A maze with no map. A shortwave number station reads digits through the static, and
 it's the only compass: a correct turn adds a number, a wrong one adds nothing. No
-buzzer, no red flash, nothing behind you. Free in a browser. Headphones.
+buzzer, no red flash, nothing behind you. Free in a browser.
 
 #gamedev #horror #liminal
 ```
@@ -336,7 +339,7 @@ becomes a Short, and Shorts cannot be A/B tested.
 - `pulse-9x16.mp4` — "Reach the source of the transmission and it pulls you somewhere
   new."
 
-Each caption ends with: `Nothing chases you. Free in a browser — headphones.
+Each caption ends with: `Nothing chases you. Free in a browser.
 finding_numbers on itch.`
 
 ---
@@ -359,15 +362,15 @@ mistake is silence rather than a signal.
 It sits on the liminal-horror shelf, but there's no monster in it and no way to die.
 
 One character grid bent through a WebGL CRT filter. Underneath is WebAudio: digit
-samples in six languages rendered with Kokoro-82M, over a synthesized noise bed, on a
-dial reading frequencies real stations are logged on. A jukebox mode ships with it —
-the transmitter alone, no maze.
+samples in six languages rendered with Kokoro-82M, over a synthesized noise bed. A
+tribute to the real thing, not a recording of it. A jukebox mode ships with it — the
+transmitter alone, no maze.
 
 Free, no signup, runs in one click: https://kleer001.itch.io/finding-numbers
 Trailer: https://youtu.be/3_maIo0cYAk
 Source, MIT: https://github.com/kleer001/finding_numbers
 
-Headphones — it cannot be played without sound.
+It cannot be played without sound.
 
 — kleer001
 ```
