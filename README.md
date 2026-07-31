@@ -13,8 +13,9 @@ you is stop counting you.
 
 ## ▶ [Play it here](https://kleer001.github.io/finding_numbers/) · [on itch.io](https://kleer001.itch.io/finding-numbers)
 
-Tap or press any key to start the audio, **put on headphones**, and listen. The
-voice is faint and buried in noise on purpose.
+Tap or press any key to start the audio, **put on headphones**, and listen. The voice
+comes through loud and overdriven, and the noise ducks out of its way every time it
+speaks. What you're listening for is whether a number arrives at all.
 
 Prefer to read first? The [station page](https://kleer001.github.io/finding_numbers/promo.html)
 has the full rundown.

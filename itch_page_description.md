@@ -31,8 +31,9 @@ reach the source of the transmission — it will pull you somewhere new.
 Nothing chases you and nothing can kill you. There is no fail state at all. The dread
 here is that the station stops counting you, not that something is coming.
 
-> **Put on headphones.** The voice is faint and buried in noise on purpose. This game
-> is played with your ears as much as your eyes.
+> **Put on headphones.** The voice comes through loud and overdriven, and the noise
+> ducks out of its way every time it speaks. What you're listening for isn't a faint
+> signal — it's whether a number arrives at all.
 
 ## What's inside
 
