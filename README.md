@@ -1,24 +1,13 @@
 # finding_numbers
 
-A liminal horror maze you navigate **by ear** — a shortwave number station
-bleeding through the static, and rooms that don't always stay where you left
-them.
-
-You are `@`, lost in a shifting maze of near-identical rooms, listening to a
-station read numbers through the noise. Walk toward the signal, capture the whole
-message, and reach the source of the transmission — it will pull you somewhere new.
-
-There is no monster, no chase and no fail state. The only thing the game can do to
-you is stop counting you.
+A liminal horror maze you navigate **by ear**. You are `@`, lost in near-identical
+rooms while a shortwave number station reads digits through the static. Nothing
+chases you and nothing can kill you — the station going quiet is the only way to lose.
 
 ## ▶ [Play it here](https://kleer001.github.io/finding_numbers/) · [on itch.io](https://kleer001.itch.io/finding-numbers)
 
-Tap or press any key to start the audio, **put on headphones**, and listen. The voice
-comes through loud and overdriven, and the noise ducks out of its way every time it
-speaks. What you're listening for is whether a number arrives at all.
-
-Prefer to read first? The [station page](https://kleer001.github.io/finding_numbers/promo.html)
-has the full rundown.
+Press any key to start the audio and **put on headphones**. What you're listening for
+is whether a number arrives at all.
 
 ---
 
@@ -30,11 +19,9 @@ has the full rundown.
 
 ### Navigate by ear
 
-There is no map and nothing marks the right door. The station is your only
-compass — a correct turn adds a number to the broadcast, a wrong one adds
-nothing. Nothing buzzes and nothing turns red; you find out by what never
-arrives. Most rooms hold still and can be learned; some stretches move their
-exit on you a few times before settling.
+No map, nothing marks the right door. A correct turn adds a number to the
+broadcast, a wrong one adds nothing — no buzzer, no red flash. Most rooms hold
+still and can be learned; some move their exit before settling.
 
 </td>
 <td width="66%" valign="top">
@@ -49,14 +36,11 @@ exit on you a few times before settling.
 
 ### A station that sounds real
 
-The whole game is a number station built in WebAudio — many voices, a
-brown-noise dread that circles the signal without ever swallowing it, and a dial
-tuned to frequencies that really broadcast into the dark.
+A number station built in WebAudio — six languages, a brown-noise bed that
+circles the signal without swallowing it, and a dial tuned to frequencies that
+really broadcast.
 
-The station greets you before your first step and drifts between tongues as you
-play.
-
-**Jukebox mode** plays it on its own, no maze: tune the transmitter and let it run.
+**Jukebox mode** plays it on its own, no maze.
 
 </td>
 <td width="66%" valign="top">
@@ -72,14 +56,11 @@ play.
 ### A character-mode CRT
 
 One font, one phosphor color, one glyph grid — a text-mode monitor bent through a
-WebGL CRT filter, the signal scrolling as a live spectrogram in the HUD. Dial the
-decay up until the picture barely holds.
+WebGL CRT filter, the signal scrolling as a live spectrogram. Dial the decay up
+until the picture barely holds.
 
-The early levels each wear their own walls in turn — brick, dressed stone,
-riveted plate, three scales of checker, static, shear, cage — and once the ramp
-runs out, deeper levels stop holding one surface and mix them. The game ships the
-font that draws them (`make_font.py` builds it), because no stock face has the
-glyphs and a fallback would put a second typeface in the middle of the grid.
+The game ships the font that draws its walls (`make_font.py` builds it): no stock
+face has the glyphs, and a fallback would put a second typeface in the grid.
 
 </td>
 <td width="66%" valign="top">
@@ -93,14 +74,13 @@ glyphs and a fallback would put a second typeface in the middle of the grid.
 
 </table>
 
-### 16 levels of decay
+### 16 levels
 
-It gets stranger the deeper you go — a longer message to capture, other tongues,
-a faster readout, more of the dread under it, and more of each level you can't
-trust to stay put. Sixteen levels down, the signal can barely hold itself
-together.
+The message grows from three digits to fourteen, and the station tightens its gaps
+to match, so a longer message never buys you more time. Past the opening stretch the
+language changes level to level, until every digit picks its own.
 
-Whether anything is under the sixteenth is not documented.
+What's past the sixteenth isn't documented.
 
 ---
 
@@ -126,9 +106,8 @@ level. On-screen numbers start **off**: the station is meant to be the compass.
 
 ## How to play
 
-Take a turn, then listen — the broadcast tells you whether you're getting warmer.
-Reach the source and step onto the pulse to go deeper. The rest is yours to work
-out. Headphones strongly recommended.
+Take a turn, then listen. Reach the source and step onto the pulse to move on. The
+rest is yours to work out. The game can't be played without sound.
 
 ## Run locally
 
@@ -151,8 +130,8 @@ step**, so any static file server works too.
 
 ## Credits
 
-- Number-station voice samples and the sound-design reference come from the
-  `voice_loom` project.
+- Number-station voices rendered with Kokoro-82M, one voicepack per language, via
+  the `voice_loom` project.
 - CRT effect: [CRTFilterWebGL](https://github.com/Ichiaka/CRTFilterWebGL) (MIT).
 
 MIT licensed.
