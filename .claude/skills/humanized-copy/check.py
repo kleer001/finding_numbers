@@ -83,18 +83,27 @@ def syllables(word):
 
 def strip_markdown(raw):
     raw = re.sub(r"^\s*[-*+]\s+", "", raw, flags=re.M)      # list bullets
-    raw = re.sub(r"^#{1,6}\s+", "", raw, flags=re.M)         # headings
+    # Headings end a sentence. Without the full stop a title runs into the
+    # paragraph under it and measures as one long sentence that nobody wrote.
+    raw = re.sub(r"^#{1,6}\s+(.*?)([.!?:]?)\s*$",
+                 lambda m: m.group(1) + (m.group(2) or "."), raw, flags=re.M)
     raw = re.sub(r"\[([^\]]*)\]\([^)]*\)", r"\1", raw)       # links -> text
     raw = re.sub(r"https?://\S+", "", raw)
+    # Markdown files carry raw HTML for layout -- tables, <img>, <details>. Tags
+    # are not sentences, and left in they measure as enormous ones.
+    raw = re.sub(r"<[^>]+>", " ", raw)
     return re.sub(r"[`*_>]", "", raw)
 
 
 def drop_bullets(raw):
-    """Strip list items, leaving running prose. Rhythm is a property of prose: a
-    scannable list is *meant* to be uniform, so measuring its cadence would
-    punish exactly the shape a store page wants."""
+    """Strip list items and headings, leaving running prose. Rhythm is a property
+    of prose: a scannable list is *meant* to be uniform, and a heading is a label,
+    so measuring their cadence would punish exactly the shape a store page wants."""
     keep, in_item = [], False
     for line in raw.splitlines():
+        if re.match(r"^#{1,6}\s+", line):
+            in_item = False
+            continue
         if re.match(r"^\s*[-*+]\s+\S", line):
             in_item = True
             continue
@@ -119,7 +128,9 @@ def load(path, fenced_only, prose_only=False):
 
 
 def sentences(text):
-    parts = re.split(r"(?<=[.!?])[\s\n]+", text)
+    # A line ending in a colon is a label introducing what follows ("Desktop:").
+    # Without breaking there it swallows the next paragraph into one sentence.
+    parts = re.split(r"(?<=[.!?])[\s\n]+|(?<=:)\n", text)
     return [s.strip() for s in parts if len(s.strip().split()) > 1]
 
 
@@ -189,8 +200,9 @@ def main():
     sents = [s for d in prose for s in d]
     if not sents:
         sys.exit(f"{path}: no running prose to measure")
-    # Too little prose to characterise a rhythm. Report it, don't gate on it.
-    thin_prose = len(sents) < 5
+    # Too little prose to characterise a rhythm -- with a handful of sentences the
+    # spread is noise, not cadence. Report it, don't gate on it.
+    thin_prose = len(sents) < 8
 
     lengths = [len(s.split()) for s in sents]
     words = [w for s in sents for w in s.split()]

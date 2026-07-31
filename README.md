@@ -99,10 +99,10 @@ What's past the sixteenth isn't documented.
 - **[P]** (top-right corner) — open preferences; menu rows are tappable
   (`<` / `>` steppers, tap outside to close)
 
-Preferences — CRT effect, CRT noise (0–5), burn-in, on-screen numbers, tint
-(amber/green), mode (dark/light), jukebox, noise tone, volume, the run's seed,
-and restart level / restart game — are saved locally along with your current
-level. On-screen numbers start **off**: the station is meant to be the compass.
+Preferences save locally along with your level. They cover the CRT effect and its
+noise, burn-in, on-screen numbers, tint, dark or light mode, jukebox, noise tone,
+volume, the run's seed, and restart. On-screen numbers start **off** — the station
+is meant to be the compass.
 
 ## How to play
 
@@ -122,8 +122,8 @@ step**, so any static file server works too.
 ## Built with
 
 - **No build step** — vanilla ES modules, HTML, and CSS.
-- **Its own font** — VT323 plus block and masonry glyphs drawn to the character
-  cell, self-hosted, so a wall tiles seamlessly and never falls back.
+- **Its own font** — VT323 plus masonry glyphs drawn to the character cell, so a
+  wall tiles without a seam and never falls back.
 - **WebAudio** for the station; a seeded mulberry32 RNG generates the maze, so
   every run is reproducible from its seed.
 - Tests: `node --test` for the game logic (`npm test`).

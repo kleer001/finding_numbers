@@ -143,22 +143,17 @@ https://kleer001.itch.io/finding-numbers
 
 Free, plays in the browser now, no signup or download. I'm the developer — solo.
 
-The pitch: no map, no minimap, nothing marks the right door. A shortwave number
-station reads digits through the static, and it is the only feedback you get. Correct
-turn, a number is added to the broadcast. Wrong turn, nothing is added. No buzzer and
-no red flash — you learn by what never arrives. Most of the maze holds still and can
-be learned; some stretches move their exit a few times before settling.
+No map, no minimap, nothing marks the right door. A shortwave number station reads
+digits through the static and it's the only feedback you get. Correct turn, a number
+is added. Wrong turn, nothing is. You learn by what never arrives.
 
-Worth saying up front, since it's tagged horror: nothing chases you and nothing can
-kill you. There's no fail state at all. The dread is that the station stops counting
-you, not that something is coming.
+It's tagged horror, so: nothing chases you and nothing can kill you. There's no fail
+state. The dread is that the station stops counting you.
 
-Controls: arrows / WASD / HJKL on desktop, tap the screen edges on touch. P opens
-preferences.
+Arrows / WASD / HJKL, or tap the screen edges. P opens preferences.
 
-What I'd most like to know: whether the navigate-by-ear loop reads without the
-on-screen digit count, which is off by default. If you turn it on in preferences,
-I'd like to hear that too.
+What I'd most like to know is whether the navigate-by-ear loop reads without the
+on-screen digit count, which is off by default.
 
 Headphones — the game cannot be played without sound.
 ```
@@ -211,26 +206,21 @@ Browser game built around a WebAudio number station — the dial cycles frequenc
 ```
 https://kleer001.itch.io/finding-numbers — free, runs in a browser.
 
-The station is built in WebAudio: digit samples in six languages over a synthesized
-noise bed. The dial values are frequencies logged for real stations: UVB-76 on 4625,
-the Lincolnshire Poacher on 11545, HM01 on 11530, the Cuban V02a on 7887. The Pip, the
-Squeaky Wheel, the Goose and Yosemite Sam are in there too. One is drawn per level and
-sits under the level badge — flavour on the HUD, not a simulation of anybody's schedule
-or format. If I've got a value wrong I'd rather hear it than not.
+The station is WebAudio: digit samples in six languages over a noise bed. The dial
+values are frequencies logged for real stations. UVB-76 on 4625, the
+Lincolnshire Poacher on 11545, HM01 on 11530, the Cuban V02a on 7887. The Pip, the
+Squeaky Wheel, the Goose and Yosemite Sam are on there too. If I've got one wrong I'd
+rather hear it.
 
-The voices are Kokoro-82M, one voicepack per language. They read number words rather
-than digits, so you get the readings a station would use. Yon for 4, nana for 7, kyuu
-for 9 in the Japanese set. German and Russian were on the original list. Kokoro has
-voices for neither, which is why the set runs English, Spanish, Italian, Japanese,
-Chinese and Hindi.
+The voices are Kokoro-82M, one voicepack per language, reading number words rather
+than digits — yon for 4, nana for 7, kyuu for 9. German and Russian were on the
+original list; Kokoro has voices for neither.
 
-There's a jukebox mode too — the transmitter, no game around it. Pick a language. Set
-how coherent the message is, how fast it reads, how much static sits on top. Then leave
-it running.
+There's a jukebox mode that's only the transmitter: pick a language, set how coherent
+the message is, how fast it reads, how much static sits on top.
 
-The game part is a maze you navigate by ear — a correct turn adds a number to the
-broadcast, a wrong one adds nothing. Nothing chases you and there's no way to lose.
-It isn't that kind of game.
+The game part is a maze you navigate by ear. Nothing chases you and there's no way to
+lose.
 ```
 
 ---
@@ -259,12 +249,10 @@ There is no monster here, nothing pursuing you and no way to die. The station go
 quiet is the whole of it.
 
 Most of the maze holds still and can be learned. Some stretches move their exit a few
-times before settling. There are sixteen levels. The later ones read faster, in a
-different voice each time, and eventually in a new language per digit, with more of the
-level you can't trust to stay put.
+times before settling. Sixteen levels — the message grows and the gaps tighten to match.
 
-Also in there: a jukebox mode that's just the transmitter, and a preferences panel that
-lets you dial the CRT decay up until the picture barely holds.
+Also in there: a jukebox mode that's just the transmitter, and a CRT decay dial you can
+turn up until the picture barely holds.
 
 Headphones — it cannot be played without sound. Source is MIT.
 ```
@@ -365,17 +353,16 @@ One email each, then move on. None of these has a queue that can be jumped.
 Hello,
 
 finding_numbers is a free browser game about walking a maze of near-identical rooms
-while a shortwave number station reads digits through the static. The station is the
-only compass: a correct turn adds a number to the broadcast, a wrong one adds nothing.
-There's no buzzer and no red flash, so a mistake is silence rather than a signal.
+while a shortwave number station reads digits through the static. A correct turn adds
+a number to the broadcast, a wrong one adds nothing. No buzzer, no red flash — a
+mistake is silence rather than a signal.
 
 It sits on the liminal-horror shelf, but there's no monster in it and no way to die.
-The dread is that the station can stop acknowledging you.
 
-It's one character grid bent through a WebGL CRT filter. Underneath is WebAudio: digit
-samples in six languages, rendered with Kokoro-82M, over a synthesized noise bed, with
-the dial reading a frequency real number stations are logged on. A jukebox mode ships
-with it — the transmitter on its own, no maze.
+One character grid bent through a WebGL CRT filter. Underneath is WebAudio: digit
+samples in six languages rendered with Kokoro-82M, over a synthesized noise bed, on a
+dial reading frequencies real stations are logged on. A jukebox mode ships with it —
+the transmitter alone, no maze.
 
 Free, no signup, runs in one click: https://kleer001.itch.io/finding-numbers
 Trailer: https://youtu.be/3_maIo0cYAk
