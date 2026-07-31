@@ -30,8 +30,8 @@ What the build keeps, and therefore what any post may say:
 - Jukebox mode is the transmitter with no maze.
 - One character grid, one phosphor color, bent through a WebGL CRT filter, with the
   signal drawn as a live spectrogram.
-- Sixteen levels are the game as designed. Whether anything lies beyond the sixteenth is
-  not documented, and posts do not answer it.
+- The game was designed as sixteen levels. Whether anything lies beyond the sixteenth
+  isn't documented, and no post answers it.
 - It cannot be played without sound. Headphones are the intended way in.
 
 Not claimable: any "first" or "only", any comparison to another game's quality, any
@@ -228,9 +228,9 @@ while you walk a maze of near-identical rooms. A correct turn adds a number to t
 broadcast; a wrong one adds nothing. No buzzer, no red flash, no fail state.
 
 Most of the maze holds still and can be learned. Some stretches move their exit a few
-times before settling. Sixteen levels are the game as designed; the later ones read
-faster, in a different voice each time, and eventually in a new language per digit —
-with more of the level you can't trust to stay put.
+times before settling. There are sixteen levels. The later ones read faster, in a
+different voice each time, and eventually in a new language per digit, with more of the
+level you can't trust to stay put.
 
 Also in there: a jukebox mode that's just the transmitter, and a preferences panel that
 lets you dial the CRT decay up until the picture barely holds.
@@ -258,13 +258,12 @@ Sixteen is the largest number the counter can hold
 **Body:**
 
 ```
-The level counter is a four-bit field. Sixteen levels are the game as designed, and
-sixteen is the most that field can count to — which are two different facts that happen
-to land on the same number.
+I built sixteen levels. The level counter is four bits wide, so sixteen is also as high
+as it can count. Those are two separate facts that happen to land on the same number.
 
-The station is the part I'd trust. However far you get, a correct turn adds a number to
-the broadcast and a wrong one adds nothing. The route is honest by construction, not by
-discipline: nothing that happens to the picture is allowed to touch it.
+Whatever else happens, the station keeps its word. A correct turn adds a number to the
+broadcast and a wrong one adds nothing, however far you get. Nothing that happens to
+the picture is allowed to touch the route.
 
 I'm not going to say what the sixteenth level is the last of. If you get there, I'd
 like to hear what you make of what's on the other side of it.
