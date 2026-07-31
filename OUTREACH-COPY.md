@@ -65,8 +65,8 @@ is no buzzer and nothing turns red — you find out by what never arrives.
 Most of the maze holds still and can be learned. Some stretches move their exit a
 few times before settling.
 
-Arrows / WASD / HJKL, or tap the screen edges on a phone. P for preferences. There is
-also a jukebox mode that is just the transmitter, no maze.
+Arrows / WASD / HJKL, or tap the screen edges on a phone. P for preferences. A jukebox
+mode comes with it — just the transmitter, no maze.
 ```
 
 ---
@@ -91,10 +91,11 @@ near-identical rooms. A correct turn adds a number to the broadcast; a wrong one
 nothing, and nothing else tells you. No buzzer, no red flash, no fail state — the only
 thing the game does to you is stop acknowledging you.
 
-Vanilla ES modules, no build step, and the whole station is WebAudio: digits in six
-languages over a synthesized noise bed, and a dial reading a frequency real number
-stations are logged on. The digits were rendered with Kokoro-82M, one voicepack per
-language. Source is MIT: https://github.com/kleer001/finding_numbers
+Vanilla ES modules, no build step. The whole station is WebAudio: digits in six
+languages over a synthesized noise bed, rendered with Kokoro-82M, one voicepack per
+language. The dial reads a frequency real number stations are logged on.
+
+Source is MIT: https://github.com/kleer001/finding_numbers
 
 Headphones. It cannot be played without sound.
 ```
@@ -160,8 +161,8 @@ turn adds a number to the broadcast; a wrong one adds nothing. There's no buzzer
 red flash, so the only way to know you've gone wrong is a number that never comes.
 
 Wander far enough and the broadcast empties — the station stops reading numbers at all
-and you're alone in the hiss with nothing to steer by. There's no death and no timer;
-the game's only move is to stop acknowledging you.
+and you're alone in the hiss with nothing to steer by. Nothing kills you and nothing is
+timing you. The game's only move is to stop acknowledging you.
 
 Sound is not optional; it's the whole interface. Headphones.
 ```
@@ -185,21 +186,21 @@ Browser game built around a WebAudio number station — the dial cycles frequenc
 https://kleer001.itch.io/finding-numbers — free, runs in a browser.
 
 The station is built in WebAudio: digit samples in six languages over a synthesized
-noise bed, and a dial whose values are frequencies logged for real stations — UVB-76 on
-4625, the Lincolnshire Poacher on 11545, HM01 on 11530, the Cuban V02a on 7887, The Pip,
-the Squeaky Wheel, the Goose, Yosemite Sam. One is drawn per level and shown under the
-level badge: flavour on the HUD, not a simulation of any one station's schedule or
-format. If I've got a value wrong I'd rather hear it than not.
+noise bed. The dial values are frequencies logged for real stations: UVB-76 on 4625,
+the Lincolnshire Poacher on 11545, HM01 on 11530, the Cuban V02a on 7887. The Pip, the
+Squeaky Wheel, the Goose and Yosemite Sam are in there too. One is drawn per level and
+sits under the level badge — flavour on the HUD, not a simulation of anybody's schedule
+or format. If I've got a value wrong I'd rather hear it than not.
 
-The voices are Kokoro-82M, one voicepack per language, reading number words rather than
-digits so the readings are the ones a station would use — yon for 4, nana for 7, kyuu
-for 9 in the Japanese set. German and Russian were on the original list; Kokoro-82M has
+The voices are Kokoro-82M, one voicepack per language. They read number words rather
+than digits, so you get the readings a station would use. Yon for 4, nana for 7, kyuu
+for 9 in the Japanese set. German and Russian were on the original list. Kokoro has
 voices for neither, which is why the set runs English, Spanish, Italian, Japanese,
 Chinese and Hindi.
 
-There's a jukebox mode that is only the transmitter, no game around it: pick a
-language, set how coherent the message is, how fast it reads, and how much static sits
-on top, then leave it running.
+There's a jukebox mode too — the transmitter, no game around it. Pick a language. Set
+how coherent the message is, how fast it reads, how much static sits on top. Then leave
+it running.
 
 The game part is a maze you navigate by ear — a correct turn adds a number to the
 broadcast, a wrong one adds nothing.
@@ -336,9 +337,10 @@ while a shortwave number station reads digits through the static. The station is
 only compass: a correct turn adds a number to the broadcast, a wrong one adds nothing.
 There's no buzzer and no red flash, so a mistake is silence rather than a signal.
 
-It's one character grid bent through a WebGL CRT filter, and the station is synthesized
-in WebAudio — six languages of spoken digits, and a dial that cycles frequencies real
-number stations are logged on. There's a jukebox mode that's only the transmitter.
+It's one character grid bent through a WebGL CRT filter. Underneath is WebAudio: digit
+samples in six languages, rendered with Kokoro-82M, over a synthesized noise bed, with
+the dial reading a frequency real number stations are logged on. A jukebox mode ships
+with it — the transmitter on its own, no maze.
 
 Free, no signup, runs in one click: https://kleer001.itch.io/finding-numbers
 Trailer: https://youtu.be/3_maIo0cYAk
