@@ -307,7 +307,7 @@ Sixteen is the largest number the counter can hold
 
 ```
 I built sixteen levels. The level counter is four bits wide, so sixteen is also as high
-as it can count. Those are two separate facts that happen to land on the same number.
+as it can count.
 
 Whatever else happens, the station keeps its word. A correct turn adds a number to the
 broadcast and a wrong one adds nothing, however far you get. Nothing that happens to
