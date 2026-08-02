@@ -182,10 +182,9 @@ on-screen digit count, which is off by default.
 [ ] Demo/Key available
 [ ] Paid (Allowed only on Tuesdays with [TT] in the title)
 
-**Involvement:** Solo developer. I wrote the game, the maze generator and the audio
-engine. Borrowed pieces are credited in the README and on the store page: the CRT
-shader is CRTFilterWebGL, and the digit voices are rendered with Kokoro-82M via the
-voice_loom project. Source is MIT.
+**Involvement:** Solo developer. Borrowed pieces are credited in the README and on the
+store page: the CRT shader is CRTFilterWebGL, and the digit voices are rendered with
+Kokoro-82M via the voice_loom project. Source is MIT.
 ```
 
 ---
