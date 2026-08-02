@@ -16,24 +16,33 @@ Audit the copy at **$ARGUMENTS** for honesty.
 Read the file. Then go line by line through every claim and flag anything that
 fails one of these tests.
 
+Throughout, *the subject* is whatever the copy is about — a program, a document,
+a dataset, a product, a body of work — and the source of truth is the subject
+itself, plus whatever record stands behind it. The tests below say things like
+"go to the part of the subject the claim rests on." What that part is depends on
+what you are auditing: a function, a chapter, a column, a clause, a figure. The
+operation does not change. Check the claim against the thing, not against your
+memory of the thing, and not against another description of it.
+
 ---
 
 ## The Six Tests
 
 **1. First-person experience claims**
 Any sentence starting with "I", "I've", "Every time I", "I got tired of", etc.
-Ask: is this verifiably true from the git history, the issue tracker, or
-something the user has explicitly stated? If not, flag it.
+Ask: is this verifiably true from the record behind the subject — its history,
+its correspondence, its source material — or something the author has explicitly
+stated? If not, flag it.
 
-> Bad: "The tool I got tired of rebuilding from scratch"
+> Bad: "The one I got tired of rebuilding from scratch"
 > Bad: "Every time I hit this, I'd write the same workaround again"
 > OK: "The built-in version handles only one of the two cases" ← verifiable fact
->   about the software
+>   about the subject
 
 **2. Ordinal and superlative claims**
 "First release", "the first of its kind", "most complete", "the only". Verify
-any ordinal claim against the project's own release history, by whatever means
-the project has. Flag unsupported superlatives.
+any ordinal claim against the subject's own record of releases, editions or
+publications, by whatever means it has. Flag unsupported superlatives.
 
 **3. Implied repeated personal experience**
 Narrative framing like "every time", "I kept having to", "I always ended up"
@@ -48,28 +57,30 @@ Also reduce extra metaphors. Stock figures like "papercut", "tedious dance",
 "shuffle" hide the actual mechanism — describe the literal behavior instead.
 ("Friction" and "pain point" are fine; they're plain industry terms.)
 
-**5. Claims the build does not keep**
+**5. Claims the subject does not keep**
 The other four tests catch invented experience. This one catches claims that
-were true of the code once, or are true of part of it, and are now doing more
-work than the build supports. For every claim about what the software *does*,
-open the code that implements it and check the claim across its whole range —
-not just the first case.
+were true of the subject once, or are true of part of it, and are now doing more
+work than the subject supports. For every claim about what the subject *is* or
+*does*, go to the part of it the claim rests on and check the claim across its
+whole range — not just the first case.
 
 Three shapes to watch for:
 
-- **True of the named function, false in what it calls.** Naming a function in
-  the copy does not bound the claim to that function's body — it is a claim
-  about everything the body delegates to. Read the helpers, their default
-  arguments, and their units. A falsehood placed one call deep survives a
-  reading that stops at the named function, especially when the helper's own
-  name advertises the right thing and its file is named for something else.
-  Follow the call, not the name.
+- **True of the named part, false in what it defers to.** Naming a place — a
+  function, a section, a source, a figure — does not bound the claim to that
+  place. It is a claim about everything that place relies on in turn, so follow
+  what it defers to: the call it makes, the passage it cites, the table a number
+  came from, the definition a term leans on. Check the defaults and the units at
+  each step. A falsehood placed one step down survives a reading that stops
+  where the copy pointed, especially when the thing it points to is named for
+  exactly the right idea. Follow the reference, not the name.
 - **True early, false later.** A progression described from its opening steps
-  ("each one gets its own treatment") when the implementation only holds for the
-  authored head and generalizes past it. Check the last case, not the first.
-- **True when written, outgrown since.** A dial described as always climbing
-  ("more of it the further you go") when the code caps it early and holds flat
-  for the rest of the range. Find the constant; find where it stops moving.
+  ("each one gets its own treatment") when it only holds for the authored head
+  and is generalized past it. Check the last case, not the first.
+- **True when written, outgrown since.** A quantity described as always climbing
+  ("more of it the further you go") when the subject caps it early and holds
+  flat for the rest of the range. Find where the value is fixed; find where it
+  stops moving.
 
 Numbers, counts, dates, real-world references, and named external facts get
 verified against a primary source, not against memory. If the copy borrows
@@ -79,29 +90,34 @@ know the real thing better than you do. An invented detail there costs more
 than the sentence was worth.
 
 > Bad: "N of them, each harder than the last" when the last several share one spec
-> OK: "N of them" when the constant says N
-> Fix shape: narrow the claim to what the build keeps, or change the build
+> OK: "N of them" when the source says N
+> Fix shape: narrow the claim to what the subject keeps, or change the subject
 
 **6. Negative and exclusivity claims**
-Any claim asserting an absence or a sole path: "cannot", "can't", "only",
-"requires", "must", "there is no", "no way to", "impossible without".
+Any claim asserting an absence or a sole path. The obvious markers are "cannot",
+"can't", "only", "requires", "must", "there is no", "no way to", "impossible
+without" — but the shape matters more than the vocabulary, and the same
+assertion often arrives carrying none of them: "one way", "nowhere else",
+"everything goes through", "self-contained", "always", "never". Match on what
+the sentence claims, not on which words it used to claim it.
 
 The other five tests check a claim against its own referent. These have none —
-there is no code implementing an absence, so "open the code that implements it"
-returns nothing and the claim passes by default. Worse, the obvious search
-*confirms* it: grep the subject of a "cannot X without Y" claim and you land in
-the code implementing Y, which corroborates every word. Refuting it means
-searching for something the copy never mentions.
+nothing implements an absence, so "go to the part that supports it" returns
+nothing and the claim passes by default. Worse, the obvious check *confirms* it:
+look up the subject of a "cannot X without Y" claim and you land on Y, which
+corroborates every word. Refuting it means looking for something the copy never
+mentions.
 
-So invert the procedure. Do not look for the code that implements the claim.
-Enumerate what would falsify it:
+So invert the procedure. Do not look for what supports the claim. Enumerate what
+would falsify it:
 
-- Walk every surface that changes behavior — settings, flags, configuration,
-  saved state. Each is a path the claim has to survive. Read the list of
-  options, not the feature the claim names.
-- Search for the alternative rather than the subject: the branch that runs when
-  the named thing is absent.
-- Ask what a user who lacks the named thing actually gets. If something exists
+- Walk every variant that could come out differently — options, editions,
+  versions, contexts, documented exceptions, the other routes a reader or user
+  might take. Each is a case the claim has to survive. Read the list of them,
+  not the one the claim names.
+- Look for the alternative rather than the subject: what happens in the case the
+  claim excludes.
+- Ask what someone who lacks the named thing actually gets. If something exists
   for exactly them, the claim is false, not merely overstated.
 
 A claim in this shape is nearly always an intent that hardened into a fact — and
@@ -151,7 +167,8 @@ why they get audited *against* instead of audited — so audit them first, befor
 the copy they produce. A claim written as an instruction ("the page says so") is
 still a claim.
 
-At the release gate this audit is mandatory and covers the store page as well
-as the repo — the no-fabrication rule runs all the way to the marketing copy.
+Before anything ships this audit is mandatory, and it covers the outward-facing
+copy as well as the work itself — the no-fabrication rule runs all the way out
+to the pitch.
 A claim that survives this audit should be one you would be comfortable having
 checked by someone who already knows the subject.
