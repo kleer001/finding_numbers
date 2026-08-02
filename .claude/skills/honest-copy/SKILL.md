@@ -18,7 +18,7 @@ fails one of these tests.
 
 ---
 
-## The Five Tests
+## The Six Tests
 
 **1. First-person experience claims**
 Any sentence starting with "I", "I've", "Every time I", "I got tired of", etc.
@@ -26,12 +26,14 @@ Ask: is this verifiably true from the git history, the issue tracker, or
 something the user has explicitly stated? If not, flag it.
 
 > Bad: "The tool I got tired of rebuilding from scratch"
-> Bad: "Every time I needed to fit an image, I'd rebuild the same node chain"
-> OK: "Houdini's Resample COP only does Stretch" ← verifiable fact about the software
+> Bad: "Every time I hit this, I'd write the same workaround again"
+> OK: "The built-in version handles only one of the two cases" ← verifiable fact
+>   about the software
 
 **2. Ordinal and superlative claims**
-"First release", "the first of its kind", "most complete", "the only". Run
-`gh release list` to verify any ordinal claim. Flag unsupported superlatives.
+"First release", "the first of its kind", "most complete", "the only". Verify
+any ordinal claim against the project's own release history, by whatever means
+the project has. Flag unsupported superlatives.
 
 **3. Implied repeated personal experience**
 Narrative framing like "every time", "I kept having to", "I always ended up"
@@ -56,22 +58,21 @@ not just the first case.
 Two shapes to watch for:
 
 - **True early, false later.** A progression described from its opening steps
-  ("each level wears its own surface, brick then stone then steel") when the
-  implementation only holds for the authored head and generalizes past it.
-  Check the last case, not the first.
+  ("each one gets its own treatment") when the implementation only holds for the
+  authored head and generalizes past it. Check the last case, not the first.
 - **True when written, outgrown since.** A dial described as always climbing
-  ("more choices the deeper you go") when the code caps it early and holds flat
+  ("more of it the further you go") when the code caps it early and holds flat
   for the rest of the range. Find the constant; find where it stops moving.
 
 Numbers, counts, dates, real-world references, and named external facts get
 verified against a primary source, not against memory. If the copy borrows
-credibility from something real — a hardware spec, a historical broadcast, an
-instruction set, a call sign — the audience for that copy contains people who
+credibility from something real — a published spec, a standard, a historical
+event, a named external system — the audience for that copy contains people who
 know the real thing better than you do. An invented detail there costs more
 than the sentence was worth.
 
-> Bad: "32 levels, each harder than the last" when levels 13+ share one spec
-> OK: "32 levels" when `MAX_LEVEL` is 32
+> Bad: "N of them, each harder than the last" when the last several share one spec
+> OK: "N of them" when the constant says N
 > Fix shape: narrow the claim to what the build keeps, or change the build
 
 **6. Negative and exclusivity claims**
