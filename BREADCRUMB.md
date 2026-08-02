@@ -5,9 +5,10 @@ The store page, the landing page and the README now agree with the build and wit
 other. A copy pass rewrote every public surface: the genre promise carries its own
 disclaimer, the real-station framing is gone, headphone advice is gone, and everything
 is cut to a length people will scan. Two new tools enforce it — a `humanized-copy` skill
-here and in the studio at 0.6.0. The release gate is signed and all six community posts
-are out. What remains is the devlog and the verticals, the curator pitches, two stale
-store images, and a pile of design calls that are the author's.
+here and in the studio at 0.6.0. The release gate is signed, all six community posts are
+out, and the devlog is written and sitting as a draft one checkbox from live. What remains
+is publishing it, the verticals, the curator pitches, two stale store images, and a pile of
+design calls that are the author's.
 
 ## Todos
 
@@ -17,8 +18,18 @@ store images, and a pile of design calls that are the author's.
   off by default. Fold what players say into the next pass rather than into the copy.
   Repost windows: `r/WebGames` not before 2026-11-01, `r/playmygame` not before
   2026-09-01. Both are recorded on the board `scratchpad/build_submit_links.py` builds.
-- [ ] #5 Devlog with `clips/out/core-loop.gif` and `pulse.gif`. Copy is written and
-  deliberately teases rather than explains: it names the four-bit counter and stops.
+- [ ] #5 Publish the devlog. It exists as a **draft** with both GIFs uploaded and embedded,
+  classified Game Design, comments on:
+  <https://kleer001.itch.io/finding-numbers/devlog/1613536/sixteen-is-the-largest-number-the-counter-can-hold>
+  Edit at `itch.io/dashboard/post/1613536/edit`; tick `post[published]` and Save to go live.
+  Left unpublished deliberately — publishing notifies followers and hits the itch feed, and
+  that is not reversible. Its opening line, "I built sixteen levels", is a first-person
+  authorship claim nobody has ruled on yet.
+- [ ] #33 The live `r/numberstations` post is titled "I built a number station in
+  WebAudio". That is the same shape of claim struck from the r/playmygame Involvement
+  field, where the audio engine turned out not to be the author's work. The post is
+  already up, so the call is whether the title overstates it and whether to edit or
+  delete. Only the author knows where the line sits between their work and `voice_loom`.
 - [ ] #6 Post the three `clips/out/*-9x16.mp4` verticals. Never the itch trailer slot.
 - [ ] #27 Pitch the curators — Warp Door, Free Game Planet, Alpha Beta Gamer,
   ManlyBadassHero. One email each, bodies in `OUTREACH-COPY.md`.
@@ -73,6 +84,15 @@ version (`<blockquote><strong>…<br></blockquote>`), not the repo's.
 then click `button.save_btn`. **Screenshot deletes are immediate AJAX** — the row goes
 server-side the moment Delete is clicked, whatever the confirm dialog says.
 
+**Devlogs, mechanically.** New post at `itch.io/dashboard/game/<id>/new-devlog`; the list
+is `.../devlog` and an existing post edits at `itch.io/dashboard/post/<post_id>/edit`. The
+contenteditable is `.redactor-layer`, **not** `.redactor-editor` — the latter selector
+matches nothing and silently no-ops. `post[published]` defaults **unchecked**, so a plain
+Save creates a draft. Inline images: click `.redactor-toolbar .re-image`, which opens a
+lightbox in `#lightbox_container` whose "Pick image" button raises the native file chooser.
+That container keeps a non-null `offsetParent` after it closes, so test whether it is
+really open by whether it still holds buttons.
+
 **Positioning, decided this session.** The register is dread, not terror or horror — the
 game holds anticipation and never discharges it. "Liminal horror" and "analog horror" name
 a shelf and are fair; bare "horror" must carry, within a line or two, that nothing chases
@@ -113,7 +133,8 @@ their own `unicode-range` split.
 - Tests: 117, green.
 
 ## Next Step
-The devlog (#5). It is the one surface that takes images inline, the copy is written, and
-it is the only outreach beat that does not depend on re-rendering an asset first.
+Publish the devlog draft (#5) — one checkbox and a Save. Read its opening line first: it
+claims the sixteen levels in the first person, and that class of claim already had to be
+struck once this session.
 
 /home/menser/Dropbox/ai/code/finding_numbers
