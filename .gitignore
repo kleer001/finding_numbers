@@ -17,3 +17,6 @@ clips/
 .DS_Store
 .idea/
 .vscode/
+
+# Generated posting board (rebuild: python3 scratchpad/build_copy_page.py)
+scratchpad/copy-review.html
