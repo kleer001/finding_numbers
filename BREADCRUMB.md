@@ -5,19 +5,18 @@ The store page, the landing page and the README now agree with the build and wit
 other. A copy pass rewrote every public surface: the genre promise carries its own
 disclaimer, the real-station framing is gone, headphone advice is gone, and everything
 is cut to a length people will scan. Two new tools enforce it — a `humanized-copy` skill
-here and in the studio at 0.6.0. What remains is posting, a pile of design calls that are
-the author's, and eighteen unpushed commits.
+here and in the studio at 0.6.0. The release gate is signed and all six community posts
+are out. What remains is the devlog and the verticals, the curator pitches, two stale
+store images, and a pile of design calls that are the author's.
 
 ## Todos
 
 ### Parallel
-- [ ] #4 Post to the genre communities. Paste-ready copy per channel is in
-  `OUTREACH-COPY.md`. `r/WebGames` and `r/itchio` went up 2026-08-01; `r/WebGames`
-  cannot be reposted before 2026-11-01. Left to post: `r/playmygame` (its own field
-  template, description 100 words minimum), `r/analoghorror` and `r/numberstations`
-  (both want an attachment dragged in), itch's Release Announcements board.
-  `python3 scratchpad/build_submit_links.py` regenerates a board of prefilled composer
-  links that tracks which channels are done; `scratchpad/serve.py` serves it.
+- [ ] #32 Watch what the six community posts brought back. The question worth answering
+  is the one the posts asked: whether the navigate-by-ear loop reads with the digit count
+  off by default. Fold what players say into the next pass rather than into the copy.
+  Repost windows: `r/WebGames` not before 2026-11-01, `r/playmygame` not before
+  2026-09-01. Both are recorded on the board `scratchpad/build_submit_links.py` builds.
 - [ ] #5 Devlog with `clips/out/core-loop.gif` and `pulse.gif`. Copy is written and
   deliberately teases rather than explains: it names the four-bit counter and stops.
 - [ ] #6 Post the three `clips/out/*-9x16.mp4` verticals. Never the itch trailer slot.
@@ -105,13 +104,16 @@ their own `unicode-range` split.
   → verify `type=html`. `BUTLER_API_KEY` from `~/Dropbox/ai/code/itch_io_api_secret.txt`.
 - `clips/` and `clips/out/` are gitignored, rebuilt by `./capture.sh <clip> clips/` then
   `./post.sh`. Retiming lives in the two tables at the top of `post.sh` — never re-record.
-- Copy review page: `scratchpad/build_copy_page.py` regenerates `copy-review.html` from the
-  source files; `serve.py` serves it on the first free port from 8300.
+- Two generated pages, both built from `OUTREACH-COPY.md` and gitignored:
+  `scratchpad/build_copy_page.py` → `copy-review.html`, the per-channel copy board;
+  `scratchpad/build_submit_links.py` → `submit-links.html`, prefilled composer links with
+  the posted dates. `scratchpad/serve.py` serves both on the first free port from 8300.
+  Reddit's composer reads `title` and `url` from the query string and has no body
+  parameter, which is why bodies stay copy buttons.
 - Tests: 117, green.
 
 ## Next Step
-Post to the genre communities (#4). Everything the posts point at is live and signed off;
-paste-ready copy per channel is in `OUTREACH-COPY.md`. Comment somewhere before posting a
-link — Reddit shadowbans accounts whose first posts are links.
+The devlog (#5). It is the one surface that takes images inline, the copy is written, and
+it is the only outreach beat that does not depend on re-rendering an asset first.
 
 /home/menser/Dropbox/ai/code/finding_numbers

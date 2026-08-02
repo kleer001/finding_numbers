@@ -43,15 +43,17 @@ CHANNELS = [
         "section": "r/playmygame",
         "sub": "playmygame",
         "kind": "text",
+        "posted": "2026-08-01",
         "checks": ["Set flair: [Web] / PC (Web)",
                    "NSFW-flag it as horror",
                    "Game link stays above every other link",
-                   "One post per game per month"],
+                   "One post per game per month — next window opens 2026-09-01"],
     },
     {
         "section": "r/analoghorror",
         "sub": "analoghorror",
         "kind": "image",
+        "posted": "2026-08-01",
         "checks": ["Switch the composer to Images & Video and drag the GIF in",
                    "Own the post as the dev — stealth promo is banned"],
     },
@@ -59,6 +61,7 @@ CHANNELS = [
         "section": "r/numberstations",
         "sub": "numberstations",
         "kind": "image",
+        "posted": "2026-08-01",
         "checks": ["Attach or link the jukebox clip",
                    "Title already says synthesized, not recorded — keep it that way"],
     },
@@ -67,6 +70,7 @@ CHANNELS = [
 BOARD = {
     "section": "itch.io Release Announcements board",
     "url": "https://itch.io/board/10022/release-announcements",
+    "posted": "2026-08-01",
     "checks": ["Needs the page link, a summary, and one embedded image or video",
                "Embed clips/out/core-loop.gif"],
 }
@@ -169,7 +173,7 @@ def build():
         {button}
         {prefilled}
         {asset_html}
-        <h4>Set by hand before sending</h4>
+        <h4>{"What this post needed" if posted else "Set by hand before sending"}</h4>
         <ul class="checks">{checks}</ul>
         {render_block("Title", title, f"{slug}-title")}
         {render_block(body_label, body, f"{slug}-body") if body else ""}
@@ -179,17 +183,18 @@ def build():
     board_blocks = blocks_by_label(board_lines)
     board_checks = "".join(f"<li>{esc(c)}</li>" for c in BOARD["checks"])
     rows.append(f"""
-      <article class="card" id="itch-board">
+      <article class="card done" id="itch-board">
         <header>
           <span class="order">6</span>
           <h3>itch.io Release Announcements</h3>
+          <span class="posted">Posted {BOARD["posted"]}</span>
           <span class="kind kind-text">Forum post</span>
         </header>
-        <a class="open" href="{esc(BOARD["url"])}" target="_blank" rel="noopener">
-          Open the board ↗</a>
+        <a class="open reopen" href="{esc(BOARD["url"])}" target="_blank" rel="noopener">
+          Open the board again ↗</a>
         <p class="prefill">Prefilled: <span class="muted">nothing — itch has no
           prefill parameters, so both fields are copy buttons.</span></p>
-        <h4>Set by hand before sending</h4>
+        <h4>What this post needed</h4>
         <ul class="checks">{board_checks}</ul>
         {render_block("Subject", board_blocks.get("Subject", ""), "board-subject")}
         {render_block("Body", board_blocks.get("Body", ""), "board-body")}
