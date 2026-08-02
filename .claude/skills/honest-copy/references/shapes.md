@@ -1,8 +1,7 @@
 # Worked shapes
 
-Examples for each test in `SKILL.md`. The case studies are real — every one is a
-claim that survived a reading and was caught on a later pass, which is why the
-shape is written down.
+Examples for each test in `SKILL.md`. They are illustrations, not a catalogue —
+the shapes recur, the particulars never do. Match on the shape.
 
 ## Contents
 
@@ -35,9 +34,9 @@ The line between this and `humanized-copy` is that filler can carry a *claim*.
 "Finally" asserts a wait. "The first tool that just works" asserts a comparison.
 Cut those here. Stock metaphor and stiff rhythm are the other skill's job.
 
-One case worth keeping in mind: a quotation containing "at last" is not filler
-in the copy — it is the speaker's word, faithfully reported. Check whether the
-sentiment belongs to the copy or to a source before flagging it.
+Check whose voice the sentiment is in before flagging it. A banned word inside a
+faithful quotation belongs to the speaker, not to the copy, and cutting it
+falsifies the quote to satisfy a style rule.
 
 ---
 
@@ -50,54 +49,52 @@ sentiment belongs to the copy or to a source before flagging it.
 
 ### True of the named part, false in what it defers to
 
-The falsehood sits one step past where the copy pointed, and it survives review
-because the thing it points to is named for exactly the right idea.
+The falsehood sits one step past where the copy pointed. It survives review
+because the place the copy names checks out, and because the thing that place
+relies on is itself named for exactly the right idea.
 
-**Case — software.** Copy: *"`freshnessLifetime()` … falls back to the interval
-between the response's own `Date` and `Expires` headers."* The named function's
-own logic was correct. It called a helper, `expiresLifetime`, whose second
-parameter defaulted to the current wall clock — so the interval was measured
-from *now*, never from the `Date` header. The helper's name advertised the right
-thing and it lived in a file named for a different concern. Two audits verified
-the surrounding paragraph and cleared the region before a third followed the
-call.
+The tell is a sentence that names a location and makes a claim about a *value*:
+"§3 establishes X", "`compute()` returns the interval between A and B", "the
+figure in Table 2 is drawn from the 1998 census". Go to the named place, then
+keep going. Read what it hands off to — the call, the citation, the appendix, the
+column, the definition — and check the defaults and the units at every step. A
+default argument one call down, or a footnote that revises the body, will not
+appear at the place the copy sent you.
 
-**Case — prose.** A catalogue entry gave a station count taken from the study's
-own body text. The study's errata appendix recorded that figure as stale and
-named itself the authority. Same shape: the copy cited a real place in the
-subject, and the place deferred to something that contradicted it.
-
-The operation is identical in both. Follow the citation, the call, the table a
-number came from. Check defaults and units at each step.
+Two habits close it: never stop at the first location that confirms the claim,
+and treat a named helper's *name* as a claim needing its own check.
 
 ### True early, false later
 
-**Case.** *"It keeps 64 entries by default, and a store built with `capacity: 1`
-keeps exactly the most recent response and nothing older."* The eviction loop
-used `>=` where it needed `>`. The default kept 63; at `capacity: 1` the store
-kept nothing at all, discarding the entry it had just inserted. Checking the
-first case confirms the claim. Checking the boundary the copy itself chose to
-illustrate destroys it.
+A progression stated from its opening steps, generalized past where it holds.
+Check the last case. Where the copy volunteers a boundary example — "even at a
+setting of 1" — check that one first: authors reach for the extreme they never
+tested, and off-by-one errors are total there and invisible in the middle of the
+range.
 
 ### True when written, outgrown since
 
-**Case.** A level progression described as always widening — *"more of it the
-further you go"* — when the generator capped variety at level 12 and held flat
-for the twenty levels after. Find the constant; find where it stops moving.
+A quantity described as always climbing when the subject caps it early and holds
+flat. Find where the value stops moving, not where it starts.
 
 ### Numbers and borrowed credibility
 
-**Case.** *"The parser recognises all ten response directives from RFC 9111
-§5.2.2, plus two from RFC 5861."* Ten plus two matched a table of twelve, so the
-arithmetic confirmed the sentence. The table was missing one §5.2.2 directive
-and padded with a *request* directive from a different section. Only the
-published spec refutes it, and the audience for that sentence is people who know
-the spec.
+Three ways a number passes a careless check:
 
-**Case.** *"capped at 24 hours (`HEURISTIC_CAP`)."* The constant read `86400` —
-correct for 24 hours in seconds — in a module working entirely in milliseconds.
-The real ceiling was 86.4 seconds. Naming the constant is what let it survive:
-a reader opens the file, recognises the number, and stops.
+- **The arithmetic confirms it.** "Nine from the standard plus three of our own"
+  against a table of twelve. Counting agrees; the composition can still be wrong,
+  with an item silently substituted from an adjacent section of the standard.
+  Verify membership, not just the total.
+- **The constant is recognisable.** A cap cited as "24 hours" beside a constant
+  reading `86400` — correct in seconds, wrong by a thousand in a module working
+  in milliseconds. Naming the constant is what ends the reader's check.
+- **The sub-totals are internally consistent.** A breakdown that sums to its own
+  stated total, where the total came from a stale summary rather than the record
+  the summary describes.
+
+Copy that borrows credibility from something real — a published spec, a standard,
+a historical event — is read by people who know the real thing better than you
+do. Check it against the source, not against the copy's own restatement of it.
 
 ---
 
@@ -112,53 +109,54 @@ a reader opens the file, recognises the number, and stops.
 
 ### The shape arrives without the marker words
 
-Two independent adversaries, both given this checklist in advance, tried the
-same evasion: assert exclusivity while avoiding every listed trigger word.
+Exclusivity asserted while avoiding every obvious trigger:
 
-- *"Records leave the live spool one way: an explicit ack."* — three other paths
-  removed records.
-- *"State lives in the spool directory you name and nowhere else on the
-  filesystem."* — a lock file in the system temp directory.
-- *"All freshness questions funnel through one function."* — the store never
-  called it.
+- "Records leave one way: an explicit acknowledgement."
+- "State lives in the directory you name and nowhere else."
+- "Everything funnels through a single decision point."
+- "Every question routes through one function."
 
-None contains "cannot", "only", "must" or "there is no". Match the shape.
+None contains "cannot", "only", "must" or "there is no". Each is a universal
+claim about paths through the subject, and each is refuted by a path the sentence
+never mentions — often one the copy documents elsewhere as a feature.
 
 ### Clearing a true one is the harder half
 
-The procedure has to pass claims that merely *look* false, or it is useless.
-Worked example of a correct clear: *"tally never sends your data anywhere."*
-Enumerate the falsifiers rather than the subject — every config key, the
-dependency list, every import, a transport grep. No network surface exists and
-no setting could enable one. The claim survives.
+The procedure has to pass claims that merely *look* false, or it produces noise
+and gets ignored. Clear them the same way you refute them: by enumeration, not by
+confirmation.
 
-Same for exclusivity: *"Two things are permanent."* Verified by listing every
-operation that writes to the store — two destroy without recovery, four don't.
-Exactly two. Claim holds.
+For an absence claim, list every surface that could introduce the thing being
+denied — every setting, every dependency, every entry point — and show none does.
+For a count-of-paths claim ("two things are permanent"), enumerate every
+operation of that kind and show the count is exact. A clear backed by an
+enumeration survives challenge; a clear backed by "I looked and didn't see it"
+does not.
 
 ### Individually true, jointly false
 
-A claim can live in the join rather than in any sentence:
+A claim can live in the join rather than in any sentence. Three sentences, each
+verifiable, arranged so the paragraph asserts something none of them says:
 
-> Fieldwork ran from 1998 to 2004. All forty-one interviews were recorded on
-> quarter-inch tape. Every tape in the archive has been digitised and can be
-> supplied on request.
+> All forty-one were recorded. Every one now in the archive has been digitised.
+> Digitised copies are supplied on request.
 
-Each sentence is true. Three tapes were destroyed before transcription, so they
-are not in the archive to be counted — which is precisely why the third sentence
-is true. The paragraph asserts that all forty-one are available. A reader gets
-thirty-eight. Read the paragraph as a claim, not only the sentences in it.
+If some were destroyed before reaching the archive, all three sentences stay
+true — the second is true *because* the missing ones are not there to be counted
+— and the paragraph still promises forty-one. Read the paragraph as a claim, not
+only the sentences in it. The give-away is a set named in one sentence and
+silently narrowed in the next.
 
 ---
 
 <a name="sources"></a>
 ## Why the sources get audited too
 
-A false line in a facts block or a claims ledger is a template. One such line —
-"the page cannot be played without sound", written into a store-page spec as an
-instruction rather than a claim — reached six community posts, a README, a
-landing page and a store description before anyone checked it against the
-preferences menu, where the setting that refuted it had been shipped all along.
+A false line in a facts block or a claims ledger is a template, not one bad
+sentence. Written as an instruction — "the page says X" — it is copied faithfully
+into every post, README and store page generated from it, and each copy looks
+independently sourced. The instruction form is what disguises it: these documents
+read like premises, so they get audited *against* rather than audited.
 
-These documents read like premises, which is exactly why they get audited
-*against* instead of audited. Audit them first.
+Audit them first, before the copy they produce. A claim written as an instruction
+is still a claim.
