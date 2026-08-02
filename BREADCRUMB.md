@@ -10,16 +10,7 @@ the author's, and eighteen unpushed commits.
 
 ## Todos
 
-### Push first — nothing below is visible until this lands
-- [ ] #28 `git push` in `finding_numbers` (18 commits) and `trace_rom_studio` (1).
-  `promo.html` and `README.md` are GitHub Pages surfaces: the removed frequencies
-  section, the extracted fonts/images and the 1977 section are committed but not live.
-  The itch store page is already live and does not depend on this.
-
 ### Parallel
-- [ ] #23 Sign the release gate in `REVIEW-LOG.md`. Both things holding it open are
-  resolved: the page copy matches the build, and the media no longer shows the player
-  anything the game does not do.
 - [ ] #4 Post to the genre communities. Paste-ready copy per channel is in
   `OUTREACH-COPY.md`: `r/WebGames`, `r/itchio`, `r/playmygame`, `r/analoghorror`,
   `r/numberstations`, itch's Release Announcements board. Comment somewhere before
@@ -117,8 +108,8 @@ their own `unicode-range` split.
 - Tests: 117, green.
 
 ## Next Step
-Push both repos (#28). Eighteen commits of landing-page and README work — the removed
-frequencies section, the extracted assets, the 1977 section — are committed but invisible
-until they reach GitHub Pages.
+Post to the genre communities (#4). Everything the posts point at is live and signed off;
+paste-ready copy per channel is in `OUTREACH-COPY.md`. Comment somewhere before posting a
+link — Reddit shadowbans accounts whose first posts are links.
 
 /home/menser/Dropbox/ai/code/finding_numbers
