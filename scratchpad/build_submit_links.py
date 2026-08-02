@@ -22,18 +22,21 @@ GAME_URL = "https://kleer001.itch.io/finding-numbers"
 #       "text"  — Reddit prefills title only; body is pasted into the composer.
 #       "image" — the attachment must be dragged in, so only the title prefills.
 # checks: what has to be set by hand in the composer before sending.
+# posted: date this went up, which several subs measure their repost windows from.
 CHANNELS = [
     {
         "section": "r/WebGames",
         "sub": "WebGames",
         "kind": "link",
+        "posted": "2026-08-01",
         "checks": ["Title must still BEGIN with finding_numbers",
-                   "No repost inside three months"],
+                   "No repost inside three months — next window opens 2026-11-01"],
     },
     {
         "section": "r/itchio",
         "sub": "itchio",
         "kind": "text",
+        "posted": "2026-08-01",
         "checks": ["No NSFW flag needed here"],
     },
     {
@@ -144,15 +147,26 @@ def build():
             f'<span class="muted">{esc(kind_note)}</span></p>'
         )
 
+        posted = channel.get("posted")
+        done = " done" if posted else ""
+        badge = f'<span class="posted">Posted {esc(posted)}</span>' if posted else ""
+        button = (
+            f'<a class="open reopen" href="{esc(url)}" target="_blank" rel="noopener">'
+            f"Open the composer again ↗</a>"
+            if posted else
+            f'<a class="open" href="{esc(url)}" target="_blank" rel="noopener">'
+            f"Open prefilled submit page ↗</a>"
+        )
+
         rows.append(f"""
-      <article class="card" id="{slug}">
+      <article class="card{done}" id="{slug}">
         <header>
           <span class="order">{order}</span>
           <h3>r/{esc(channel["sub"])}</h3>
+          {badge}
           <span class="kind kind-{kind}">{esc(kind_label)}</span>
         </header>
-        <a class="open" href="{esc(url)}" target="_blank" rel="noopener">
-          Open prefilled submit page ↗</a>
+        {button}
         {prefilled}
         {asset_html}
         <h4>Set by hand before sending</h4>
@@ -216,7 +230,19 @@ PAGE = """<!doctype html>
     padding: 1.1rem 1.25rem; margin-bottom: 1.25rem;
   }}
   .card header {{ display: flex; align-items: center; gap: .6rem; margin-bottom: .8rem; }}
-  .card h3 {{ font-size: 1.15rem; margin: 0; margin-right: auto; }}
+  .card h3 {{ font-size: 1.15rem; margin: 0; }}
+  .card.done {{ background: #f5f5f3; border-color: #d8d8d4; }}
+  .card.done h3 {{ color: var(--muted); text-decoration: line-through; }}
+  .card.done .order {{ background: var(--muted); }}
+  .card.done a.open, .card.done pre, .card.done ul.checks {{ opacity: .55; }}
+  .card.done a.open:hover, .card.done:hover pre, .card.done:hover ul.checks {{ opacity: 1; }}
+  .posted {{
+    font-size: .72rem; font-weight: 700; text-transform: uppercase;
+    letter-spacing: .05em; color: var(--ok); border: 1px solid var(--ok);
+    border-radius: 999px; padding: .15rem .6rem; margin-right: auto;
+  }}
+  .card header .kind {{ margin-left: auto; }}
+  .card.done header .kind {{ margin-left: 0; }}
   .order {{
     font-variant-numeric: tabular-nums; font-size: .75rem; font-weight: 700;
     color: var(--card); background: var(--ink); border-radius: 4px; padding: .1rem .4rem;

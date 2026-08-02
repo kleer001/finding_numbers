@@ -12,10 +12,12 @@ the author's, and eighteen unpushed commits.
 
 ### Parallel
 - [ ] #4 Post to the genre communities. Paste-ready copy per channel is in
-  `OUTREACH-COPY.md`: `r/WebGames`, `r/itchio`, `r/playmygame`, `r/analoghorror`,
-  `r/numberstations`, itch's Release Announcements board. Comment somewhere before
-  posting a link — Reddit's site-wide filter shadowbans accounts whose first posts are
-  links, and a shadowbanned post looks exactly like one nobody upvoted.
+  `OUTREACH-COPY.md`. `r/WebGames` and `r/itchio` went up 2026-08-01; `r/WebGames`
+  cannot be reposted before 2026-11-01. Left to post: `r/playmygame` (its own field
+  template, description 100 words minimum), `r/analoghorror` and `r/numberstations`
+  (both want an attachment dragged in), itch's Release Announcements board.
+  `python3 scratchpad/build_submit_links.py` regenerates a board of prefilled composer
+  links that tracks which channels are done; `scratchpad/serve.py` serves it.
 - [ ] #5 Devlog with `clips/out/core-loop.gif` and `pulse.gif`. Copy is written and
   deliberately teases rather than explains: it names the four-bit counter and stops.
 - [ ] #6 Post the three `clips/out/*-9x16.mp4` verticals. Never the itch trailer slot.

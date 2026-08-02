@@ -4,7 +4,6 @@
 import functools
 import http.server
 import socket
-import socketserver
 from pathlib import Path
 
 START_PORT = 8300
@@ -12,10 +11,16 @@ HERE = Path(__file__).resolve().parent
 
 
 def first_free_port(start):
-    with socket.socket() as probe:
-        for port in range(start, start + 50):
-            if probe.connect_ex(("127.0.0.1", port)) != 0:
-                return port
+    """Bind-test each port. A fresh socket per attempt: connect_ex on a reused
+    socket returns stale results after the first call."""
+    for port in range(start, start + 50):
+        with socket.socket() as probe:
+            probe.setsockopt(socket.SOL_SOCKET, socket.SO_REUSEADDR, 1)
+            try:
+                probe.bind(("127.0.0.1", port))
+            except OSError:
+                continue
+            return port
     raise SystemExit(f"no free port in {start}-{start + 49}")
 
 
@@ -30,6 +35,7 @@ if port != START_PORT:
     print(f"port {START_PORT} taken, using {port}")
 
 handler = functools.partial(NoCacheHandler, directory=str(HERE))
-with socketserver.TCPServer(("127.0.0.1", port), handler) as httpd:
+# Threading: a browser holding a keep-alive connection blocks a single-threaded server.
+with http.server.ThreadingHTTPServer(("127.0.0.1", port), handler) as httpd:
     print(f"http://127.0.0.1:{port}/copy-review.html")
     httpd.serve_forever()
