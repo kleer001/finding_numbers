@@ -55,8 +55,15 @@ work than the build supports. For every claim about what the software *does*,
 open the code that implements it and check the claim across its whole range —
 not just the first case.
 
-Two shapes to watch for:
+Three shapes to watch for:
 
+- **True of the named function, false in what it calls.** Naming a function in
+  the copy does not bound the claim to that function's body — it is a claim
+  about everything the body delegates to. Read the helpers, their default
+  arguments, and their units. A falsehood placed one call deep survives a
+  reading that stops at the named function, especially when the helper's own
+  name advertises the right thing and its file is named for something else.
+  Follow the call, not the name.
 - **True early, false later.** A progression described from its opening steps
   ("each one gets its own treatment") when the implementation only holds for the
   authored head and generalizes past it. Check the last case, not the first.
