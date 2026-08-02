@@ -1,13 +1,15 @@
 ---
 name: honest-copy
 description: >-
-  Audit public-facing copy for false, unverifiable, or fabricated claims —
-  store pages, READMEs, release notes, announcement posts, trailer narration.
-  TRIGGER when the user asks to check, audit, or honest-check any copy, when
-  writing or reviewing an announcement, and at the release gate before a store
-  page goes live.
+  Audit public-facing copy for false, unverifiable, or fabricated claims. Works
+  on any copy that describes something checkable — software, a document, a
+  dataset, a body of work: store pages, READMEs, release notes, announcement
+  posts, jacket copy, catalogue entries, executive summaries, funder reports,
+  trailer narration. TRIGGER when the user asks to check, audit, fact-check or
+  honest-check any copy, when writing or reviewing an announcement or a summary
+  of someone's work, and before anything outward-facing ships.
 argument-hint: "[path/to/copy.md or inline copy]"
-allowed-tools: Read, Glob, Grep, Bash
+allowed-tools: Read, Glob, Grep, Bash, WebFetch, WebSearch
 effort: max
 ---
 
@@ -23,6 +25,14 @@ itself, plus whatever record stands behind it. The tests below say things like
 what you are auditing: a function, a chapter, a column, a clause, a figure. The
 operation does not change. Check the claim against the thing, not against your
 memory of the thing, and not against another description of it.
+
+**Locate the subject before you start.** Sometimes it surrounds the copy and
+needs no looking for. Sometimes it does not: a summary of something held
+elsewhere, a description of work you have not been shown. When you cannot find
+it, say so and ask where it is — do not proceed. An audit run without the
+subject is not an audit. It quietly becomes a check of whether the copy *sounds*
+plausible, which is the failure this exists to catch, and it fails while still
+producing confident output. Never hand one over as the other.
 
 ---
 
@@ -140,7 +150,7 @@ List each flagged item as:
 ```
 LINE: [quote the sentence]
 PROBLEM: [which test it fails and why]
-EVIDENCE: [the source, file:line, or command output that settles it]
+EVIDENCE: [the location in the subject, or the output, that settles it]
 FIX: [a replacement that says the same thing honestly, or "cut it"]
 ```
 
@@ -148,7 +158,26 @@ FIX: [a replacement that says the same thing honestly, or "cut it"]
 without it is an opinion, and opinions do not survive an argument with the
 person who wrote the copy.
 
-If nothing is flagged, say so explicitly: "No issues found."
+Not every flag is a copy error. Where the copy describes what the subject was
+*meant* to do and the subject is what drifted, say so in `FIX` and give the
+repair on that side: changing the subject is often the cheaper fix and always
+the one that leaves better copy. Rewriting the sentence to match a defect
+documents the defect as a feature.
+
+Then close with two short sections.
+
+**Checked and cleared.** The claims you verified and are not flagging, each with
+what settled it. This is not optional padding — an audit is a claim about
+coverage, and without it a reader cannot tell a clean claim from an unexamined
+one. It also stops the same sentences being re-litigated on the next pass.
+
+**What to fix first.** Rank the flags by what they cost a reader who believes
+them. A sentence that sends someone down a path that loses their work outranks a
+miscount, however precise the miscount is.
+
+If nothing is flagged, say so explicitly: "No issues found" — and still give the
+cleared list, because that is the only thing distinguishing a clean audit from a
+shallow one.
 
 After the audit, ask the user which fixes to apply, then edit the file.
 
