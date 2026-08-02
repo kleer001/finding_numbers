@@ -133,6 +133,10 @@ Flair `[Web]` / `PC (Web)`, NSFW-flag it as horror, the game link before any oth
 link, one post per game per month. Post from an account with ordinary comment history —
 Reddit's site-wide filter shadowbans accounts whose first posts are links.
 
+The sub mandates a post template with a **100-word minimum** on the description, which
+is why this is the one post that runs past the 150-word budget. The template's field
+order is fixed; keep it.
+
 **Title:**
 
 ```
@@ -142,23 +146,46 @@ Reddit's site-wide filter shadowbans accounts whose first posts are links.
 **Body:**
 
 ```
-https://kleer001.itch.io/finding-numbers
+**Game Title:** finding_numbers
 
-Free, plays in the browser now, no signup or download. I'm the developer — solo.
+**Playable Link:** https://kleer001.itch.io/finding-numbers
 
-No map, no minimap, nothing marks the right door. A shortwave number station reads
-digits through the static and it's the only feedback you get. Correct turn, a number
-is added. Wrong turn, nothing is. You learn by what never arrives.
+**Platform:** Web browser, HTML5. Desktop and mobile, no download and no signup.
 
-It's tagged horror, but nothing chases you and nothing can kill you. There's no fail
+**Description:**
+
+You are one character in a maze of near-identical rooms. No map, no minimap, nothing
+marking the right door. A shortwave number station reads digits through the static,
+and it is the only feedback the game gives you. Take the correct door and a number is
+added to the broadcast. Take a wrong one and nothing is added. There is no buzzer and
+nothing turns red, so you learn the route by what never arrives.
+
+It is tagged horror, but nothing chases you, nothing can kill you and there is no fail
 state. The dread is that the station stops counting you.
 
-Arrows / WASD / HJKL, or tap the screen edges. P opens preferences.
+Most of the maze holds still and can be learned. Some stretches move their exit a few
+times before settling. The station is built in WebAudio — digit samples in six
+languages over a synthesized noise bed, rendered with Kokoro-82M, one voicepack per
+language. A tribute, not a recording. The picture is one character grid in one phosphor
+color, bent through a WebGL CRT filter, with the signal drawn as a live spectrogram. A
+jukebox mode comes with it: the transmitter alone, no maze.
+
+Arrows / WASD / HJKL, or tap the screen edges. P opens preferences. It cannot be played
+without sound.
 
 What I'd most like to know is whether the navigate-by-ear loop reads without the
 on-screen digit count, which is off by default.
 
-The game cannot be played without sound.
+**Free to Play Status:**
+
+[x] Free to play
+[ ] Demo/Key available
+[ ] Paid (Allowed only on Tuesdays with [TT] in the title)
+
+**Involvement:** Solo developer. I wrote the game, the maze generator and the audio
+engine. Borrowed pieces are credited in the README and on the store page: the CRT
+shader is CRTFilterWebGL, and the digit voices are rendered with Kokoro-82M via the
+voice_loom project. Source is MIT.
 ```
 
 ---
