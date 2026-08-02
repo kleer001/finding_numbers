@@ -402,3 +402,29 @@ recorded here rather than resolved.
   match the build.
 - **Release gate:** still not formally cleared, and now for a different reason than in
   Session 1. The code is ready; the published page is behind it and its media is stale.
+
+---
+
+## Release gate — cleared
+
+Date: 2026-08-01. Signed against the two conditions Gate 2 left open, and nothing wider.
+
+**Condition 1 — the published page is behind the build.** Closed. The packaged zip is
+live on itch as a browser-playable upload; the store page carries the shipped title,
+four screenshots taken from that build, and a description written against it.
+
+**Condition 2 — the media depicts a HUD the player will not see.** Closed. The
+screenshots and the promo images were re-shot after `SHOW NUMBERS` went to off-by-default,
+and a copy pass took the store page, the landing page and the README to the same claims.
+The two that kept resurfacing — more voices as you go, more of each level you cannot
+trust — are struck everywhere: both cap at level 12, so both were false past that point.
+
+**Measured at signing:** 117 tests green; the store page, `promo.html` and `README.md`
+agree with the build and with each other.
+
+**Signed with these still open, none of them gate conditions.** Whether the ear-only loop
+stays legible at depth is unproven — nobody has played a deep level end to end. The design
+calls the Critic and the Superfan left at Gate 2 are the author's and are recorded, not
+resolved: a room only moves on re-entry, so a careful player may never meet the signature
+mechanic, and the readout-overrun decay is invisible to a player who never turns the
+numbers on. A later gate measures those; the release does not wait on them.
