@@ -7,7 +7,9 @@ chases you and nothing can kill you — the station going quiet is the only way 
 ## ▶ [Play it here](https://kleer001.github.io/finding_numbers/) · [on itch.io](https://kleer001.itch.io/finding-numbers)
 
 Press any key to start the audio. What you're listening for is whether a number
-arrives at all — the game can't be played without sound.
+arrives at all. Play it with sound — by ear is the whole design. If you can't,
+turn on SHOW NUMBERS in preferences (P) and the digits and the count are drawn
+on screen instead.
 
 ---
 

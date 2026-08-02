@@ -34,8 +34,10 @@ Live: <https://kleer001.itch.io/finding-numbers>
 - **Platforms:** HTML5 only. No downloadable builds exist.
 - **Input:** keyboard (arrows / WASD / HJKL) and touch (tap the screen edges).
 - **Accessibility / languages:** interface is English. The spoken digits are in six
-  languages by design, and are never the interface. **The game cannot be played
-  without sound** — that is the premise, not an oversight, and the page says so.
+  languages by design, and are never the interface. **The game is meant to be played
+  with sound** — by ear is the premise, not an oversight, and the page says so. It is
+  not sound-only: SHOW NUMBERS in preferences draws the digits and the n/N count on
+  screen, which is the same compass. Never claim it cannot be played without sound.
 - **Average session:** a few minutes.
 - **Links:** source <https://github.com/kleer001/finding_numbers> · landing
   <https://kleer001.github.io/finding_numbers/promo.html>

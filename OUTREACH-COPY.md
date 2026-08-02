@@ -32,7 +32,9 @@ What the build keeps, and therefore what any post may say:
   signal drawn as a live spectrogram.
 - The game was designed as sixteen levels. Whether anything lies beyond the sixteenth
   isn't documented, and no post answers it.
-- It cannot be played without sound.
+- It is meant to be played with sound; that is the design, and it is better that way.
+  It is not sound-only — SHOW NUMBERS in preferences draws the digits and the count on
+  screen. Never claim it cannot be played without sound.
 
 Not claimable: any "first" or "only", any comparison to another game's quality, any
 length of playtime beyond "a few minutes a run", and anything about what players feel.
@@ -77,7 +79,7 @@ link to the game, no repost inside three months.
 **First comment:**
 
 ```
-Free, browser, no signup. The game cannot be played without sound.
+Free, browser, no signup. Play it with sound — by ear is the whole design.
 
 You are @ in a maze of near-identical rooms while a shortwave number station reads
 digits through the static. The station is the only compass: take the correct door
@@ -122,7 +124,8 @@ language.
 
 Source is MIT: https://github.com/kleer001/finding_numbers
 
-It cannot be played without sound.
+Play it with sound — by ear is the whole design. If you can't, SHOW NUMBERS in
+preferences draws the readout on screen.
 ```
 
 ---
@@ -170,8 +173,9 @@ language. A tribute, not a recording. The picture is one character grid in one p
 color, bent through a WebGL CRT filter, with the signal drawn as a live spectrogram. A
 jukebox mode comes with it: the transmitter alone, no maze.
 
-Arrows / WASD / HJKL, or tap the screen edges. P opens preferences. It cannot be played
-without sound.
+Arrows / WASD / HJKL, or tap the screen edges. P opens preferences. Play it with sound —
+by ear is the whole design. If you can't, SHOW NUMBERS in preferences draws the readout
+on screen.
 
 What I'd most like to know is whether the navigate-by-ear loop reads without the
 on-screen digit count, which is off by default.
@@ -283,7 +287,7 @@ times before settling. Sixteen levels — the message grows and the gaps tighten
 Also in there: a jukebox mode that's just the transmitter, and a CRT decay dial you can
 turn up until the picture barely holds.
 
-It cannot be played without sound. Source is MIT.
+Play it with sound — by ear is the whole design. Source is MIT.
 ```
 
 ---
@@ -396,7 +400,8 @@ Free, no signup, runs in one click: https://kleer001.itch.io/finding-numbers
 Trailer: https://youtu.be/3_maIo0cYAk
 Source, MIT: https://github.com/kleer001/finding_numbers
 
-It cannot be played without sound.
+Play it with sound — by ear is the whole design. If you can't, SHOW NUMBERS in
+preferences draws the readout on screen.
 
 — kleer001
 ```

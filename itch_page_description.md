@@ -41,7 +41,9 @@ quiet is the only way to lose.
 
 **Mobile:** tap the screen edges · **[P]** for preferences.
 
-The game can't be played without sound.
+Play it with sound — by ear is the whole design. If you can't, turn on **SHOW
+NUMBERS** in preferences (**P**) and the digits and the count are drawn on screen
+instead.
 
 ## Credits
 
