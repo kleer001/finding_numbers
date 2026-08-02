@@ -86,27 +86,25 @@ the code implementing Y, which corroborates every word. Refuting it means
 searching for something the copy never mentions.
 
 So invert the procedure. Do not look for the code that implements the claim.
-Enumerate the code that would falsify it:
+Enumerate what would falsify it:
 
-- Walk every surface that changes behavior — settings menus, CLI flags, env
-  vars, config keys, query params, saved state. Each is a path the claim has to
-  survive. Read the list of options, not the feature the claim names.
+- Walk every surface that changes behavior — settings, flags, configuration,
+  saved state. Each is a path the claim has to survive. Read the list of
+  options, not the feature the claim names.
 - Search for the alternative rather than the subject: the branch that runs when
-  the named thing is absent. The fallback, the second output mode, the
-  accessibility affordance.
+  the named thing is absent.
 - Ask what a user who lacks the named thing actually gets. If something exists
   for exactly them, the claim is false, not merely overstated.
 
-A claim in this shape is nearly always a design intent that hardened into a
-fact — and it hardens most often right after a default flips, when "off by
-default" gets written down as "not there." The intent is usually true and worth
-keeping. The barrier is the part that breaks. Say the intent.
+A claim in this shape is nearly always an intent that hardened into a fact — and
+it hardens most often just after a default flips, when "off by default" gets
+written down as "not there." The intent is usually true and worth keeping. The
+barrier is the part that breaks. Say the intent.
 
-> Bad: "cannot be played without sound" when a SHOW NUMBERS setting prints the
->   same readout on screen
-> Bad: "requires Docker" when the project's own quickstart runs without it
-> OK: "Play it with sound — by ear is the whole design. If you can't, SHOW
->   NUMBERS draws the readout on screen."
+> Bad: "cannot be used without X" when an option delivers the same result
+>   without X
+> OK: "X is how it is built to be used" — the intent, with the option named for
+>   anyone who needs it
 > Fix shape: keep the intent, drop the barrier, name the escape hatch
 
 ---
@@ -144,9 +142,6 @@ written from it. These read like premises rather than claims, which is exactly
 why they get audited *against* instead of audited — so audit them first, before
 the copy they produce. A claim written as an instruction ("the page says so") is
 still a claim.
-
-*In this repo those are `ITCH-PAGE.md`'s store-page facts block and the
-`OUTREACH-COPY.md` claims ledger. Repoint this line when porting the skill.*
 
 At the release gate this audit is mandatory and covers the store page as well
 as the repo — the no-fabrication rule runs all the way to the marketing copy.
