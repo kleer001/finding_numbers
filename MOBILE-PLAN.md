@@ -90,7 +90,7 @@ Per frame, `CRTFilter.js: renderCRT()`:
 
 1. `getImageData(0, 0, 800, 600)` — a **1.92 MB CPU readback** of the whole canvas.
 2. `texImage2D(...)` — uploads it straight back to the GPU.
-3. **15 `getUniformLocation` string lookups**, every frame, uncached.
+3. **16 `getUniformLocation` string lookups**, every frame, uncached.
 4. `requestAnimationFrame` — a **second rAF loop**, independent of the game's.
 
 The readback exists only because the source is passed as an `ImageData`.
