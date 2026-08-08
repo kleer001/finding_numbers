@@ -1,0 +1,327 @@
+# Mobile roadmap
+
+The sequence across `MOBILE-PLAN.md` (what and why), `MOBILE-SPEC.md` (how, for
+the settled parts) and `MOBILE-STORE.md` (Play). This document is ordering only —
+it repeats none of their detail.
+
+**The through-line:** every milestone ships something a player can feel, and the
+open design questions are deferred to the exact point where they block work rather
+than answered up front. Nothing before M2 needs a decision from you.
+
+Effort figures are day-ranges for focused work and are guesses — I do not know
+your working rhythm. Calendar figures under M5 are not guesses; they are imposed
+by Google.
+
+---
+
+## Milestones
+
+| | Milestone | Ships to | Effort | Needs a decision |
+| --- | --- | --- | --- | --- |
+| **M0** | Floor — `MOBILE-SPEC.md` S-01…S-12 | itch web | 4–7 d | No |
+| **M1** | Responsive geometry — Plan Phase 1 | itch web | 3–5 d | DPR cap |
+| **M2** | Posture and layout — Plan Phase 2 | itch web | 4–8 d | **Posture, deck, haptics** |
+| **M3** | Mobile web release — Plan Phase 4 | itch web | 1–2 d | No |
+| **M4** | Capacitor wrap → `.apk` | **itch Android** | 3–5 d | No |
+| **M5** | Google Play | Play | 2–4 d work, **4–8 weeks calendar** | Whether at all |
+
+M0 through M3 are the project. M4 is the cheap win. M5 is optional and is the only
+one with a clock you do not control.
+
+---
+
+## M0 — Floor
+
+**Goal:** make a frame cheap, make the audio arrive, stop the platform fighting
+the game. No visual change except S-05's snow.
+
+Everything is specified in `MOBILE-SPEC.md`. Build order there is binding:
+S-01 and S-05 both land before S-02.
+
+**Done when:** 117 tests still green plus whatever S-07 adds; the five measurements
+in `MOBILE-SPEC.md` §"Measurements" are taken before and after; a real iPhone
+survives background/call/lock without losing the station.
+
+**Ships:** yes, to itch, as an ordinary build. Players get a faster, quieter,
+correctly-behaving game before any of the layout work starts. **This is the single
+best reason to do M0 first** — it is the only milestone that improves the game for
+existing desktop players too.
+
+**Blocked by:** nothing.
+
+---
+
+## M1 — Responsive geometry
+
+**Goal:** `computeLayout(vw, vh, dpr)` as a pure function, consumers re-pointed at
+it, DPR-aware backing store, re-layout on resize and orientation.
+
+`MOBILE-PLAN.md` Phase 1 has the substance. The discipline that matters: the first
+commit must return today's exact numbers (`800 x 600`, `23 x 20`, `CHAR.W 34.78`)
+for a desktop viewport, so the refactor is provably inert before it is made to
+move. `tests/layout.test.mjs` is the proof.
+
+**Decision needed: the DPR cap.** I proposed `min(devicePixelRatio, 2)` with a
+~2.5 M pixel ceiling. It is a sharpness-versus-battery trade and it is visible.
+Cheap to defer *within* the milestone — build the cap as a constant and try three
+values on a real device before picking.
+
+**Done when:** the layout test passes across the device matrix; rotating a phone
+re-lays out cleanly; nothing regressed on desktop.
+
+**Ships:** yes. Portrait is still a 4:3 block, but it is now a *correctly scaled,
+integer-ratio, safe-area-aware* one.
+
+**Blocked by:** M0 — M1 raises the pixel count and M0 is what makes pixels
+affordable.
+
+---
+
+## M2 — Posture and layout
+
+**Goal:** decide what portrait is, then build it.
+
+**This is where the deferred questions come due**, all three at once, because they
+are the same decision seen from different sides:
+
+1. **Posture** — portrait-first, or a rotate-to-play card and a perfected
+   landscape? If landscape, M2 shrinks by more than half and questions 2 and 3
+   mostly evaporate.
+2. **The receiver deck** — a drawn control band in the bottom rows, or letterbox
+   politely and just enlarge the tap targets?
+3. **Haptics** — I argued for mechanical feedback only (wall bump, key press) and
+   against anything on a captured digit, because the station is meant to be the
+   only compass. Your call.
+
+I would answer these on a device, not on paper. M1 delivers a build that scales
+correctly; spend an evening playing it in portrait on a real phone before choosing.
+
+**Done when:** the thumb no longer covers the maze; every tap target ≥ 44 pt;
+screenshots captured at each device size for M3.
+
+**Ships:** yes, and this is the milestone that makes it a phone game rather than a
+game on a phone.
+
+**Blocked by:** M1.
+
+---
+
+## M3 — Mobile web release
+
+**Goal:** tell people, and stop shipping stale claims.
+
+- Tick **Mobile Friendly** in the itch embed settings — *after* M1/M2, not before.
+  With it on, mobile launches fullscreen at the device's own resolution, which is
+  precisely what M1 makes the game able to use.
+- Real-device pass: one small iPhone, one large iPhone, one mid-range Android.
+- `README.md` and `ITCH-PAGE.md` control corrections (S-12), then the
+  `honest-copy` and `humanized-copy` gates.
+- New screenshots from the M2 build.
+- Optional here or later: PWA shell and a self-hosted copy on GitHub Pages. Only
+  meaningful self-hosted — the itch iframe cannot offer an install.
+
+**Blocked by:** M2.
+
+---
+
+## M4 — Capacitor wrap, distributed on itch
+
+**Goal:** a real installable offline Android build, with none of the Play tax.
+
+`MOBILE-STORE.md` §1 and §2 are the work. The two that matter:
+
+- **The Android back button**, which currently quits the game instantly.
+- **The `fetch()` origin** — verify on the very first build, because its failure
+  mode is a station that never speaks.
+
+Then upload the `.apk` to the existing itch page.
+
+**Why this before M5:** it proves the wrap works, on real devices, with real
+players, at zero administrative cost. Every line of it is shared work if you later
+go to Play. If the wrap has a problem, you find out here rather than inside a
+14-day testing window.
+
+**Blocked by:** M3 in principle, M2 in practice.
+
+---
+
+## M5 — Google Play
+
+`MOBILE-STORE.md` §3–6 is the checklist. Two things about the shape of it:
+
+**The work is small; the calendar is not.** Two to four days of actual effort —
+signing, the `.aab`, the forms, the listing, the feature graphic. Then four to
+eight weeks of waiting, almost all of it the testing gate.
+
+**Check your account's date first.** The 12-testers requirement applies only to
+personal accounts created on or after **13 November 2023**. If yours predates that,
+or is an organisation account, the largest cost in this milestone does not apply to
+you and M5 becomes a long weekend. **Establish this before planning anything else
+here.**
+
+---
+
+## Getting twelve testers for a fortnight
+
+The part with no engineering in it and the part most likely to stall.
+
+### What the requirement actually is
+
+Twelve testers **opted in continuously for the last 14 days**, at the moment you
+apply for production access. Read that precisely:
+
+- **Twelve accounts, not twelve installs.** Real Google accounts, opted into your
+  closed track.
+- **Continuously.** Someone who opts in on day 9 contributes nothing. The clock is
+  per-tester, and it is the *twelfth* tester's clock that gates you.
+- **Opting out or being removed resets that person.** Do not tidy the list
+  mid-window.
+- Google reviews the application. Twelve accounts that installed nothing and said
+  nothing is a pattern the review is looking for.
+
+### The scheduling consequence
+
+**Recruit first, then start the clock.** Get your list assembled and everyone
+opted in, *then* count 14 days. Trickling people in over two weeks means the
+window ends 14 days after the last one, not the first.
+
+Uploading new builds to the closed track during the window does not reset it — the
+clock is on tester opt-in, not on the release. So the fortnight is calendar time
+you can spend working. Start it the moment you have a wrap that is not
+embarrassing, and keep improving throughout. *(Worth confirming against current
+Play Console Help before you rely on it.)*
+
+### Over-recruit
+
+Aim for **eighteen to twenty**. Attrition is real: people change phones, clear
+accounts, or opt out by accident. Twelve recruited is twelve at risk; eighteen
+recruited is twelve that hold.
+
+### Use a Google Group, not an email list
+
+A Group lets you add and remove members without touching the track configuration
+or cutting a release. An individual-email tester list is edited in the Console and
+is far more annoying to maintain over a fortnight.
+
+### The single most common failure
+
+**People accept the invitation and never click the opt-in link.** Being on your
+list is not being opted in. Send both, spelled out, in one message:
+
+1. the opt-in URL,
+2. the Play link that only works *after* opting in,
+3. an explicit "you must tap the first link before the second one will work."
+
+Then **verify the count in the Console** rather than trusting replies. Somebody
+will say yes and do nothing, and you will not find out for two weeks.
+
+### Where to find them
+
+Your existing channel research in `MARKETING-PLAN.md` is a *promotion* map.
+Recruiting testers is a different ask — participation, not attention — so the
+fit ranking changes.
+
+**Best fit — people who already like this game:**
+
+- **Your itch followers.** A devlog on the existing page — "Android closed beta,
+  need a dozen testers" — reaches people who have already played it and liked it
+  enough to follow. This is the highest-conversion route you have and it costs one
+  post.
+- **Haunted PS1 Discord** (~5k, ~1.8k online). The lo-fi horror dev scene. Devs
+  test each other's builds as a matter of course, and an Android beta of a
+  liminal-horror game is on-topic rather than an imposition. Rules are only
+  readable from inside — join and read first, as the marketing plan already notes.
+- **`r/numberstations`** (~18k). Small and slow, but these are the people who know
+  the real stations and the ones most likely to care. A genuine "help me test"
+  post reads very differently from promo in a niche this invested.
+
+**Purpose-built for exactly this** — not in the marketing plan, because it is
+promo-focused rather than tester-focused:
+
+- `r/alphaandbetausers`, `r/betatests`, `r/AndroidGaming`. These exist for
+  recruiting testers. Lower affinity with your game, higher affinity with the ask.
+  Expect people who will opt in and not play much — which satisfies the count but
+  not the engagement half of the review, so mix them with the group above rather
+  than relying on them.
+
+**Personal network.** Realistically six to eight of your eighteen. It is the most
+reliable source and the one people forget to work first.
+
+**On tester-swap services:** paid and reciprocal-testing communities exist and
+advertise heavily against this exact requirement. Two honest problems. Google has
+been rejecting production-access applications that look like reciprocal farms, and
+paying for twelve accounts that never open the app produces precisely the
+engagement signature the review examines. If you use them at all, use them to top
+up a real group — never as the group.
+
+### Give them something to actually do
+
+This is where the requirement stops being a tax and starts paying for itself.
+
+`MOBILE-SPEC.md` says S-06, S-07, S-09, S-10 and S-11 all have failure modes that
+emulators do not reproduce, and that the work needs a real device matrix.
+**Your twelve testers are that device matrix.** The brief writes itself from the
+spec's acceptance criteria:
+
+> Thanks for testing. Seven things, five minutes, and please tell me your phone
+> model and Android version.
+>
+> 1. Does the radio start talking within the first ten seconds?
+> 2. Switch to another app for half a minute, come back, and **don't touch the
+>    screen** — is it still talking?
+> 3. Take or make a phone call while it is running. Still talking afterwards?
+> 4. Leave it sitting untouched for a minute. Does the screen stay on, or dim?
+> 5. Press and hold anywhere on the maze for three seconds. Any text-selection
+>    popup, magnifier, or grey flash?
+> 6. Swipe down from the very top of the screen. Does the page reload instead of
+>    moving you?
+> 7. Open PREFS, then press back. Does it close the menu, or quit the game?
+>
+> Headphones strongly recommended — the game is played by ear. It is quiet horror:
+> no jump scares, no gore.
+
+Seven answers across a dozen handsets is a better device matrix than you could buy,
+it demonstrates exactly the engagement the production-access review wants to see,
+and it is genuinely how M0's mobile-only acceptance criteria get verified.
+
+### Realistic calendar
+
+| | |
+| --- | --- |
+| Recruiting to 18 | 1–2 weeks |
+| Getting everyone actually opted in | 3–7 days of chasing |
+| The window itself | 14 days, fixed |
+| Production access review | days, occasionally longer |
+
+**Four to eight weeks**, mostly waiting. Which is exactly why M4 exists: an
+installable Android build on itch, in hand, weeks before any of this resolves.
+
+---
+
+## Risk register
+
+| Risk | Milestone | Mitigation |
+| --- | --- | --- |
+| S-02 does not measure faster on some platform | M0 | Spec already says: record it and revert. Not a failure. |
+| S-06 transcode fails silently on one language | M0 | Assert every `AudioBuffer` decodes; never sign off by ear |
+| S-07's jukebox/babel holes reappear | M0 | The tuning-banner state is the fix; test cases 4 and 5 cover it |
+| Re-pointing `PREFS_BTN` breaks hit-test/draw agreement | M1 | It is one shared constant today — keep it one shared source |
+| Posture decision reverses after M2 is built | M2 | Decide on a device after M1, not on paper before it |
+| `fetch()` blocked by the wrap's origin | M4 | Verify on the very first build, before anything else |
+| Lost upload keystore | M4/M5 | Back it up off-machine before the first upload. Unrecoverable. |
+| Testers opt in and go quiet | M5 | Over-recruit to 18; give them the seven-question brief |
+| Play target API deadline moves | M5 | API 36 from 31 Aug 2026 — re-check before building |
+
+---
+
+## If you only do three things
+
+1. **M0's S-09** — resume audio on `visibilitychange`. One function. Fixes a bug
+   that silences the compass after any notification.
+2. **M0's S-06 + S-07** — compress and lazily load the voice bank. The cold open is
+   currently broken on cellular.
+3. **M0's S-11** — the viewport and touch CSS. Highest ratio of felt improvement to
+   lines changed in the whole effort.
+
+None of the three touches layout, none needs a decision from you, and all three
+ship to existing players the day they land.
