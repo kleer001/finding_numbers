@@ -606,3 +606,102 @@ A review here records that testers were delivered, not that Google approved you.
 
 Prices and thresholds throughout this document were checked in August 2026 and
 move often. These four pages are the tiebreaker whenever anything else disagrees.
+
+---
+
+## Appendix — research prompts
+
+For Perplexity or any search-grounded assistant with access to the sources above.
+Three prompts rather than one: these tools return better work on a bounded question
+than on a broad one. Run them separately.
+
+### 1. First-hand accounts — the main one
+
+```text
+I'm a solo indie developer with an HTML5 browser game already published on
+itch.io with an existing player base. I'm evaluating wrapping it with Capacitor
+and publishing to Google Play. The obstacle is the closed-testing gate: 12
+testers opted in continuously for 14 days, required for personal developer
+accounts created on or after 13 November 2023.
+
+I already know the mechanics and Google's stated rejection criteria. Do not
+re-explain those. I need EVIDENCE — first-hand accounts from developers who
+actually went through it.
+
+Find and summarise:
+
+1. Developers who COMPLETED closed testing and were granted production access.
+   How did they recruit? How long did recruiting take? How many testers did they
+   start with versus finish with? Approved first attempt, or rejected first?
+2. Developers REJECTED after completing the full 14 days. What reason did Google
+   give? What did they change? How long did the second attempt take?
+3. Documented cases of Google rejecting or penalising developers specifically
+   for using paid tester services, tester-swap groups, or credit exchanges. I
+   want reported cases from affected developers — not vendors warning about
+   rival vendors.
+4. Anyone with an existing audience (itch.io followers, a Discord, a mailing
+   list) who recruited organically, and how that compared on time and outcome.
+
+Source constraints, applied strictly:
+
+- EXCLUDE anything published by companies that sell testers, including their
+  posts on dev.to, Medium and note.com, which they publish under their own
+  accounts. Specifically ignore: testerscommunity.com, primetestlab.com,
+  testfi.app, testerbee.com, 20apptester.com, 12testers.live, 20testers.com,
+  12-testers-for-14-days.github.io, get12testers.com, betatribe.app,
+  tester.dinnger.com, closedtesthelp.com, realapptesters.com,
+  appconsolelab.com, ontest.app, getapphive.com.
+- PRIORITISE: reddit.com/r/androiddev and r/gamedev, news.ycombinator.com,
+  Google Play Developer Community threads on support.google.com, itch.io
+  devlogs and forums, personal developer blogs, and the ACM TOSEM paper "No
+  Country for Indie Developers" (DOI 10.1145/3736578).
+
+For every claim give: source URL, date, whether the author is an independent
+developer or has a commercial interest, and whether they actually shipped or are
+only describing the process.
+
+If you cannot find first-hand shipped accounts for any of the four questions,
+say so explicitly rather than substituting vendor guidance. An honest "no
+independent evidence found" is more useful to me than a confident summary of
+marketing copy.
+```
+
+### 2. The services specifically
+
+```text
+For each of these Google Play tester services — Testers Community, PrimeTestLab,
+TestFi, 12-testers-for-14-days, Get12Testers, BetaTribe, and tester.dinnger.com
+— find discussion from OUTSIDE the vendor's own properties and outside
+Trustpilot.
+
+The outcome I care about is whether developers were granted PRODUCTION ACCESS
+after using the service — not whether testers were delivered. Those are
+different events roughly two weeks apart, and most reviews are collected after
+the first and before the second. Treat any review that only confirms delivery as
+not answering the question.
+
+Look on reddit, Hacker News, Google Play Developer Community, and independent
+developer blogs. Report negative and neutral accounts as prominently as positive
+ones.
+
+If the only available evidence for a given service is vendor-published or
+Trustpilot, say that plainly for that service.
+```
+
+### 3. Currency check — run this last, before acting
+
+```text
+As of today, what is the current state of Google Play's closed testing
+requirement for new personal developer accounts?
+
+Specifically:
+- Is it still 12 testers opted in for 14 continuous days?
+- Has the 13 November 2023 account-creation cutoff changed?
+- What is the current target API level requirement and its deadline?
+- Any 2026 changes to how production access applications are reviewed?
+- Any change to the $25 registration fee?
+
+Cite only support.google.com and the official Android Developers Blog. Give the
+publication or last-updated date for each page you cite. If a page contradicts
+something widely repeated in secondary sources, say so.
+```
