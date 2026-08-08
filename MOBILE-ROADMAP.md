@@ -193,7 +193,11 @@ Play Console Help before you rely on it.)*
 
 ### Over-recruit
 
-Aim for **eighteen to twenty**. Attrition is real: people change phones, clear
+Aim for **thirty or more.** I originally wrote eighteen; the first-hand accounts
+in the appendix put successful runs at **20–50 testers**, and at least one
+approval-on-second-attempt came from going 15 → 30+. Twelve is the floor Google
+checks, not the number you should be recruiting to. Attrition is real: people
+change phones, clear
 accounts, or opt out by accident. Twelve recruited is twelve at risk; eighteen
 recruited is twelve that hold.
 
@@ -320,28 +324,90 @@ about number stations and liminal horror. You have the one asset that makes the
 organic route work: **people who will genuinely play it because they want to.**
 That converts the engagement requirement from an obstacle into a by-product.
 
-**Recommendation:** recruit organically, and treat the paid services as a
-last-resort top-up if you finish week two at ten people rather than eighteen — a
-handful of bought testers inside a genuinely engaged group looks very different
-from a group made entirely of them. Do not use the credit exchanges at all; the
-time cost is real, and testing a dozen strangers' apps is the same week you could
-spend posting in three communities that already like your work.
+**Recommendation — revised upward in strength after the research below:** recruit
+organically. **Do not use paid services or credit exchanges at all**, including as
+a top-up. I previously allowed paid testers as a last resort; the first-hand
+accounts changed that, because the documented downside is not rejection but
+**account termination**, and it is contagious. See "What the research came back
+with" below.
 
-One thing to do regardless of route: **ship at least one build during the 14 days
-in response to tester feedback.** "No app updates showing you acted on feedback" is
-its own rejection reason, and the seven-question brief above is designed to
-generate exactly the feedback that justifies one.
+One thing to do regardless of route: **ship several builds across the 14 days in
+response to tester feedback.** Not one. The clearest signal in the first-hand
+accounts is release cadence — one developer's failed attempt had 2 releases and
+their successful one had 8–9 across 15 days. "No app updates showing you acted on
+feedback" is an explicit rejection reason, and the seven-question brief above is
+designed to generate feedback that justifies a build a day or two.
 
-### What the evidence for these services actually is
+### What the research came back with
 
-I went looking for reviews from developers who had actually shipped. The result is
-worth recording, because **it is mostly an absence.**
+A Perplexity run against the prompts in the final appendix, from a session with
+Reddit access this one lacked, returned real first-hand accounts. Summarised here
+with the URLs; **the threads themselves are still unread by me** and the caveats at
+the end of this section matter.
 
-**Access limits, stated up front:** in this environment I can run web searches but
-cannot open pages — Reddit is blocked to the crawler, and Hacker News, itch.io,
-`support.google.com` and `dev.to` are all blocked by the network proxy. Everything
-below is search-result level. I have not read the threads. Treat the
-characterisations as leads to verify, not as verified findings.
+**The finding that changes the recommendation: the downside is account
+termination, not rejection.**
+
+> "Used a paid for testing service for testing the app on 20 devices before
+> release, all went smoothly. However, shortly after, my Google Play account was
+> suspended due to what they deemed high-risk behavior."
+> — r/androiddev, Jan 2025, `reddit.com/r/androiddev/comments/1i5ylne/`
+
+Two further threads describe the mechanism, which is **association, and it runs in
+both directions**: if testers who tested a terminated developer's app also test
+yours, or if *you* test a terminated developer's app, the association can transfer
+(`.../1kjvmva/`, `.../1kbk18r/`). Developers report knowing of at least two account
+bans traced to a tester-swap subreddit.
+
+This is materially worse than what I had documented. I wrote that a failed attempt
+costs another 14-day cycle. The reported cost is **losing the developer account**,
+which takes the game with it.
+
+**It also inverts my advice on credit exchanges.** I said avoid them because of the
+time cost. The real reason is that a credit exchange requires *you to test other
+people's apps* — which is the second association vector in that quote. A paid
+service exposes you one way; an exchange exposes you both.
+
+**The uncomfortable tension in the evidence.** `r/AndroidClosedTesting` is the
+most-cited *successful* recruitment channel in the approval stories **and** is
+among the venues named in the ban warnings. Both claims come from independent
+developers. I cannot reconcile them from search results alone, and you should not
+assume either cancels the other.
+
+**What the successful runs did** (accounts at `/1dy0rw2/`, `/1eaems1/`, `/1s9jhvm/`):
+
+| | Failed attempt | Successful attempt |
+| --- | --- | --- |
+| Testers | 15–20 | **30–50+** |
+| Installs vs opt-ins | 20 opted in, **2 installed** | most installed |
+| Releases in the window | 2 | **8–9** |
+| Tester list | email list | **Google Group** |
+| Production form | "half-hearted responses" | detailed and specific |
+
+Every one of those confirms advice already in this document — the opt-in/install
+gap, the Google Group, the questionnaire — except the two I have now corrected
+upward: recruit to 30 rather than 18, and ship many builds rather than one.
+
+**The gap in my own recommendation, stated plainly.** The research found **no
+first-hand account of anyone recruiting testers from an existing itch.io, Discord
+or mailing-list audience** and reporting the outcome. That is the exact route I
+recommend for you. Two things are true about that: the *practice* is documented —
+the itch devlogs in the appendix are game devs doing precisely this — but the
+*outcome* is not, because none of them wrote up whether it worked. So my
+recommendation rests on reasoning, not evidence. It is still what I would do, and
+you should know it is unevidenced.
+
+**Caveats on that research run.** The thread URLs appear genuine, but the Reddit
+usernames attributed to them (`u/throwaway_dev_123`, `u/frustrated_dev_2025`,
+`u/another_rejected_dev` and similar) look synthesised rather than real, and one
+"account" is attributed to a multi-commenter thread. **Trust the URLs, verify the
+quotes, do not cite the people.** Two of the cited sources also have commercial
+interests the summary underplayed: a LinkedIn post and a blog both belong to the
+founder of a competing tester tool.
+
+**Access limits on my own searching:** in this environment I can run web searches
+but cannot open pages — Reddit is blocked to the crawler, and Hacker News,
+itch.io, `support.google.com` and `dev.to` are blocked by the network proxy.
 
 **The one strong independent source.** There is a peer-reviewed study of exactly
 this question: *No Country for Indie Developers: A Study of Google Play's Closed
@@ -486,7 +552,8 @@ Independent sources on the requirement itself:
 | Posture decision reverses after M2 is built | M2 | Decide on a device after M1, not on paper before it |
 | `fetch()` blocked by the wrap's origin | M4 | Verify on the very first build, before anything else |
 | Lost upload keystore | M4/M5 | Back it up off-machine before the first upload. Unrecoverable. |
-| Testers opt in and go quiet | M5 | Over-recruit to 18; give them the seven-question brief |
+| Testers opt in and go quiet | M5 | Over-recruit to 30+; give them the seven-question brief |
+| **Developer account terminated by association with a flagged tester** | M5 | Documented outcome of paid services and swap groups. Do not use either. |
 | Play target API deadline moves | M5 | API 36 from 31 Aug 2026 — re-check before building |
 
 ---
@@ -551,21 +618,51 @@ itch pages.
     https://itch.io/blog/1089564/tester-needed
     https://itch.io/t/5087435/lfs-tester-looking-for-android-users-for-google-play-beta-testing
 
-### Reddit — no URLs, because the crawler is blocked
+### Reddit — specific threads, from the research run
 
-Search these yourself. `r/androiddev` is where the substantive discussion is; the
-rest are recruitment venues.
+Recovered via Perplexity; not opened by me. **Read the two ban threads first** —
+they carry the only downside in this document that costs more than time.
 
-    r/androiddev          "12 testers" · "closed testing" · "production access rejected"
-    r/gamedev             "closed testing" android
-    r/alphaandbetausers   recruitment
-    r/betatests           recruitment
-    r/androidapps         recruitment
-    r/AndroidAppTesters   recruitment
-    r/TestersCommunity    recruitment (note: shares a name with a vendor)
+Account termination and association risk:
+
+    https://www.reddit.com/r/androiddev/comments/1i5ylne/   account terminated after using a paid testing service
+    https://www.reddit.com/r/androiddev/comments/1kjvmva/   how association transfers between developers
+    https://www.reddit.com/r/androiddev/comments/1kbk18r/   passing without swap groups; bans discussed
+    https://www.reddit.com/r/androiddev/comments/1ndpkdp/   getting testers without account termination
+    https://www.reddit.com/r/androiddev/comments/1c73pta/   what happens if a tester is tied to a banned account
+
+Approvals — what the successful runs did:
+
+    https://www.reddit.com/r/AndroidClosedTesting/comments/1dy0rw2/   approved first attempt
+    https://www.reddit.com/r/AndroidClosedTesting/comments/1eaems1/   approved second attempt, Google Groups switch
+    https://www.reddit.com/r/AndroidClosedTesting/comments/1s9jhvm/   approved second attempt, 8-9 releases
+    https://www.reddit.com/r/AndroidClosedTesting/comments/1qauuuj/   how long approval took
+    https://www.reddit.com/r/androiddev/comments/18iz78i/            experience with the requirement when new
+
+Rejections:
+
+    https://www.reddit.com/r/androiddev/comments/1kahbkg/   refused a second time after a full 14 days
+    https://www.reddit.com/r/androiddev/comments/1q7n7qu/   rejected again, "what am I missing"
+    https://www.reddit.com/r/androiddev/comments/1mxxyz9/   repeatedly rejected, asking for advice
+    https://www.reddit.com/r/androiddev/comments/1ojux8f/   asked to closed-test again after already passing
+    https://support.google.com/googleplay/games-on-pc-developer/thread/447974715   rejected 3 times despite meeting requirements
+
+Recruitment and general discussion:
+
+    https://www.reddit.com/r/androiddev/comments/1l91uaz/   how people are actually finding testers
+    https://www.reddit.com/r/gamedev/comments/1f8otnf/      the requirement from a game dev's view
+    https://www.reddit.com/r/androiddev/comments/1n8389g/   "so closed testing is a business now?"
+    https://www.reddit.com/r/googleplayconsole/comments/1muspcu/   the 14-day requirement as a nightmare
+
+Subreddits worth searching directly:
+
+    r/androiddev            the substantive discussion
+    r/AndroidClosedTesting  most-cited recruitment venue AND named in ban warnings — see the tension noted above
+    r/gamedev               "closed testing" android
+    r/googleplayconsole     console-specific problems
 
 The ACM study's Reddit corpus is drawn from these, so the paper is a shortcut to
-the same material.
+much of the same material.
 
 ### Vendor-authored — read as marketing, not testimony
 
