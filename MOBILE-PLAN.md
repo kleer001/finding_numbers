@@ -304,11 +304,15 @@ extended to the new geometry.
 ### Phase 5 — Native wrapper (optional, and I would not)
 
 Capacitor around the web build gets you App Store and Play listings. It also gets
-you $99/yr, store review, age ratings, a privacy policy, two more build pipelines,
-and an update cycle measured in days instead of a `package.sh`. The game has no
-IAP, no ads, no push, and nothing that needs a native API. **Recommend: no**,
-unless store presence is itself the goal — in which case it is its own project,
-not a phase of this one.
+you store review, age ratings, a privacy policy, two more build pipelines, and an
+update cycle measured in days instead of a `package.sh` — plus $25 one-time for a
+Play account, or $99/yr for Apple. The game has no IAP, no ads, no push, and
+nothing that needs a native API. **Recommend: no**, unless store presence is
+itself the goal — in which case it is its own project, not a phase of this one.
+
+Spelled out in full in `MOBILE-STORE.md`, including the two code changes a wrap
+needs that the web build does not have, and a cheaper route that skips the store
+entirely.
 
 ---
 
