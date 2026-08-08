@@ -238,14 +238,99 @@ fit ranking changes.
 **Purpose-built for exactly this** — not in the marketing plan, because it is
 promo-focused rather than tester-focused:
 
-- `r/alphaandbetausers`, `r/betatests`, `r/AndroidGaming`. These exist for
-  recruiting testers. Lower affinity with your game, higher affinity with the ask.
-  Expect people who will opt in and not play much — which satisfies the count but
-  not the engagement half of the review, so mix them with the group above rather
-  than relying on them.
+- `r/alphaandbetausers`, `r/betatests`, `r/androidapps`, `r/AndroidAppTesters`,
+  `r/TestersCommunity`. These exist for recruiting testers. Lower affinity with
+  your game, higher affinity with the ask. *(Names collected from secondary
+  sources — check each still exists and read its self-promo rules before posting.)*
+- **The itch.io community forum and your own devlog.** Validated by precedent:
+  other indie devs have recruited Play testers through itch devlogs and forum
+  threads specifically for this requirement. It is the closest thing to a free
+  channel where the people arriving already want to play the game.
 
 **Personal network.** Realistically six to eight of your eighteen. It is the most
 reliable source and the one people forget to work first.
+
+### Services and swap groups — prices and trade-offs
+
+An industry exists purely to sell twelve testers. Prices checked August 2026;
+verify before paying, because these come and go.
+
+**Paid services** — they supply the testers, you supply the build.
+
+| Service | Price | Notes |
+| --- | --- | --- |
+| Testers Community | from **$15** | Starter is 15 testers; also runs a free credit tier |
+| PrimeTestLab | **$19.99** | Starter is exactly 12, one-time |
+| 12-testers-for-14-days | from **$22.99** | |
+| TestFi | **$39.99** | Flat; auto-replaces anyone who drops |
+
+Most advertise real-device verification, drop-out replacement, and a money-back
+guarantee if production access is refused. Read that guarantee carefully — it
+refunds the fee, not the month.
+
+**Free credit exchanges** — you test other developers' apps to earn credits, then
+spend credits to have yours tested.
+
+| Platform | Model |
+| --- | --- |
+| Get12Testers | Fully free, credit system, no paid tier |
+| BetaTribe | Free credit exchange, aimed at indie devs |
+| Testers Community (free tier) | ~20 credits per app you test |
+| tester.dinnger.com | Developer-to-developer swap |
+
+The cost here is your time: you become a tester for a dozen strangers' apps.
+
+### What Google actually rejects for
+
+This is the part the vendor pages do not lead with. Production access is refused
+when the review sees:
+
+- **Testers who did not genuinely engage.** Twelve people opening the app once for
+  ten seconds is explicitly flagged as fake. Daily activity is tracked.
+- **The same account testing many apps** — the defining signature of swap groups.
+- **Emulators**, or every tester on the same device model.
+- **IP and account-creation patterns** suggesting coordinated inauthentic activity.
+- **Vague answers** on the production-access form.
+- **No app updates during the window**, i.e. no evidence you acted on feedback.
+
+**And there is no appeal.** A refusal is not a resubmission — it is another full
+14-day cycle from zero.
+
+### The trade-off, stated honestly
+
+The paid services and the free exchanges fail for the *same structural reason*:
+neither produces anyone with a reason to actually play your game. A paid tester is
+there for the fee; a credit-exchange tester is there to farm credits for their own
+app. Both open it briefly and leave. That is precisely the pattern the review
+inspects for.
+
+So the arithmetic is asymmetric. Buying twelve testers saves you roughly two weeks
+of recruiting **when it works**, and costs you four or more **when it doesn't** —
+and the thing it optimises is the exact signal Google examines. I have no reliable
+success-rate figures and will not invent one; what I can say is that the downside
+is four times the upside and the failure has no appeal.
+
+**For most developers asking this question, that is still a close call**, because
+most of them are shipping a utility app that nobody has heard of and have no
+audience to draw on.
+
+**You are not in that position.** `finding_numbers` is live, has been played, and
+has followers on itch — plus `MARKETING-PLAN.md` already maps the niches that care
+about number stations and liminal horror. You have the one asset that makes the
+organic route work: **people who will genuinely play it because they want to.**
+That converts the engagement requirement from an obstacle into a by-product.
+
+**Recommendation:** recruit organically, and treat the paid services as a
+last-resort top-up if you finish week two at ten people rather than eighteen — a
+handful of bought testers inside a genuinely engaged group looks very different
+from a group made entirely of them. Do not use the credit exchanges at all; the
+time cost is real, and testing a dozen strangers' apps is the same week you could
+spend posting in three communities that already like your work.
+
+One thing to do regardless of route: **ship at least one build during the 14 days
+in response to tester feedback.** "No app updates showing you acted on feedback" is
+its own rejection reason, and the seven-question brief above is designed to
+generate exactly the feedback that justifies one.
 
 **On tester-swap services:** paid and reciprocal-testing communities exist and
 advertise heavily against this exact requirement. Two honest problems. Google has
@@ -295,6 +380,18 @@ and it is genuinely how M0's mobile-only acceptance criteria get verified.
 
 **Four to eight weeks**, mostly waiting. Which is exactly why M4 exists: an
 installable Android build on itch, in hand, weeks before any of this resolves.
+
+### Sources
+
+- [App testing requirements for new personal developer accounts](https://support.google.com/googleplay/android-developer/answer/14151465?hl=en)
+- [Everything about the 12 testers requirement — Play Developer Community](https://support.google.com/googleplay/android-developer/community-guide/255621488/everything-about-the-12-testers-requirement?hl=en)
+- [Production access rejected after 14 days of closed testing — Play Developer Community](https://support.google.com/googleplay/android-developer/thread/283988803/production-access-rejected-after-14-days-of-closed-testing?hl=en)
+- [Repeated production access rejection despite completing all testing requirements](https://support.google.com/googleplay/android-developer/thread/396609566?hl=en&msgid=396652582)
+- [PrimeTestLab — pricing](https://primetestlab.com/pricing-plan) · [7 legit ways to get 12 testers](https://primetestlab.com/blog/7-legit-ways-to-get-12-testers-for-google-play)
+- [TestFi — 12 testers guide](https://www.testfi.app/blog/get-12-testers-google-play-closed-testing)
+- [Testers Community](https://www.testerscommunity.com/) · [free tier](https://www.testerscommunity.com/free-app-testers)
+- [Get12Testers](https://get12testers.com/) · [BetaTribe](https://betatribe.app/) · [Testers (Dinnger)](https://tester.dinnger.com/)
+- [itch.io devlog — open for testers, closed testing on Google Play](https://itch.io/devlog/869393/open-for-testers-closed-testing-on-google-play-store.amp)
 
 ---
 
