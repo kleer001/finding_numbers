@@ -332,6 +332,78 @@ in response to tester feedback.** "No app updates showing you acted on feedback"
 its own rejection reason, and the seven-question brief above is designed to
 generate exactly the feedback that justifies one.
 
+### What the evidence for these services actually is
+
+I went looking for reviews from developers who had actually shipped. The result is
+worth recording, because **it is mostly an absence.**
+
+**Access limits, stated up front:** in this environment I can run web searches but
+cannot open pages — Reddit is blocked to the crawler, and Hacker News, itch.io,
+`support.google.com` and `dev.to` are all blocked by the network proxy. Everything
+below is search-result level. I have not read the threads. Treat the
+characterisations as leads to verify, not as verified findings.
+
+**The one strong independent source.** There is a peer-reviewed study of exactly
+this question: *No Country for Indie Developers: A Study of Google Play's Closed
+Testing Requirements for New Personal Developer Accounts*, ACM Transactions on
+Software Engineering and Methodology (DOI `10.1145/3736578`). Its method is a
+qualitative analysis of developer discussion on Reddit plus **a survey of 14 indie
+developers who had recently passed the requirements or were actively trying to** —
+which is precisely the population you asked about. Reported findings: the
+requirements are widely perceived as discriminatory, they impose logistical and
+bureaucratic barriers on small creators, and the paper documents the workaround
+strategies the community has adopted. **If you read one thing before deciding on
+M5, read this rather than anything a vendor published.**
+
+**Independent, real, and unread by me** — first-hand developer accounts I located
+but could not open:
+
+- Hacker News: *Google Console closed testing requirements are awful*
+  (`item?id=40520051`), *Android App Devs now require 20 people to test*
+  (`38258101`), *Need 12 testers for my first Android app launch* (`45468010`),
+  and *I built TestCrew to solve the Android 12-tester problem* (`46013217`). That
+  last one is evidence in itself: developers are building mutual-aid tooling
+  because the commercial answer did not satisfy them.
+- Google Play Developer Community: *Closed Testing Worst Thing Ever*
+  (`thread/353245020`), *Production access rejected after 14 days of closed
+  testing* (`283988803`), *Repeated Production Access Rejection Despite Completing
+  All Testing Requirements* (`396609566`), and *Lack of Clear, Measurable Approval
+  Criteria for Indie Developers* (`396948357`).
+- **itch.io devlogs — the closest match to your exact situation:** indie game devs
+  recruiting Play testers through their own itch pages. *Renewed Pixel Dungeon*
+  (`itch.io/devlog/1007452`), `itch.io/devlog/869393`, and `itch.io/blog/1089564`.
+  This is the organic route working, by people in your position, on your platform.
+
+**The layer to discount.** Most of what a search returns for "12 testers review"
+is written by the services themselves. Named so you can filter it:
+
+- `dev.to/testerscommunity` publishes *"Google Play Rejected My App After 14 Days —
+  Here Is What I Did Wrong"* — a confessional first-person post **on the vendor's
+  own account**.
+- The `note.com` piece headlined *"A Savior for Indie Developers?"* reproduces
+  vendor marketing copy close to verbatim; it reads as affiliate content, not an
+  independent account.
+- `primetestlab.com/blog`, `testfi.app/blog`, `testerbee.com/blog`,
+  `20apptester.com`, and most *"7 legit ways to get 12 testers"* listicles are
+  vendor blogs. They are not wrong about the mechanics — the rejection criteria
+  they list match Google's own — but they all conclude by selling you testers.
+
+**Trustpilot, and why its signal is weaker than it looks.** Testers Community shows
+**5 stars across ~854 reviews**; `20testers.com` and `12-testers-for-14-days` have
+pages too. Two problems. Reviews on solicited platforms in this category are worth
+discounting generally, and more specifically: **a Trustpilot review measures "did
+the service deliver testers", not "did Google approve me."** Those are different
+events, separated by two weeks and a review nobody controls. The rating cannot tell
+you the thing you actually want to know.
+
+**What this changes:** nothing about the recommendation, but the reason is now
+better. It is not that paid services are proven bad — it is that **after real
+searching, no independent body of shipped-game evidence exists either way**, while
+the only peer-reviewed work on the subject documents the community routing around
+the requirement rather than buying its way through. Spending $20 on an outcome with
+no independent evidence base and no appeal on failure is a worse bet than spending
+a week posting to three communities that already like your game.
+
 **On tester-swap services:** paid and reciprocal-testing communities exist and
 advertise heavily against this exact requirement. Two honest problems. Google has
 been rejecting production-access applications that look like reciprocal farms, and
@@ -392,6 +464,14 @@ installable Android build on itch, in hand, weeks before any of this resolves.
 - [Testers Community](https://www.testerscommunity.com/) · [free tier](https://www.testerscommunity.com/free-app-testers)
 - [Get12Testers](https://get12testers.com/) · [BetaTribe](https://betatribe.app/) · [Testers (Dinnger)](https://tester.dinnger.com/)
 - [itch.io devlog — open for testers, closed testing on Google Play](https://itch.io/devlog/869393/open-for-testers-closed-testing-on-google-play-store.amp)
+
+Independent sources on the requirement itself:
+
+- **[No Country for Indie Developers — ACM TOSEM, DOI 10.1145/3736578](https://dl.acm.org/doi/10.1145/3736578)** — peer-reviewed; Reddit discourse analysis plus a survey of 14 indie developers who passed or were pursuing compliance. The best source on this subject. ([ResearchGate mirror](https://www.researchgate.net/publication/391969378_No_Country_for_Indie_Developers_A_Study_of_Google_Play's_Closed_Testing_Requirements_for_New_Personal_Developer_Accounts))
+- Hacker News: [closed testing requirements are awful](https://news.ycombinator.com/item?id=40520051) · [20 testers announcement](https://news.ycombinator.com/item?id=38258101) · [need 12 testers](https://news.ycombinator.com/item?id=45468010) · [TestCrew](https://news.ycombinator.com/item?id=46013217)
+- Google Play Developer Community: [closed testing worst thing ever](https://support.google.com/googleplay/android-developer/thread/353245020/closed-testing-worst-thing-ever?hl=en) · [rejected after 14 days](https://support.google.com/googleplay/android-developer/thread/283988803/production-access-rejected-after-14-days-of-closed-testing?hl=en) · [repeated rejection](https://support.google.com/googleplay/android-developer/thread/396609566?hl=en&msgid=396652582) · [no measurable criteria](https://support.google.com/googleplay/android-developer/thread/396948357/closed-testing-for-production-access-%E2%80%93-lack-of-clear-measurable-approval-criteria-for-indie-develop?hl=en)
+- itch.io devlogs — indie game devs recruiting Play testers: [Renewed Pixel Dungeon](https://itch.io/devlog/1007452/please-join-the-closed-test-for-android-version) · [tester needed](https://itch.io/blog/1089564/tester-needed)
+- [Trustpilot — testerscommunity.com](https://www.trustpilot.com/review/testerscommunity.com) · [20testers.com](https://www.trustpilot.com/review/20testers.com) · [12-testers-for-14-days](https://www.trustpilot.com/review/12-testers-for-14-days.github.io)
 
 ---
 
