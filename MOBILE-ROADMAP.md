@@ -502,3 +502,107 @@ Independent sources on the requirement itself:
 
 None of the three touches layout, none needs a decision from you, and all three
 ship to existing players the day they land.
+
+---
+
+## Appendix — unread sources on the tester requirement
+
+Everything here was found by search but **could not be opened** from the session
+that wrote this document: Reddit is blocked to the crawler, and Hacker News,
+`itch.io`, `support.google.com` and `dev.to` are blocked by the network proxy. So
+none of it has been read, and the notes are what the search results implied, not
+what the pages say. Bare URLs, for pasting.
+
+### Read this one first
+
+Peer-reviewed, and the only rigorous work on the subject. Method: Reddit discourse
+analysis plus a survey of 14 indie devs who had passed the requirement or were
+pursuing it.
+
+    https://dl.acm.org/doi/10.1145/3736578
+    https://www.researchgate.net/publication/391969378_No_Country_for_Indie_Developers_A_Study_of_Google_Play's_Closed_Testing_Requirements_for_New_Personal_Developer_Accounts
+
+Paywalled at ACM; the ResearchGate entry is "Request PDF", and authors usually
+send it if asked.
+
+### Hacker News — developer discussion
+
+    https://news.ycombinator.com/item?id=40520051   closed testing requirements are awful
+    https://news.ycombinator.com/item?id=38258101   the original 20-tester announcement
+    https://news.ycombinator.com/item?id=45468010   dev asking HN directly for 12 testers
+    https://news.ycombinator.com/item?id=46013217   TestCrew: someone built mutual-aid tooling for this
+
+### Google Play Developer Community — rejection threads
+
+Devs describing what got them refused. The most direct evidence of failure modes.
+
+    https://support.google.com/googleplay/android-developer/thread/353245020   "closed testing worst thing ever"
+    https://support.google.com/googleplay/android-developer/thread/283988803   rejected after a full 14 days
+    https://support.google.com/googleplay/android-developer/thread/396609566   repeated rejection despite meeting every stated requirement
+    https://support.google.com/googleplay/android-developer/thread/396948357   no clear or measurable approval criteria
+
+### itch.io — indie game devs doing exactly this
+
+The closest match to your position: game devs recruiting Play testers off their own
+itch pages.
+
+    https://itch.io/devlog/1007452/please-join-the-closed-test-for-android-version
+    https://itch.io/devlog/869393/open-for-testers-closed-testing-on-google-play-store
+    https://itch.io/blog/1089564/tester-needed
+    https://itch.io/t/5087435/lfs-tester-looking-for-android-users-for-google-play-beta-testing
+
+### Reddit — no URLs, because the crawler is blocked
+
+Search these yourself. `r/androiddev` is where the substantive discussion is; the
+rest are recruitment venues.
+
+    r/androiddev          "12 testers" · "closed testing" · "production access rejected"
+    r/gamedev             "closed testing" android
+    r/alphaandbetausers   recruitment
+    r/betatests           recruitment
+    r/androidapps         recruitment
+    r/AndroidAppTesters   recruitment
+    r/TestersCommunity    recruitment (note: shares a name with a vendor)
+
+The ACM study's Reddit corpus is drawn from these, so the paper is a shortcut to
+the same material.
+
+### Vendor-authored — read as marketing, not testimony
+
+Listed so they are recognisable, not to be trusted. The first is a first-person
+"here's what I did wrong" confessional published on the vendor's own dev.to account.
+
+    https://dev.to/testerscommunity/google-play-rejected-my-app-after-14-days-of-testing-here-is-what-i-did-wrong-3c21
+    https://note.com/umark/n/nc114e6daafff
+    https://primetestlab.com/blog/7-legit-ways-to-get-12-testers-for-google-play
+    https://www.testfi.app/blog/get-12-testers-google-play-closed-testing
+    https://testerbee.com/blog/google-play-12-testers-closed-testing
+    https://20apptester.com/2026/06/20/google-play-closed-testing-en/
+
+### Trustpilot — weak signal, see the caveat above
+
+A review here records that testers were delivered, not that Google approved you.
+
+    https://www.trustpilot.com/review/testerscommunity.com
+    https://www.trustpilot.com/review/20testers.com
+    https://www.trustpilot.com/review/12-testers-for-14-days.github.io
+
+### The services themselves
+
+    https://www.testerscommunity.com/          paid from $15; also a free credit tier
+    https://primetestlab.com/pricing-plan      $19.99 for 12
+    https://12-testers-for-14-days.github.io/  from $22.99
+    https://www.testfi.app/                    $39.99 flat, auto-replacement
+    https://get12testers.com/                  free credit exchange
+    https://betatribe.app/                     free credit exchange
+    https://tester.dinnger.com/                free credit exchange
+
+### Google's own pages — the only authoritative ones
+
+    https://support.google.com/googleplay/android-developer/answer/14151465    testing requirements for new personal accounts
+    https://support.google.com/googleplay/android-developer/answer/11926878    target API level requirements
+    https://support.google.com/googleplay/android-developer/answer/9845334     setting up open / closed / internal tests
+    https://support.google.com/googleplay/android-developer/community-guide/255621488   the 12-testers community guide
+
+Prices and thresholds throughout this document were checked in August 2026 and
+move often. These four pages are the tiebreaker whenever anything else disagrees.
