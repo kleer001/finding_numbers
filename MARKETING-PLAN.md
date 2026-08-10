@@ -86,6 +86,13 @@ audience wants *this*, because a sub can be on-genre by name and off-genre by ta
     against devs posting their own work, and no stated karma or account-age minimum.
   - `r/itchio` (~56k) — devs post their own pages all day; the only rules are no NSFW and
     a support-ticket ID for account complaints. No sidebar gate.
+  - `r/IndieGaming` (512k) — the strongest measured of these: itch.io links posted there
+    over the last year draw a median 31 comments and 382 score. One submission every two
+    weeks, and the account must be a week old with ordinary posting history. Let's Plays
+    and streams are out of scope; a text post with footage is in.
+  - `r/indiegames` (326k) — median 6 comments and 30 score on itch.io links. A promotion
+    post **must** carry an image, GIF or video of the game, two posts a week is the
+    ceiling, and dressing promo as a request for feedback is against the rules.
   - `r/playmygame` (~136k) — flair is required (`[Web]` / `PC (Web)`), the game must be
     free and playable *now*, its link comes before any other link, you must be on the dev
     team, horror must be NSFW-flagged, one post per game per month. The pinned warning is
@@ -113,7 +120,9 @@ audience wants *this*, because a sub can be on-genre by name and off-genre by ta
     subreddit's name and size say less about fit than what its audience actually upvotes.
   - `r/LiminalSpace` (1.1M) — the tempting one, and taste-matched, but self-promotion is
     banned outright and images may not contain people, creatures or edited text. Aesthetic
-    overlap is not a channel.
+    overlap is not a channel. The traffic agrees: one itch.io link in a year, zero
+    comments on it. `r/dreamcore` (4.5k) and `r/creepygaming` (178k) read the same way —
+    a photograph feed has nothing to do with a game, whatever it is a feed of.
 
   *Rule not verified — behind a join gate:*
   - **Haunted PS1** Discord (`discord.gg/YpBQZdeXxP`, ~5k members, ~1.8k online) — the
@@ -122,8 +131,6 @@ audience wants *this*, because a sub can be on-genre by name and off-genre by ta
   - **Priyom** (`priyom.org`; Discord `discord.gg/788JPdSgsd`, bridged to `#priyom` on
     Libera IRC) — shortwave monitors, not players. Not a promo channel under any gate:
     this is where the dial gets checked before copy ships, per the honesty guardrails.
-- **Fediverse / Bluesky** — `#gamedev`, `#screenshotsaturday`, horror and liminal tags;
-  post the GIF, not a link.
 - **Short video** — the three `clips/out/*-9x16.mp4` verticals. Never the itch trailer
   slot: a 9:16 cut uploads as a Short, and Shorts cannot be A/B tested.
 - **Curators / streamers** — all open, all cold pitches; none has a queue you can jump, so
