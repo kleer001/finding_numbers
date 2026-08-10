@@ -374,6 +374,10 @@ finding_numbers on itch.`
 
 One email each, then move on. None of these has a queue that can be jumped.
 
+Send in reach order — ManlyBadassHero, then Alpha Beta Gamer, then Warp Door. The full
+body sits under Warp Door below because it was written there; the others take it as-is.
+`MARKETING-PLAN.md` carries the audience figures behind that order.
+
 **Warp Door** — `warpdoor@gmail.com`. Subject:
 `finding_numbers — a free browser maze navigated by ear, with a number station for a compass`
 

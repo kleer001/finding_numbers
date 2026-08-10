@@ -127,20 +127,27 @@ audience wants *this*, because a sub can be on-genre by name and off-genre by ta
 - **Short video** — the three `clips/out/*-9x16.mp4` verticals. Never the itch trailer
   slot: a 9:16 cut uploads as a Short, and Shorts cannot be A/B tested.
 - **Curators / streamers** — all open, all cold pitches; none has a queue you can jump, so
-  send once and move on. Each carries the date its feed was last read; a name with no date,
-  or a stale one, is unchecked rather than approved.
-  - **Warp Door** (`warpdoor.com`) — writeups of small, strange, free games, stated
-    interests including computer art, glitches and "small and strange games". The closest
-    editorial match this game has. `warpdoor@gmail.com`, Bluesky `@warpdoor.com`.
-    *Checked 2026-08-10: newest post the day before, roughly ten a month.*
-  - **Alpha Beta Gamer** (`alphabetagamer.com`) — free demos, betas and browser games. Its
-    "Game Submissions" link goes to a contact page; no criteria beyond that are published.
-    *Checked 2026-08-10: 30 posts in the preceding ten days, about three a day — you will
-    be seen and you will scroll off the front page within hours.*
+  send once and move on. Ranked by reach × fit. Each carries the audience and the median
+  engagement behind it, dated; a name with no figures is unchecked rather than approved.
   - **ManlyBadassHero** (YouTube) — short indie horror games, which is exactly this game's
     shape. The only route is the business email on his channel's About page: no submission
-    form, no published policy. A lottery ticket that costs one email, not a plan.
-    *Checked 2026-08-10: 2.57M subscribers, uploading close to daily.*
+    form, no published policy. A lottery ticket that costs one email, not a plan — but the
+    only name here with reach worth the word.
+    *Checked 2026-08-10: 2.57M subscribers, uploading close to daily, recent videos
+    48K–361K views (median ~135K).*
+  - **Alpha Beta Gamer** (`alphabetagamer.com`) — free demos, betas and browser games. Its
+    "Game Submissions" link goes to a contact page; no criteria beyond that are published.
+    Pitch it for the video, not the writeup: the audience is on the channel, not the site.
+    *Checked 2026-08-10: site posts ~3/day with **0 comments across 30 consecutive posts**
+    and the comment form open and unused; its YouTube channel has 862K subscribers and
+    5.4K–91K views per upload (median ~23K).*
+  - **Warp Door** (`warpdoor.com`) — writeups of small, strange, free games, stated
+    interests including computer art, glitches and "small and strange games". Still the
+    closest editorial match this game has, and that is the whole of its case: it is
+    coverage, not reach. `warpdoor@gmail.com`, Bluesky `@warpdoor.com`.
+    *Checked 2026-08-10: publishing (newest post the day before, ~10/month), but 2,308
+    Bluesky followers against 1,078 posts, and a median post draws 11 likes, 4 reposts
+    and no replies.*
   - **Jupiter Hadley** (`@JupiterHadley`) — plays *every* entry in the jams she covers,
     which is the way in: enter a jam she is covering rather than pitch a released game.
     Small channel; treat it as coverage, not reach.
