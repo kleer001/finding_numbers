@@ -127,17 +127,20 @@ audience wants *this*, because a sub can be on-genre by name and off-genre by ta
 - **Short video** — the three `clips/out/*-9x16.mp4` verticals. Never the itch trailer
   slot: a 9:16 cut uploads as a Short, and Shorts cannot be A/B tested.
 - **Curators / streamers** — all open, all cold pitches; none has a queue you can jump, so
-  send once and move on.
-  - **Warp Door** (`warpdoor.com`) — near-daily writeups of small, strange, free games,
-    stated interests including computer art, glitches and "small and strange games". The
-    closest editorial match this game has. `warpdoor@gmail.com`, Bluesky `@warpdoor.com`.
-  - **Alpha Beta Gamer** (`alphabetagamer.com`) — free demos, betas and browser games,
-    posting daily. Its "Game Submissions" link goes to a contact page; no criteria beyond
-    that are published.
-  - **ManlyBadassHero** (YouTube, ~2.5M subs) — a short indie horror game every two or
-    three days, which is exactly this game's shape. The only route is the business email on
-    his channel's About page: no submission form, no published policy. A lottery ticket
-    that costs one email, not a plan.
+  send once and move on. Each carries the date its feed was last read; a name with no date,
+  or a stale one, is unchecked rather than approved.
+  - **Warp Door** (`warpdoor.com`) — writeups of small, strange, free games, stated
+    interests including computer art, glitches and "small and strange games". The closest
+    editorial match this game has. `warpdoor@gmail.com`, Bluesky `@warpdoor.com`.
+    *Checked 2026-08-10: newest post the day before, roughly ten a month.*
+  - **Alpha Beta Gamer** (`alphabetagamer.com`) — free demos, betas and browser games. Its
+    "Game Submissions" link goes to a contact page; no criteria beyond that are published.
+    *Checked 2026-08-10: 30 posts in the preceding ten days, about three a day — you will
+    be seen and you will scroll off the front page within hours.*
+  - **ManlyBadassHero** (YouTube) — short indie horror games, which is exactly this game's
+    shape. The only route is the business email on his channel's About page: no submission
+    form, no published policy. A lottery ticket that costs one email, not a plan.
+    *Checked 2026-08-10: 2.57M subscribers, uploading close to daily.*
   - **Jupiter Hadley** (`@JupiterHadley`) — plays *every* entry in the jams she covers,
     which is the way in: enter a jam she is covering rather than pitch a released game.
     Small channel; treat it as coverage, not reach.
