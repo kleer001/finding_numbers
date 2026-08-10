@@ -131,9 +131,6 @@ audience wants *this*, because a sub can be on-genre by name and off-genre by ta
   - **Warp Door** (`warpdoor.com`) — near-daily writeups of small, strange, free games,
     stated interests including computer art, glitches and "small and strange games". The
     closest editorial match this game has. `warpdoor@gmail.com`, Bluesky `@warpdoor.com`.
-  - **Free Game Planet** (`freegameplanet.com`) — free games, browser games and a steady
-    diet of indie horror. Suggest via `admin@freegameplanet.com` or `@FreeGamePlanet`; the
-    contact page promises only that they'll look.
   - **Alpha Beta Gamer** (`alphabetagamer.com`) — free demos, betas and browser games,
     posting daily. Its "Game Submissions" link goes to a contact page; no criteria beyond
     that are published.

@@ -401,9 +401,6 @@ It cannot be played without sound.
 — kleer001
 ```
 
-**Free Game Planet** — `admin@freegameplanet.com`, or `@FreeGamePlanet`. Same body;
-subject: `Free browser horror game — finding_numbers (navigate a maze by ear)`
-
 **Alpha Beta Gamer** — via the Game Submissions contact form. Same body; subject:
 `finding_numbers — free browser horror, playable now`
 
