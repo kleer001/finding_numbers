@@ -417,3 +417,38 @@ it fits a video.
 
 **Jupiter Hadley** — not a pitch. The way in is to enter a jam she is covering and be
 one of the entries she plays.
+
+---
+
+## itch devlog — v1.1.1
+
+Written off a player's bug report on the itch page. It names the mechanism because
+the readership is other people who ship browser games, and the same trap is waiting
+for anyone whose game cancels a pointer event.
+
+**Title:**
+
+```
+The keyboard survives fullscreen
+```
+
+**Body:**
+
+```
+A player wrote in: go fullscreen on itch, the arrow keys die. Leave fullscreen and
+they stay dead, and only a reload brings them back. Firefox and Chrome both.
+
+They were right, and it was worse than it looked.
+
+itch runs the game in an iframe from another domain, and the fullscreen button
+belongs to itch's page, not mine. It takes the keyboard and keeps it. Plenty of
+browser games hit that, and usually a click hands it back.
+
+Not here. The game reads taps to walk, and the code that swallows a tap was also
+swallowing the mousedown that hands focus back to the frame. Reload or nothing.
+
+It now takes focus back itself, on any press and on the resize fullscreen causes.
+Tested in both browsers, and on the live page.
+
+Fixed in v1.1.1. Sorry, and thanks for writing in.
+```
