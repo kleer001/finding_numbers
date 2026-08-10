@@ -1,34 +1,36 @@
 #!/usr/bin/env bash
 # Local no-cache dev server. Usage: ./run.sh [port]   (default 8000)
-# python's http.server sends no Cache-Control, so browsers serve STALE JS on
-# reload; force no-store so every reload re-fetches during development.
+#
+# Serves the game directory over http:// — ES modules, fetch and relative paths
+# all behave differently under file://, so never open index.html directly.
 set -euo pipefail
 cd "$(dirname "$0")"
-PORT="${1:-8000}"
-# Reclaim the port: kill any server already listening on it (a prior run).
-# lsof exits 1 when nothing matches, which is the normal fresh-start case.
-# SIGKILL, not SIGTERM: a suspended (Ctrl-Z'd) server ignores SIGTERM but still
-# holds the port. Then wait for the socket to release so the bind can't race it.
-EXISTING="$(lsof -ti "tcp:$PORT" -sTCP:LISTEN)" || EXISTING=""
-if [ -n "$EXISTING" ]; then
-  echo "finding_numbers -> stopping previous server (pid $EXISTING) on $PORT"
-  kill -9 $EXISTING
-  for _ in $(seq 20); do
-    lsof -ti "tcp:$PORT" -sTCP:LISTEN >/dev/null 2>&1 || break
-    sleep 0.1
-  done
-fi
-# Open the app in the browser once the server has had a moment to bind.
-( sleep 1; xdg-open "http://localhost:$PORT" ) &
 exec python3 -c '
-import http.server, socketserver, sys
-class H(http.server.SimpleHTTPRequestHandler):
+import http.server, socketserver, socket, sys, threading, webbrowser
+
+# Bind adaptively: a server left running on the default port would otherwise
+# crash the launch with "Address already in use". Take the first free port and
+# say so when it is not the one that was asked for.
+requested = int(sys.argv[1])
+port = next(
+    p for p in range(requested, requested + 20)
+    if socket.socket().connect_ex(("127.0.0.1", p)) != 0
+)
+if port != requested:
+    print(f"port {requested} is busy -> using {port}")
+
+# python http.server sends no Cache-Control, so a browser will serve stale JS on
+# reload and you debug code that is not running.
+class Handler(http.server.SimpleHTTPRequestHandler):
     def end_headers(self):
-        self.send_header("Cache-Control", "no-store, must-revalidate")
+        self.send_header("Cache-Control", "no-store, no-cache, must-revalidate")
         self.send_header("Pragma", "no-cache")
         super().end_headers()
+
 socketserver.TCPServer.allow_reuse_address = True
-with socketserver.TCPServer(("", int(sys.argv[1])), H) as s:
-    print(f"finding_numbers -> http://localhost:{sys.argv[1]}  (Ctrl-C to stop)")
-    s.serve_forever()
-' "$PORT"
+with socketserver.TCPServer(("", port), Handler) as httpd:
+    url = f"http://localhost:{port}"
+    print(f"finding_numbers -> {url}  (Ctrl-C to stop)")
+    threading.Timer(0.5, webbrowser.open, [url]).start()
+    httpd.serve_forever()
+' "${1:-8000}"
