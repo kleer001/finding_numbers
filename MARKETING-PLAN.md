@@ -131,8 +131,9 @@ audience wants *this*, because a sub can be on-genre by name and off-genre by ta
   actually published lately, not what it says it covers. A name carrying no figures is
   unchecked rather than approved.
   - **Alpha Beta Gamer** (`alphabetagamer.com`) — free browser games and demos, via the
-    "Game Submissions" contact page. Covers liminal-space, backrooms and analog horror
-    alongside the gore, so this game has somewhere to sit. Pitch it for the video: the
+    "Game Submissions" contact page. Format is a short write-up plus a play-through video of one
+    small game, no endings or story required, and its beat includes liminal-space and
+    analog horror. Pitch it for the video: the
     audience is on the channel, not the site.
     *862K subs, median ~23K views a video (2026-08-10).*
   - **Warp Door** (`warpdoor.com`) — art games and short strange ones, credited to their

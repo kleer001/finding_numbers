@@ -323,33 +323,70 @@ like to hear what you make of what's on the other side of it.
 
 ---
 
-## Bluesky / Fediverse
+## r/IndieGaming
 
-Post the GIF, not the link — a link in the first post suppresses reach on both. Tags:
-`#gamedev` `#horror` `#liminal` `#indiedev`, plus `#screenshotsaturday` when it lands on
-one.
+512K subscribers, and itch.io links there draw real discussion. One submission every two
+weeks, and the account must be at least a week old with ordinary posting history. Text
+posts with footage are in scope; Let's Plays and streams are not.
 
-**Post 1** — attach `clips/out/core-loop.gif`:
-
-```
-A maze with no map. A shortwave number station reads digits through the static, and
-it's the only compass: a correct turn adds a number, a wrong one adds nothing. No
-buzzer, no red flash, nothing behind you. Free in a browser.
-
-#gamedev #horror #liminal
-```
-
-**Post 2** — attach `clips/out/pulse.gif`:
+**Title:**
 
 ```
-No death, no timer, no fail state. The only thing this game can do to you is stop
-counting you.
-
-#gamedev #liminal #indiedev
+I made a browser game where the only map is a number station reading digits
 ```
 
-Reply to either with the link once the post has settled:
-<https://kleer001.itch.io/finding-numbers>
+**Body:**
+
+```
+Free, in a browser, no signup: https://kleer001.itch.io/finding-numbers
+
+You are one character in a maze of near-identical rooms. There is no map, and nothing
+marks the right door. A shortwave number station reads digits through the static, and
+that is the only feedback the game gives you. Take the correct door and a number is
+added to the broadcast. Take a wrong one and nothing is added. No buzzer, nothing turns
+red. You learn the route by what never arrives.
+
+It is tagged horror, but nothing chases you, nothing can kill you, and there is no fail
+state. The dread is that the station stops counting you.
+
+Most of the maze holds still and can be learned. Some stretches move their exit a few
+times before settling.
+
+It cannot be played without sound.
+```
+
+---
+
+## r/indiegames
+
+326K subscribers. Rule 1: a promotion post **must** carry an image, GIF or video of the
+game — attach `clips/out/core-loop.gif`. Two posts a week is the ceiling, and framing a
+promo as a request for feedback is against the rules, so this one does not ask a question.
+
+**Title:**
+
+```
+A maze of identical rooms where a number station is the only thing telling you which way is right
+```
+
+**Body:** — attach `clips/out/core-loop.gif`
+
+```
+Free, in a browser, no signup: https://kleer001.itch.io/finding-numbers
+
+No map, no minimap, nothing marking the right door. A shortwave number station reads
+digits through the static, and that is the whole of the feedback: a correct turn adds a
+number to the broadcast, a wrong one adds nothing. Nothing buzzes and nothing turns red,
+so the route is learned by what never arrives.
+
+Nothing chases you, nothing can kill you, and there is no fail state.
+
+The station is WebAudio — digits in six languages over a synthesized noise bed, rendered
+with Kokoro-82M. A tribute, not a recording. The picture is one character grid in one
+phosphor color, bent through a WebGL CRT filter.
+
+It cannot be played without sound.
+```
 
 ---
 
