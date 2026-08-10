@@ -12,6 +12,16 @@ const KEYMAP = {
 
 // onMove(dir) fires per keydown; onKey(code) for other single keys (toggles).
 export function installInput(onMove, onKey) {
+  // Embedded on itch.io the game is a cross-origin iframe, and the host's
+  // fullscreen button leaves focus on the parent document, so keydown never
+  // reaches us. Clicking back in does not repair it: the pointerdown
+  // preventDefault below cancels the compatibility mousedown whose default
+  // action refocuses the frame, so the keyboard stays dead until a reload.
+  // Fullscreen resizes the iframe, so reclaim focus there and on any press.
+  const reclaimFocus = () => window.focus();
+  window.addEventListener("resize", reclaimFocus);
+  window.addEventListener("pointerdown", reclaimFocus, true);
+
   window.addEventListener("keydown", (e) => {
     const dir = KEYMAP[e.code];
     if (dir) {
