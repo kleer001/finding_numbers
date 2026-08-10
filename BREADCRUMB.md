@@ -1,14 +1,13 @@
 fresh
 
 ## Summary
-The store page, the landing page and the README now agree with the build and with each
-other. A copy pass rewrote every public surface: the genre promise carries its own
-disclaimer, the real-station framing is gone, headphone advice is gone, and everything
-is cut to a length people will scan. Two new tools enforce it — a `humanized-copy` skill
-here and in the studio at 0.6.0. The release gate is signed, all six community posts are
-out, and the devlog is written and sitting as a draft one checkbox from live. What remains
-is publishing it, the verticals, the curator pitches, two stale store images, and a pile of
-design calls that are the author's.
+The game is live and taking its first player feedback. A reported bug — the keyboard dying
+on itch's fullscreen button and staying dead — turned out to be two faults stacked: itch's
+own focus loss, plus a `preventDefault` here that cancelled the click that would have
+healed it. Fixed, tested in both engines and against the live embed, shipped as v1.1.1, and
+bubbled up to the studio as the 0.16.0 directive. The pin is now current at 0.16.0 with the
+whole backlog resolved. What remains is publishing two devlogs, the verticals, the curator
+pitches, two stale store images, and a pile of design calls that are the author's.
 
 ## Todos
 
@@ -18,6 +17,11 @@ design calls that are the author's.
   off by default. Fold what players say into the next pass rather than into the copy.
   Repost windows: `r/WebGames` not before 2026-11-01, `r/playmygame` not before
   2026-09-01. Both are recorded on the board `scratchpad/build_submit_links.py` builds.
+- [ ] #34 Publish the v1.1.1 devlog, "The keyboard survives fullscreen". Copy is the last
+  block of `OUTREACH-COPY.md`, already through `humanized-copy` (142 words) and
+  `honest-copy`. No draft exists yet — itch has no devlog API, so it is a hand-paste at
+  `itch.io/dashboard/game/4800315/new-devlog`. Worth a reply to the reporter on the game
+  page once it is up; their report is what found the bug.
 - [ ] #5 Publish the devlog. It exists as a **draft** with both GIFs uploaded and embedded,
   classified Game Design, comments on:
   <https://kleer001.itch.io/finding-numbers/devlog/1613536/sixteen-is-the-largest-number-the-counter-can-hold>
@@ -35,7 +39,9 @@ design calls that are the author's.
   ManlyBadassHero. One email each, bodies in `OUTREACH-COPY.md`.
 - [ ] #29 The itch banner still reads `FINDING NUMBERS` in caps while the title is now
   `finding_numbers`. It is `docs/img/banner.png` in the page theme, a separate asset the
-  title change did not touch. Needs a re-render to match.
+  title change did not touch. Needs a re-render to match — `docs/theme-src/README.md` has
+  the steps, and they now serve the repo root (`./run.sh`) rather than the theme directory,
+  since `font.css` points at the game's own `assets/fonts/vt323-subset.woff2`.
 - [ ] #30 `docs/img/cover.png` shows the digit readout (`01`, `2 / 3`) — a real option,
   but no longer the default look, so the store page leads with a HUD new players will not
   see. Author's call whether to re-shoot.
@@ -57,18 +63,12 @@ design calls that are the author's.
   `makeCell`'s contract and rewrites a test asserting a real invariant, for no gain.
 
 ### Studio paperwork
-- [ ] #20 Work through the studio directives and then
-  `python3 ../trace_rom_studio/scripts/check_updates.py . --mark-read`. The pin is
-  `0.1.0`; the studio is now `0.6.0`, so eight directives are outstanding — including the
-  two written this session, which this repo already satisfies.
 - [ ] #17 Rule on test naming: `*.test.mjs` here vs `*.test.js` in the studio. **Both**
-  `package.json` files are `"type": "module"`, so `.mjs` buys nothing. 21 renames plus the
+  `package.json` files are `"type": "module"`, so `.mjs` buys nothing. 22 renames plus the
   `package.json` glob.
-- [ ] #15 Decide who writes `GAME-SHEET.md` and `SPEC-SHEET.md` — a spec precise enough to
-  implement from is reverse-engineering; the pitch should be the author's intent.
-- [ ] #16 Rule on the studio 0.2.0 compositor directive. Recommendation: adopt for new
-  passes only, don't rewrite the working frame loop. Already partly moved —
-  `render/chargrid.js` owns glyph placement and `drawGlitch` runs as an ordered pass.
+- [ ] #15 Decide who writes `GAME-SHEET.md` — the pitch should be the author's intent, and
+  this repo has never had one. (The spec sheet half of this is retired: studio 0.16.0 ends
+  `SPEC-SHEET.md` entirely, and there is none here.)
 
 ## Context
 
@@ -113,10 +113,21 @@ rulebook; run `--fenced` for `OUTREACH-COPY.md` (each block scored as its own po
 `--budget N` to gate. For a file mixing notes with copy, measure below the `---` only.
 Budgets: 200 store, 150 post/email, 50 social, 25 caption, 80 README intro.
 
-**Studio 0.6.0** (`c750644`) ships the skill in `template/.claude/skills/` and a
-no-inline-binary rule in `CLAUDE.md` § Code conventions. The template's own `promo.html`
-was fixed in the same commit — it carried three inlined font subsets, which also defeated
-their own `unicode-range` split.
+**The itch embed and the keyboard.** itch serves the game from `html-classic.itch.zone`
+inside a page on `itch.io`, so its fullscreen button belongs to the parent origin and takes
+focus with it. `installInput` in `src/game/input.js` reclaims focus on `resize` and on a
+capture-phase `pointerdown` — the capture flag is load-bearing, since `installTouch`
+cancels the press and a cancelled press cancels the `mousedown` that refocuses the frame.
+`tests/input-focus.test.mjs` guards both listeners against a fake `window`. To reproduce
+the embed locally, serve the game on one port and a page that frames it on another;
+different ports are different origins, which is the whole condition.
+
+**Studio pin is current at 0.16.0**, backlog resolved. Adopted: the adaptive dev server
+(`run.sh` scans upward for a free port and no longer SIGKILLs whatever holds it) and the
+no-inline-binary rule. Declined, with reasons that still hold: `REVIEW-LOG.md` stays; the
+compositor refactor is not worth churning shipped render code; the doc-purge half of
+"the code is the description" is aimed at stale prose about existing code, and the bulk
+here is forward-looking `MOBILE-*` planning instead.
 
 - Live: <https://kleer001.itch.io/finding-numbers> · game id `4800315` · upload `18598594`
 - Trailer: <https://youtu.be/3_maIo0cYAk> · thumbnail `clips/out/thumbs/A-dont-trust-the-walls.png`
@@ -130,11 +141,11 @@ their own `unicode-range` split.
   the posted dates. `scratchpad/serve.py` serves both on the first free port from 8300.
   Reddit's composer reads `title` and `url` from the query string and has no body
   parameter, which is why bodies stay copy buttons.
-- Tests: 117, green.
+- Tests: 118, green.
 
 ## Next Step
-Publish the devlog draft (#5) — one checkbox and a Save. Read its opening line first: it
-claims the sixteen levels in the first person, and that class of claim already had to be
-struck once this session.
+Publish the v1.1.1 devlog (#34) — the fix is live but nobody has been told, and the player
+who reported it is owed a reply. Then #5, the older draft, whose opening line claims the
+sixteen levels in the first person and needs a ruling before it goes out.
 
 /home/menser/Dropbox/ai/code/finding_numbers
