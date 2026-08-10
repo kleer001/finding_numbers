@@ -127,12 +127,12 @@ audience wants *this*, because a sub can be on-genre by name and off-genre by ta
   *Open, with a disclosure condition:*
   - **Haunted PS1** Discord (`discord.gg/YpBQZdeXxP`, ~5k members, ~1.8k online) — the
     lo-fi horror dev scene, and the host of the Demo Disc and Madvent jams on itch.
-    Rules read from inside: self-promotion is welcome while on topic, but **rule 15
-    requires a disclaimer naming any generative-AI use and spoiler tags on the media**,
-    which this game triggers through the Kokoro-82M digit voices. **Rule 12 separately
-    forbids advocating for AI**, so the post discloses and stops — arguing the choice
-    breaks a rule that using it does not. There is an initiation step before posting,
-    and mods are not to be pinged while it is pending.
+    Rules read from inside: self-promotion is welcome while on topic. **Rule 15 governs
+    art posted in the server** — screenshots and GIFs here are renderer captures, not
+    model output. **Rule 12 forbids advocating for AI**, so the post states provenance
+    and stops; arguing the choice breaks a rule that making it does not. Rule 16 points
+    at ModMail if a judgement call needs settling first. There is an initiation step
+    before posting, and mods are not to be pinged while it is pending.
 
   *Rule not verified — behind a join gate:*
   - **Priyom** (`priyom.org`; Discord `discord.gg/788JPdSgsd`, bridged to `#priyom` on

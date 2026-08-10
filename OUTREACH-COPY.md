@@ -408,6 +408,18 @@ disclosure one and it is broken by explaining rather than by using.
 There is an initiation step before posting, and mods are not to be pinged while it is
 pending. Read the channel list once inside; this goes wherever self-promotion belongs.
 
+**What rule 15 reaches, and what it does not.** Its subject is *art posted in the server*
+— the screenshots and GIFs. Those are captures of a renderer, not model output, so they do
+not trip it. What does sit inside the artifact is the spoken digits, rendered with
+Kokoro-82M, and the post names them exactly as the README and the store page do. The code
+was written in Claude Code sessions across the whole history; that is disclosable under
+itch.io's own taxonomy, which lists Code beside Graphics, Sound and Text as separate
+categories, and it is not what this rule is asking about. Never claim the game is
+hand-written — it is not, and the git history says so in every commit trailer.
+
+If certainty is wanted before posting, rule 16 points at ModMail and one question costs
+nothing. Asking reads better in that room than guessing does.
+
 **Post:**
 
 ```
@@ -426,10 +438,9 @@ played without sound.
 
 https://kleer001.itch.io/finding-numbers
 
-Provenance, per rule 15: the spoken digits are rendered with Kokoro-82M, a
-text-to-speech model, one voicepack per language. The CRT shader is CRTFilterWebGL
-(MIT), third-party but not generative. The maze, the audio bed, the renderer and
-everything else are hand-written.
+Provenance: the spoken digits are synthesized rather than recorded — rendered with
+Kokoro-82M, one voicepack per language, over a noise bed built in WebAudio. The CRT
+shader is CRTFilterWebGL (MIT).
 ```
 
 ---
