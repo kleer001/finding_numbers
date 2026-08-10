@@ -127,18 +127,22 @@ audience wants *this*, because a sub can be on-genre by name and off-genre by ta
 - **Short video** — the three `clips/out/*-9x16.mp4` verticals. Never the itch trailer
   slot: a 9:16 cut uploads as a Short, and Shorts cannot be A/B tested.
 - **Curators / streamers** — all open, all cold pitches; none has a queue you can jump, so
-  send once and move on. Ranked by reach × fit; a name carrying no figures is unchecked
-  rather than approved.
-  - **ManlyBadassHero** (YouTube) — short indie horror games, exactly this game's shape.
-    Business email on the channel's About page is the only route: no form, no policy.
-    *2.57M subs, median ~135K views a video (2026-08-10).*
-  - **Alpha Beta Gamer** (`alphabetagamer.com`) — free demos, betas and browser games, via
-    the "Game Submissions" contact page. Pitch it for the video; the audience is on the
-    channel, not the site. *862K subs, median ~23K views a video (2026-08-10).*
-  - **Warp Door** (`warpdoor.com`) — small, strange, free games; computer art and glitches
-    among its stated interests. Best editorial fit here, but coverage rather than reach.
-    `warpdoor@gmail.com`, Bluesky `@warpdoor.com`.
-    *2.3K followers, median 11 likes a post (2026-08-10).*
+  send once and move on. Ranked by reach × fit, where fit means what an outlet has
+  actually published lately, not what it says it covers. A name carrying no figures is
+  unchecked rather than approved.
+  - **Alpha Beta Gamer** (`alphabetagamer.com`) — free browser games and demos, via the
+    "Game Submissions" contact page. Covers liminal-space, backrooms and analog horror
+    alongside the gore, so this game has somewhere to sit. Pitch it for the video: the
+    audience is on the channel, not the site.
+    *862K subs, median ~23K views a video (2026-08-10).*
+  - **Warp Door** (`warpdoor.com`) — art games and short strange ones, credited to their
+    makers; a recent post is "a short walk through a large structure". The best fit this
+    game has anywhere and the least reach behind it, which is the trade. Pitch it anyway —
+    it is the one most likely to actually cover this. `warpdoor@gmail.com`, Bluesky
+    `@warpdoor.com`. *2.3K followers, median 11 likes a post (2026-08-10).*
+
+  No character, no plot, no endings to collect. Anything whose format runs on those has
+  nothing to make from this game however large its audience, and is not a near miss.
   - **Jupiter Hadley** (`@JupiterHadley`) — plays *every* entry in the jams she covers,
     which is the way in: enter a jam she is covering rather than pitch a released game.
     Small channel; treat it as coverage, not reach.

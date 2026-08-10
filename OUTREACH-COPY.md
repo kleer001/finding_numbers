@@ -374,8 +374,8 @@ finding_numbers on itch.`
 
 One email each, then move on. None of these has a queue that can be jumped.
 
-Send in reach order: ManlyBadassHero, then Alpha Beta Gamer, then Warp Door. The figures
-behind that order are in `MARKETING-PLAN.md`.
+Send in reach × fit order: Alpha Beta Gamer, then Warp Door. The figures behind that
+order are in `MARKETING-PLAN.md`.
 
 **Warp Door** — `warpdoor@gmail.com`. Subject:
 `finding_numbers — a free browser maze navigated by ear, with a number station for a compass`
@@ -406,14 +406,6 @@ It cannot be played without sound.
 
 **Alpha Beta Gamer** — via the Game Submissions contact form. Same body; subject:
 `finding_numbers — free browser horror, playable now`
-
-**ManlyBadassHero** — the business email on the channel's About page. Same body, with
-this in place of the closing line:
-
-```
-It's a short one — a run is a few minutes — and it's free and needs no download, if
-it fits a video.
-```
 
 **Jupiter Hadley** — not a pitch. The way in is to enter a jam she is covering and be
 one of the entries she plays.

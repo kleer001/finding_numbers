@@ -30,8 +30,8 @@ the curator pitches, two stale store images, and the design questions below.
   already up, so the call is whether the title overstates it and whether to edit or
   delete. Only the author knows where the line sits between their work and `voice_loom`.
 - [ ] #6 Post the three `clips/out/*-9x16.mp4` verticals. Never the itch trailer slot.
-- [ ] #27 Pitch the curators, in reach order — ManlyBadassHero, Alpha Beta Gamer,
-  Warp Door. One email each, bodies in `OUTREACH-COPY.md`.
+- [ ] #27 Pitch the curators, in reach × fit order — Alpha Beta Gamer, then Warp Door.
+  One email each, bodies in `OUTREACH-COPY.md`.
 - [ ] #29 The itch banner still reads `FINDING NUMBERS` in caps while the title is now
   `finding_numbers`. It is `docs/img/banner.png` in the page theme, a separate asset the
   title change did not touch. Needs a re-render to match — `docs/theme-src/README.md` has
