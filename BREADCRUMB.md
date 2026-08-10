@@ -1,10 +1,11 @@
 fresh
 
 ## Summary
-The game is live at v1.1.1 and taking player feedback. The code is quiet; what is left is
-outreach and a pile of calls only the author can make — an unpublished devlog draft with an
-authorship claim in it, a live Reddit title that may overstate the same thing, the verticals,
-the curator pitches, two stale store images, and the design questions below.
+The game is live at v1.1.1 and taking player feedback. The code is quiet and every outreach
+channel now has paste-ready copy behind it, so what is left is sending, plus a cluster of
+authorship and disclosure calls only the author can make — a devlog draft and a live Reddit
+title that both claim authorship in the first person, the itch AI-disclosure field, two
+stale store images, and the design questions below.
 
 ## Todos
 
@@ -107,6 +108,17 @@ you and nothing can kill you. "Suspense" and "thriller" are ruled out entirely: 
 promise stakes and a clock the build does not have. Real station names and dial
 frequencies stay out of copy — naming them promises audio this game does not have. The
 station is a tribute, not a recording.
+
+**Authorship and AI disclosure, the standing constraint.** Never claim the game is
+hand-written or hand-coded: `git blame` puts every line of `src/` and `tests/` in commits
+carrying a Claude co-author trailer, 119 of 142 commits, from the first feature commit on.
+What *is* disclosed everywhere already — README, store description, r/playmygame
+involvement field — is the Kokoro-82M digit voices, which is the generative content inside
+the artifact and the category audiences actually police; itch.io's own disclosure form
+lists Code separately from Graphics, Sound and Text, and reporting on community reaction
+finds the backlash aimed at generated art and assets rather than code. So disclose the
+voices, do not volunteer a code-provenance essay into promo copy, and never assert the
+opposite of either. This binds #5, #33, #37 and #38.
 
 **Two claims keep coming back and must not.** "More voices as you go" and "more of each
 level you can't trust" both cap at level 12: generated levels reuse `noise: {wash: 0.7,
