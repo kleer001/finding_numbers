@@ -9,18 +9,19 @@ with it — no external art tools.
 | `banner.html` | `../img/banner.png` | 960×300 |
 | `background.html` | `../img/background.png` | 1920×1080 |
 
-`font.css` holds the VT323 `@font-face` (embedded woff2) that both HTML files link.
-All three must sit in the same directory to render.
+`font.css` holds the VT323 `@font-face` that both HTML files link. It points at
+`assets/fonts/vt323-subset.woff2` — the same file the game ships — so the page art
+and the game cannot drift onto different cuts of the face.
 
 ## Re-render
 
-Serve this directory and screenshot the `#stage` element at its native size:
+Serve the repo root, so the font path resolves, and screenshot the `#stage` element
+at its native size:
 
 ```sh
-cd docs/theme-src
-python3 -m http.server 8000
-# open http://127.0.0.1:8000/banner.html and http://127.0.0.1:8000/background.html
-# screenshot #stage → save over ../img/banner.png and ../img/background.png
+./run.sh
+# open http://localhost:8000/docs/theme-src/banner.html and .../background.html
+# screenshot #stage → save over docs/img/banner.png and docs/img/background.png
 ```
 
 The maze field is seeded (fixed LCG in each file), so re-rendering is deterministic —
