@@ -124,10 +124,17 @@ audience wants *this*, because a sub can be on-genre by name and off-genre by ta
     comments on it. `r/dreamcore` (4.5k) and `r/creepygaming` (178k) read the same way —
     a photograph feed has nothing to do with a game, whatever it is a feed of.
 
-  *Rule not verified — behind a join gate:*
+  *Open, with a disclosure condition:*
   - **Haunted PS1** Discord (`discord.gg/YpBQZdeXxP`, ~5k members, ~1.8k online) — the
-    lo-fi horror dev scene, and the host of the Demo Disc and Madvent jams on itch. Its
-    posting rules are only readable from inside, so join and read before promoting.
+    lo-fi horror dev scene, and the host of the Demo Disc and Madvent jams on itch.
+    Rules read from inside: self-promotion is welcome while on topic, but **rule 15
+    requires a disclaimer naming any generative-AI use and spoiler tags on the media**,
+    which this game triggers through the Kokoro-82M digit voices. **Rule 12 separately
+    forbids advocating for AI**, so the post discloses and stops — arguing the choice
+    breaks a rule that using it does not. There is an initiation step before posting,
+    and mods are not to be pinged while it is pending.
+
+  *Rule not verified — behind a join gate:*
   - **Priyom** (`priyom.org`; Discord `discord.gg/788JPdSgsd`, bridged to `#priyom` on
     Libera IRC) — shortwave monitors, not players. Not a promo channel under any gate:
     this is where the dial gets checked before copy ships, per the honesty guardrails.

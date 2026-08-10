@@ -36,6 +36,9 @@ the curator pitches, two stale store images, and the design questions below.
 - [ ] #36 Post to r/IndieGaming and r/indiegames, copy in `OUTREACH-COPY.md`. r/IndieGaming
   allows one submission per two weeks and wants an account with ordinary posting history;
   r/indiegames requires a GIF on the post and forbids framing promo as a feedback request.
+- [ ] #37 Post to the Haunted PS1 Discord once initiation clears, copy in
+  `OUTREACH-COPY.md`. The post must carry the Kokoro-82M disclosure and spoiler-tag any
+  media, and must not argue the case for the tooling.
 - [ ] #29 The itch banner still reads `FINDING NUMBERS` in caps while the title is now
   `finding_numbers`. It is `docs/img/banner.png` in the page theme, a separate asset the
   title change did not touch. Needs a re-render to match — `docs/theme-src/README.md` has

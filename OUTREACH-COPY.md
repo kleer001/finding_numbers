@@ -390,6 +390,50 @@ It cannot be played without sound.
 
 ---
 
+## Haunted PS1 Discord
+
+Retro-inspired games, fans and developers. Self-promotion is welcome outright as long as
+it is on topic, which this is — but two rules shape the post and one of them is not
+optional here.
+
+**Rule 15 requires a genAI disclaimer.** The spoken digits are rendered with Kokoro-82M,
+so the post carries a disclosure naming what the model did and what it did not touch, and
+any media posted alongside it is spoiler-tagged. Under-disclosing in a room that asks
+directly is worse than not posting.
+
+**Rule 12 forbids arguing for AI.** Disclose and stop. No defence of the choice, no case
+for the tooling, no comparison to hand-recorded voices — that is a separate rule from the
+disclosure one and it is broken by explaining rather than by using.
+
+There is an initiation step before posting, and mods are not to be pinged while it is
+pending. Read the channel list once inside; this goes wherever self-promotion belongs.
+
+**Post:**
+
+```
+finding_numbers — a free browser maze you navigate by ear.
+
+No map, and nothing marks the right door. A shortwave number station reads digits
+through the static, and that is the only feedback you get. A correct turn adds a number
+to the broadcast; a wrong one adds nothing. Nothing buzzes and nothing
+turns red, so the route is learned by what never arrives.
+
+Nothing chases you. Nothing can kill you. There is no fail state.
+
+One character grid in one phosphor colour, bent through a WebGL CRT filter, with the
+signal drawn as a live spectrogram over a station built in WebAudio. It cannot be
+played without sound.
+
+https://kleer001.itch.io/finding-numbers
+
+Provenance, per rule 15: the spoken digits are rendered with Kokoro-82M, a
+text-to-speech model, one voicepack per language. The CRT shader is CRTFilterWebGL
+(MIT), third-party but not generative. The maze, the audio bed, the renderer and
+everything else are hand-written.
+```
+
+---
+
 ## Short video
 
 The three `clips/out/*-9x16.mp4` verticals. Never the itch trailer slot: a 9:16 upload
