@@ -1,4 +1,4 @@
-stale
+fresh
 
 ## Summary
 The game is live at v1.1.1 and taking player feedback. The code is quiet, every outreach
@@ -10,6 +10,17 @@ questions below.
 ## Todos
 
 ### Parallel
+- [ ] #36 **START HERE. Post to r/IndieGaming and r/indiegames.** The two widest channels
+  left, both with finished copy and no gate still to wait on. Titles and bodies are in
+  `OUTREACH-COPY.md` under each sub's own heading; `scratchpad/build_copy_page.py` puts
+  both on the board with copy buttons.
+  - r/IndieGaming (512K): text post, one submission per two weeks, and the posting
+    account needs ordinary comment history — Reddit's own filter shadowbans accounts
+    whose first posts are links, and a shadowbanned post looks exactly like one nobody
+    upvoted.
+  - r/indiegames (326K): Rule 1 requires an image, GIF or video on the post — attach
+    `clips/out/core-loop.gif`. Two posts a week is the ceiling, and dressing a promo as
+    a request for feedback breaks their rules, which is why that body asks nothing.
 - [ ] #32 Watch what the six community posts brought back. The question worth answering
   is the one the posts asked: whether the navigate-by-ear loop reads with the digit count
   off by default. Fold what players say into the next pass rather than into the copy.
@@ -26,9 +37,6 @@ questions below.
   already hosts the trailer. Never the itch trailer slot.
 - [ ] #27 Pitch the curators, in reach × fit order — Alpha Beta Gamer, then Warp Door.
   One email each, bodies in `OUTREACH-COPY.md`.
-- [ ] #36 Post to r/IndieGaming and r/indiegames, copy in `OUTREACH-COPY.md`. r/IndieGaming
-  allows one submission per two weeks and wants an account with ordinary posting history;
-  r/indiegames requires a GIF on the post and forbids framing promo as a feedback request.
 - [ ] #37 Post to the Haunted PS1 Discord once initiation clears, copy in
   `OUTREACH-COPY.md`. Names the Kokoro-82M voices, and does not argue the case for the
   tooling — rule 12 bans that separately from disclosure.
@@ -147,8 +155,10 @@ Budgets: 200 store, 150 post/email, 50 social, 25 caption, 80 README intro.
 - Tests: 118, green.
 
 ## Next Step
-Send something. `r/IndieGaming` and `r/indiegames` (#36) are the two widest channels with
-copy already written and no gate left to wait on, and the board at
-`scratchpad/copy-review.html` has both with copy buttons.
+**#36 — post to r/IndieGaming and r/indiegames.** Nothing is blocking it: copy written,
+gates open, `clips/out/core-loop.gif` on disk for the one that requires an image. Serve
+the board with `python3 scratchpad/serve.py` (first free port from 8300) and paste from
+`copy-review.html`; `submit-links.html` prefills each composer's title and URL, and the
+bodies stay copy buttons because Reddit's composer takes no body parameter.
 
 /home/menser/Dropbox/ai/code/finding_numbers
