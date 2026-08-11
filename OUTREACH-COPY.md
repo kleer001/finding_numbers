@@ -445,6 +445,52 @@ shader is CRTFilterWebGL (MIT).
 
 ---
 
+## YouTube trailer — three packages to test
+
+Test & Compare takes up to three title + thumbnail packages on one video and rotates
+them for up to two weeks. It picks the winner by watch time rather than click-through
+rate, so a title that oversells has nowhere to hide: the clicks it wins are not the
+thing being counted.
+
+The three thumbnails are already cut. Each package below pairs one with the title that
+argues the same thing, so the test compares three bets about why someone clicks, not
+three wordings of one bet.
+
+**A — the maze lies.** `clips/out/thumbs/A-dont-trust-the-walls.png`
+
+```
+finding_numbers — you leave a room, come back, and the exit has moved
+```
+
+Bets that the betrayal is the hook: a system that changes behind your back is a reason
+to watch even before you know what the game is.
+
+**B — the premise, flat.** `clips/out/thumbs/B-source-numbers.png`
+
+```
+finding_numbers — the only compass is a voice reading digits
+```
+
+Bets that no genre word is needed and the premise sells itself. States the mechanic
+and nothing else, and lets the dense number readout in the thumbnail supply the mood.
+
+**C — nothing is coming.** `clips/out/thumbs/C-light-mode-green.png`
+
+```
+finding_numbers — horror with nothing chasing you
+```
+
+Bets on the viewer who avoids horror. The title carries the contract in its own line,
+and the least frightening of the three images — a green settings panel, not a dark
+corridor — says it a second time before a word is read.
+
+None of the three says "official trailer". There is no second trailer for it to be
+official against, so the phrase spends characters on nothing. All three use the
+lowercase wordmark, which the current live title does not; whichever wins also retires
+the title-case spelling.
+
+---
+
 ## Short video
 
 The three `clips/out/*-9x16.mp4` verticals. Never the itch trailer slot: a 9:16 upload

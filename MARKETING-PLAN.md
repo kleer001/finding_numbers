@@ -50,8 +50,9 @@ Each has to be demonstrable in a clip or a screenshot.
       buffer, showing the defaults a new player meets
 - [x] One animated GIF of the core loop (`clips/out/core-loop.gif`)
 - [x] Trailer hosted: <https://youtu.be/3_maIo0cYAk> — cut from the current build
-- [ ] Three title variants testing *different* hypotheses, plus three 1280×720
-      thumbnails (`clips/out/thumbs/`), for YouTube Test & Compare
+- [x] Three title + thumbnail packages testing *different* hypotheses for YouTube
+      Test & Compare — thumbnails in `clips/out/thumbs/` at 1280×720, titles and the
+      bet behind each in `OUTREACH-COPY.md`
 - [x] `promo.html` landing page
 - [x] `ITCH-PAGE.md` finalized; description source is `itch_page_description.md`
 - [x] Social share card, 1200×630 (`docs/img/share-card.png`), wired as `og:image` in

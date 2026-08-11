@@ -47,6 +47,21 @@ CHANNELS = [
         "This audience knows real station audio — say tribute-not-recording in the title",
         "Small and slow (~18k); no self-promo rule stated",
     ]),
+    ("r/IndieGaming", "Genre communities", [
+        "One submission every two weeks",
+        "Account must be a week old with ordinary posting history",
+        "A text post with footage is in scope; Let's Plays and streams are not",
+    ]),
+    ("r/indiegames", "Genre communities", [
+        "The post MUST carry an image, GIF or video of the game",
+        "Two posts a week is the ceiling",
+        "Dressing promo as a request for feedback is against the rules",
+    ]),
+    ("Haunted PS1 Discord", "Genre communities", [
+        "Initiation must clear first; do not ping mods while it is pending",
+        "Rule 12 forbids advocating for AI — state provenance and stop",
+        "Rule 15 governs art posted here: captures are renderer output, not model output",
+    ]),
     ("itch.io Release Announcements board", "Genre communities", [
         "itch.io/board/10022/release-announcements",
         "Needs page link + summary + at least one embedded image or video",
@@ -55,10 +70,9 @@ CHANNELS = [
         "Descriptions take images, not video — GIFs are the only motion",
         "Names no level number, no threshold, no effect: tease, don't explain",
     ]),
-    ("Bluesky / Fediverse", "Social", [
-        "Post the GIF, NOT the link — a first-post link suppresses reach on both",
-        "Reply with the link once the post has settled",
-        "Add #screenshotsaturday when it lands on one",
+    ("YouTube trailer — three packages to test", "Social", [
+        "Three title + thumbnail packages on the one video, up to two weeks",
+        "Watch time picks the winner, not click-through rate",
     ]),
     ("Short video", "Social", [
         "NEVER the itch trailer slot — a 9:16 upload becomes a Short, and Shorts can't be A/B tested",
