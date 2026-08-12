@@ -37,13 +37,15 @@ questions below.
 
 
 ### The voice recast landed — these follow from it
-- [ ] #41 **The Kokoro-82M disclosure is now false everywhere.** The game no longer
-  contains any synthesised voice; the digits are CC0 human recordings from the Common
-  Voice single-word target segment. Stale in `README.md:132`,
-  `itch_page_description.md:48`, `promo.html:444`, throughout `OUTREACH-COPY.md`, and in
-  the **live store description**. All of it has to move together — half-corrected copy
-  reads worse than none.
-- [ ] #42 (needs: #41) The store's AI Disclosure field is public as **AI Assisted —
+- [ ] #47 **Ship, then re-word the store — strictly in that order.** Every repo surface
+  now says the digits are CC0 Common Voice recordings in ten languages, but the live
+  build still plays the Kokoro voices, so the live store page saying "six languages" and
+  crediting `voice_loom` is *correct for what players can load right now*. Re-wording it
+  first would describe software nobody has. Sequence: `./package.sh` →
+  `butler push dist/finding_numbers.zip kleer001/finding-numbers:html5` → verify
+  `type=html` → paste the new description from `itch_page_description.md` → then #42.
+  Saving the itch form rewrites every field; read `itch_publish_howto.md` first.
+- [ ] #42 (needs: #47) The store's AI Disclosure field is public as **AI Assisted —
   Code, Sounds, Text**. "Sounds" was there for the Kokoro voices, which are gone. The
   standing rule that narrowing a live disclosure reads badly was written when the
   narrowing would have been cosmetic; now the underlying fact has actually changed.
@@ -63,9 +65,6 @@ questions below.
   a 4200ms hold (a shorter hold would let a language pass without speaking, which
   `tests/demo-path.test.js` pins). Re-shoot with `./capture.sh jukebox clips/` if the
   clip is still wanted at its old length.
-- [ ] #46 (needs: #41) Ship it — `./package.sh`, then
-  `butler push dist/finding_numbers.zip kleer001/finding-numbers:html5`. The recast is
-  committed but the live build still plays the synth voices.
 
 ### Design calls — the author's to make
 - [ ] #8 Badge garble is OFF. The approved profile had it on, but at severity 0.6 it rots
@@ -201,11 +200,10 @@ Budgets: 200 store, 150 post/email, 50 social, 25 caption, 80 README intro.
 only. Not deleted; flagged.
 
 ## Next Step
-**#41 — correct the voice provenance everywhere at once.** The recast is committed,
-tested and verified loading in-browser, but every public surface still says the voices
-are Kokoro-82M, which is no longer true of a single sample in the game. README, itch
-description, promo page, outreach copy and the live store page have to change together,
-and #42 (the AI Disclosure field) is the same decision wearing a different hat.
+**#47 — push the build, then re-word the store page.** The recast is committed, tested,
+verified loading in-browser, and every repo surface now describes it truthfully. The one
+thing standing between that and the public is a `package.sh` + butler push; until it
+lands, the live store copy is honest about the old build and must be left alone.
 
 
 /home/menser/Dropbox/ai/code/finding_numbers
