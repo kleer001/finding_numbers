@@ -586,3 +586,53 @@ Tested in both browsers, and on the live page.
 
 Fixed in v1.1.1. Sorry, and thanks for writing in.
 ```
+
+---
+
+## itch devlog — v1.2.0
+
+The release's whole story is the voice swap, so the post is about that and nothing else.
+No images: the change is audible and the GIFs are silent, and the picture did not move.
+The three findings at the end are there because the readership is other people who ship
+browser games, and each one is a trap waiting for anyone pulling clips out of a speech
+corpus.
+
+**Title:**
+
+```
+The numbers are people now
+```
+
+**Body:**
+
+```
+The station used to read its numbers with a speech model. Now every digit you hear is a
+recording of a person.
+
+They come from Mozilla Common Voice, where volunteers record single words and hand them
+to the public domain with no strings attached. I pulled ten words out of each language
+and dropped them straight into the game.
+
+Six languages became ten. English, Spanish and Mandarin stayed. German, Russian, Polish,
+Turkish, Arabic, Welsh and Georgian are new, and Italian, Japanese and Hindi are gone.
+
+It sounds different. A model says a digit exactly the same way every single time, and a
+person never does. There is breath in these recordings, and rooms, and accents. This is
+a game about listening, so that matters more here than it would somewhere else.
+
+Three things I learned while digging through the data.
+
+The German word for zero is "null", and somewhere upstream a spreadsheet read that as an
+empty cell, so those clips arrived carrying no label at all. I had to listen to them to
+work out what they were.
+
+I chose clips by how many people had approved them, which turned out to be the wrong
+test entirely. Approval means the speaker said the correct word. It tells you nothing
+about how they said it, and some of the best-rated clips ran five seconds long for a
+one-syllable number.
+
+Welsh has its own word for zero. It is "sero", and most number lists skip it.
+
+The maze is unchanged: same rooms, same rules, same doors. What changed is who is
+reading to you.
+```

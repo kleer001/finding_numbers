@@ -40,13 +40,6 @@ questions below.
 
 
 ### The voice recast landed — these follow from it
-- [ ] #42 **The AI Disclosure now contradicts the page it sits on.** The field is public
-  as **AI Assisted — Code, Sounds, Text**, but the description beside it credits CC0
-  human recordings and no generated audio ships in build 1878230. "Sounds" is the only
-  stale box; Code and Text stay. The standing rule against narrowing a live disclosure
-  was written when narrowing would have been cosmetic — here the underlying fact
-  changed. Author's call; over-disclosing is harmless to reputation and merely
-  inaccurate, under-disclosing is not.
 - [ ] #43 `INTRO_MESSAGES` in `src/game/config.js` still carries station patter in
   languages the station no longer voices — `MUOVITI`/`ASCOLTA` (italian),
   `UGOKE`/`KIKE`/`HAJIME` (japanese), `CHALO`/`SUNO`/`SHURU` (hindi). Its own comment
@@ -58,6 +51,11 @@ questions below.
   than designed — the station comes apart more gently. The comment records the measured
   figure; the tuning is untouched. Decide whether to retune `CADENCE_FLOOR` to restore
   the original slur.
+- [ ] #48 **Every clip in `clips/` still carries the old synthesised voices.** Silent
+  GIFs are still visually honest, but any video with sound misrepresents the build.
+  This gates the three Shorts (#6) and any post using a video. **Deferred by the author
+  — do not re-shoot until they say go.** When they do: `./capture.sh <clip> clips/`
+  then `./post.sh`; retiming lives in the two tables at the top of `post.sh`.
 - [ ] #45 The jukebox demo take got longer: covering eleven voices needs ten presses at
   a 4200ms hold (a shorter hold would let a language pass without speaking, which
   `tests/demo-path.test.js` pins). Re-shoot with `./capture.sh jukebox clips/` if the
@@ -197,11 +195,11 @@ Budgets: 200 store, 150 post/email, 50 social, 25 caption, 80 README intro.
 only. Not deleted; flagged.
 
 ## Next Step
-**#36 — post to r/IndieGaming and r/indiegames.** The build, the store page and every
-repo surface now agree, so the outreach backlog is unblocked with nothing left to wait
-on. Copy is written; serve the board with `python3 scratchpad/serve.py` and paste from
-`copy-review.html`. Resolve #42 in the same sitting — it is one checkbox and it is the
-only thing on the store page that still describes the old build.
+**#36 — post to r/IndieGaming and r/indiegames.** Everything upstream is done: v1.2.0 is
+live, the store page and disclosure match the build, and the devlog is up at
+<https://kleer001.itch.io/finding-numbers/devlog/1626335/the-numbers-are-people-now>.
+r/indiegames needs an image on the post — `clips/out/core-loop.gif` is silent, so it is
+still honest despite #48.
 
 
 /home/menser/Dropbox/ai/code/finding_numbers
