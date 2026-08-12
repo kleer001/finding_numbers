@@ -39,7 +39,7 @@ are real state) is the single smartest decision in the codebase; it is why a
 Four things I would have caught before the page went live:
 
 1. **CI has been red, and the release checklist says it must be green.**
-   `tests/station-noise.test.mjs` imports the `node-web-audio-api` devDependency,
+   `tests/station-noise.test.js` imports the `node-web-audio-api` devDependency,
    but `.github/workflows/test.yml` never installs dependencies — its comment
    claims "No dependencies to install." Every push fails. A fresh `git clone`
    fails the same way: 76 tests run, 1 fails. It passes locally only because

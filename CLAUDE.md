@@ -29,13 +29,13 @@ Each directive is a **proposal to raise with the user**, never auto-applied.
 
 - `index.html` — entry point; loads `src/main.js` as an ES module
 - `src/` — game modules (`audio/`, `core/`, `game/`, `maze/`, `render/`)
-- `tests/` — `*.test.mjs` suites run with `node --test`
+- `tests/` — `*.test.js` suites run with `node --test`
 - `run.sh` — dev server (uses system `python3` only as a static file server)
 - `.scaffold.json` — record of how this repo was generated (do not edit by hand)
 
 ## Testing
 
-Run `npm test` from repo root. Tests live in `tests/` as `*.test.mjs` (`node --test`). New features need at least one test that fails before the change and passes after.
+Run `npm test` from repo root. Tests live in `tests/` as `*.test.js` (`node --test`). New features need at least one test that fails before the change and passes after.
 
 ## Code style
 

@@ -79,7 +79,7 @@ test("past the overflow the gap between numbers closes, then holds at its floor"
   // The floor arrives before the deepest named level and holds from there — the
   // crank-down was only ever there to keep a pass from growing without limit, and
   // past this point the gaps are as tight as they can be and still be counted.
-  // The exact floors live in tests/readout-gaps.test.mjs.
+  // The exact floors live in tests/readout-gaps.test.js.
   assert.equal(at(64), at(40), "the gap has bottomed out by the deepest levels");
   assert.equal(at(1000), at(64), "and stays there however long the message gets");
 });

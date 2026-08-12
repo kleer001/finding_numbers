@@ -59,7 +59,7 @@ it, DPR-aware backing store, re-layout on resize and orientation.
 `MOBILE-PLAN.md` Phase 1 has the substance. The discipline that matters: the first
 commit must return today's exact numbers (`800 x 600`, `23 x 20`, `CHAR.W 34.78`)
 for a desktop viewport, so the refactor is provably inert before it is made to
-move. `tests/layout.test.mjs` is the proof.
+move. `tests/layout.test.js` is the proof.
 
 **Decision needed: the DPR cap.** I proposed `min(devicePixelRatio, 2)` with a
 ~2.5 M pixel ceiling. It is a sharpness-versus-battery trade and it is visible.

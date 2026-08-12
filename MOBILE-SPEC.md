@@ -492,7 +492,7 @@ This costs nothing in fiction and turns a silent bug into a diegetic beat.
 - **Jukebox `hindi` selected from the title splash at t=0** → same.
 - **`babel` (level 12) with any bank missing** → same.
 
-### Tests — `tests/station-load.test.mjs` (new)
+### Tests — `tests/station-load.test.js` (new)
 
 Pure, against an injected fetch stub; no `AudioContext`.
 

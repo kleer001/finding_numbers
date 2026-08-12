@@ -243,7 +243,7 @@ without a browser and so nothing else has to know it happened.
    `touch-action: none` on `body`; `user-select: none`;
    `-webkit-touch-callout: none`; `-webkit-tap-highlight-color: transparent`.
 
-*Verify:* `tests/layout.test.mjs` asserting the pure function across a device
+*Verify:* `tests/layout.test.js` asserting the pure function across a device
 matrix (iPhone SE / 14 / 15 Pro Max, Pixel, iPad, desktop) in both orientations —
 grid never below 23 columns, HUD never overlapping the maze band, every declared
 tap target ≥ 44 CSS px. This is the "fails before, passes after" test `CLAUDE.md`
@@ -261,7 +261,7 @@ requires.
 4. **Hold-to-repeat on the deck**, with the existing 150 ms cadence.
 
 *Verify:* Playwright screenshots at each device size, both orientations, checked
-into `docs/`; the existing `menu.test.mjs` / `title.test.mjs` hit-testing suites
+into `docs/`; the existing `menu.test.js` / `title.test.js` hit-testing suites
 extended to the new geometry.
 
 ### Phase 3 — Behave like an app
