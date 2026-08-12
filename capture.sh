@@ -51,7 +51,7 @@ clip_seconds() {
     room-moved) echo 8 ;;
     pulse)      echo 22 ;;
     crt-decay)  echo 24 ;;
-    jukebox)    echo 74 ;;
+    jukebox)    echo 88 ;;
     *)          echo "" ;;
   esac
 }

@@ -30,7 +30,7 @@ clip_cut() {
     room-moved) echo "1.7 5.4|don't trust the walls." ;;
     pulse)      echo "9.6 6.0|listen. move. arrive." ;;
     crt-decay)  echo "4.3 18.2|dial in the decay." ;;
-    jukebox)    echo "3.0 65.0|" ;;
+    jukebox)    echo "3.0 82.0|" ;;
     *)          echo "" ;;
   esac
 }
