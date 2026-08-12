@@ -37,19 +37,13 @@ questions below.
 
 
 ### The voice recast landed — these follow from it
-- [ ] #47 **Ship, then re-word the store — strictly in that order.** Every repo surface
-  now says the digits are CC0 Common Voice recordings in ten languages, but the live
-  build still plays the Kokoro voices, so the live store page saying "six languages" and
-  crediting `voice_loom` is *correct for what players can load right now*. Re-wording it
-  first would describe software nobody has. Sequence: `./package.sh` →
-  `butler push dist/finding_numbers.zip kleer001/finding-numbers:html5` → verify
-  `type=html` → paste the new description from `itch_page_description.md` → then #42.
-  Saving the itch form rewrites every field; read `itch_publish_howto.md` first.
-- [ ] #42 (needs: #47) The store's AI Disclosure field is public as **AI Assisted —
-  Code, Sounds, Text**. "Sounds" was there for the Kokoro voices, which are gone. The
-  standing rule that narrowing a live disclosure reads badly was written when the
-  narrowing would have been cosmetic; now the underlying fact has actually changed.
-  Author's call, and it should be made in the same pass as #41.
+- [ ] #42 **The AI Disclosure now contradicts the page it sits on.** The field is public
+  as **AI Assisted — Code, Sounds, Text**, but the description beside it credits CC0
+  human recordings and no generated audio ships in build 1878230. "Sounds" is the only
+  stale box; Code and Text stay. The standing rule against narrowing a live disclosure
+  was written when narrowing would have been cosmetic — here the underlying fact
+  changed. Author's call; over-disclosing is harmless to reputation and merely
+  inaccurate, under-disclosing is not.
 - [ ] #43 `INTRO_MESSAGES` in `src/game/config.js` still carries station patter in
   languages the station no longer voices — `MUOVITI`/`ASCOLTA` (italian),
   `UGOKE`/`KIKE`/`HAJIME` (japanese), `CHALO`/`SUNO`/`SHURU` (hindi). Its own comment
@@ -200,10 +194,11 @@ Budgets: 200 store, 150 post/email, 50 social, 25 caption, 80 README intro.
 only. Not deleted; flagged.
 
 ## Next Step
-**#47 — push the build, then re-word the store page.** The recast is committed, tested,
-verified loading in-browser, and every repo surface now describes it truthfully. The one
-thing standing between that and the public is a `package.sh` + butler push; until it
-lands, the live store copy is honest about the old build and must be left alone.
+**#36 — post to r/IndieGaming and r/indiegames.** The build, the store page and every
+repo surface now agree, so the outreach backlog is unblocked with nothing left to wait
+on. Copy is written; serve the board with `python3 scratchpad/serve.py` and paste from
+`copy-review.html`. Resolve #42 in the same sitting — it is one checkbox and it is the
+only thing on the store page that still describes the old build.
 
 
 /home/menser/Dropbox/ai/code/finding_numbers
