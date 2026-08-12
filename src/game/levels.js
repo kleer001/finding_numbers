@@ -159,7 +159,7 @@ const TABLE = [
 // roughly constant however long the message gets, turns the level's cost back into
 // something linear, and makes the station sound like it is running out of time to
 // finish. The floor is set where the digits overlap outright: the voice samples
-// average 0.86s, so RAPID's own 600ms minimum already slurs them, and this bottoms
+// average 0.81s, so RAPID's own 600ms minimum already slurs them, and this bottoms
 // out well inside that — the station coming apart is the point.
 const PLATEAU_DIGITS = 14; // digits at level 16 — the last message RAPID is tuned for
 const CADENCE_FLOOR = 1 / 3; // never tighter than a third of RAPID
