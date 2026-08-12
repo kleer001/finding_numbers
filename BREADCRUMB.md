@@ -36,22 +36,36 @@ questions below.
   tooling — rule 12 bans that separately from disclosure.
 
 
-### Voice recast — real human digits replacing the Kokoro synth voices
-- [ ] #38 Source 80 digit clips (8 languages x 0-9). **Lineup is settled:**
-  `english spanish german russian polish turkish arabic mandarin`. Welsh was ruled
-  out — absent from FSI entirely and 2/10 on Wikimedia Commons. Turkish replaced it
-  for having no confusable adjacent-digit pair, unlike Hungarian (`hat`/`hét`) and
-  Finnish (`yksi`/`kaksi`, `viisi`/`kuusi`, `kahdeksan`/`yhdeksän`).
-- [ ] #39 (needs: #38) Swap the files and recast the level table. Filenames are the
-  whole contract: `assets/audio/<lang>_0<n>.wav`, n=0-9, loaded at
-  `src/audio/station.js:397`. Then `LANGUAGES` at `src/game/config.js:101` and the
-  seven `language:` rows in the `TABLE` at `src/game/levels.js:139` that name
-  italian/japanese/hindi/chinese. `tests/levels.test.js` asserts every level's
-  language is in `LANGUAGES`, so a mismatch fails loudly.
-- [ ] #40 (needs: #39) Re-measure average clip length against the **1.08 s** the
-  cadence tuning assumes (`src/game/levels.js:159-166`) — `RAPID`'s 600 ms floor is
-  set relative to it. Isolated single words will likely run shorter; report the drift
-  rather than silently retuning.
+### The voice recast landed — these follow from it
+- [ ] #41 **The Kokoro-82M disclosure is now false everywhere.** The game no longer
+  contains any synthesised voice; the digits are CC0 human recordings from the Common
+  Voice single-word target segment. Stale in `README.md:132`,
+  `itch_page_description.md:48`, `promo.html:444`, throughout `OUTREACH-COPY.md`, and in
+  the **live store description**. All of it has to move together — half-corrected copy
+  reads worse than none.
+- [ ] #42 (needs: #41) The store's AI Disclosure field is public as **AI Assisted —
+  Code, Sounds, Text**. "Sounds" was there for the Kokoro voices, which are gone. The
+  standing rule that narrowing a live disclosure reads badly was written when the
+  narrowing would have been cosmetic; now the underlying fact has actually changed.
+  Author's call, and it should be made in the same pass as #41.
+- [ ] #43 `INTRO_MESSAGES` in `src/game/config.js` still carries station patter in
+  languages the station no longer voices — `MUOVITI`/`ASCOLTA` (italian),
+  `UGOKE`/`KIKE`/`HAJIME` (japanese), `CHALO`/`SUNO`/`SHURU` (hindi). Its own comment
+  says the pool is "languages the station voices". Polish, turkish, arabic, welsh and
+  georgian have no patter at all. Needs verified translations, and the shipped font
+  renders accented Latin and Cyrillic but not Arabic or Georgian script.
+- [ ] #44 Samples now average **0.86s**, not the 1.08s the cadence floor was tuned
+  against (`src/game/levels.js`). RAPID's 600ms minimum therefore slurs the digits less
+  than designed — the station comes apart more gently. The comment records the measured
+  figure; the tuning is untouched. Decide whether to retune `CADENCE_FLOOR` to restore
+  the original slur.
+- [ ] #45 The jukebox demo take got longer: covering eleven voices needs ten presses at
+  a 4200ms hold (a shorter hold would let a language pass without speaking, which
+  `tests/demo-path.test.js` pins). Re-shoot with `./capture.sh jukebox clips/` if the
+  clip is still wanted at its old length.
+- [ ] #46 (needs: #41) Ship it — `./package.sh`, then
+  `butler push dist/finding_numbers.zip kleer001/finding-numbers:html5`. The recast is
+  committed but the live build still plays the synth voices.
 
 ### Design calls — the author's to make
 - [ ] #8 Badge garble is OFF. The approved profile had it on, but at severity 0.6 it rots
@@ -187,11 +201,11 @@ Budgets: 200 store, 150 post/email, 50 social, 25 caption, 80 README intro.
 only. Not deleted; flagged.
 
 ## Next Step
-**#38 — decide the digit-audio source, then pull 80 clips.** The lineup is settled and
-the code path is a filename contract, so sourcing is the only thing blocking the recast.
-Common Voice is the cleanest (CC0, all eight, isolated words) and costs one free account
-signup; Commons needs no account but leaves five languages short; FSI is public domain
-with one voice per language but its numbers drills have not been found on tape yet.
+**#41 — correct the voice provenance everywhere at once.** The recast is committed,
+tested and verified loading in-browser, but every public surface still says the voices
+are Kokoro-82M, which is no longer true of a single sample in the game. README, itch
+description, promo page, outreach copy and the live store page have to change together,
+and #42 (the AI Disclosure field) is the same decision wearing a different hat.
 
 
 /home/menser/Dropbox/ai/code/finding_numbers
