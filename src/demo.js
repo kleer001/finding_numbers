@@ -205,7 +205,7 @@ const JB_ROW_MS = 600;
 
 export const JUKEBOX_WALK = [
   // Every voice the station owns, then babel, which draws a fresh one per digit.
-  { row: 0, key: "ArrowRight", times: 6, hold: 4200 },
+  { row: 0, key: "ArrowRight", times: 10, hold: 4200 },
   // LOOP -> RANDOM -> ORDERED. ORDERED counts 0..9, which at CALM is still too
   // slow to hear *as* counting — the cadence step below is where it lands.
   { row: 1, key: "ArrowRight", times: 2, hold: 5200 },
