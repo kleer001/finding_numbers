@@ -32,8 +32,9 @@ questions below.
 - [ ] #27 Pitch the curators, in reach × fit order — Alpha Beta Gamer, then Warp Door.
   One email each, bodies in `OUTREACH-COPY.md`.
 - [ ] #37 Post to the Haunted PS1 Discord once initiation clears, copy in
-  `OUTREACH-COPY.md`. Names the Kokoro-82M voices, and does not argue the case for the
-  tooling — rule 12 bans that separately from disclosure.
+  `OUTREACH-COPY.md`. Rule 15's disclosure now names the code and text rather than the
+  voices — no generated audio ships since the recast — and rule 12 still bans arguing
+  the case for the tooling, which includes pointing at the human voices as a defence.
 
 
 ### The voice recast landed — these follow from it

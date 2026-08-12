@@ -63,7 +63,9 @@ CHANNELS = [
         "kind": "image",
         "posted": "2026-08-01",
         "checks": ["Attach or link the jukebox clip",
-                   "Title already says synthesized, not recorded — keep it that way"],
+                   "The live post's title says 'synthesized, not recorded' — true of the "
+                   "build it was posted against, false since the voice recast. Correcting "
+                   "it means deleting and reposting; Reddit cannot edit a title."],
     },
 ]
 
