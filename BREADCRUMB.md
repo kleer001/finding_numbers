@@ -3,11 +3,15 @@ fresh
 ## Summary
 The game is live at v1.2.0, whose whole story is the voice recast: the synthesised digits
 were replaced with CC0 recordings of real people from Mozilla Common Voice, and the lineup
-went from six languages to ten. Build, store page and every repo surface now agree. What
-is left is sending — two wide community posts, two curator emails, three Shorts, a gated
-Discord — against six live posts that all describe the previous build, one of them with a
-title that is now false. Plus one stale checkbox on the store page and the design
-questions below.
+went from six languages to ten. Each language is now one speaker reading all ten digits.
+Build, store page, AI disclosure, devlog, every repo surface and every video asset agree.
+
+What is left is sending. Two wide community posts, two curator emails, three Shorts and a
+gated Discord are ready and unblocked. Against them sit six live posts from 2026-08-01
+that all describe the previous build — harmless except r/numberstations, whose title
+("synthesized, not recorded") is now false and which needs a delete-and-repost. The
+trailer on YouTube is still the synth cut and is embedded on the store page; the author
+is re-uploading it, which is the one thing gating the rest.
 
 ## Todos
 
@@ -58,7 +62,7 @@ questions below.
   says the pool is "languages the station voices". Polish, turkish, arabic, welsh and
   georgian have no patter at all. Needs verified translations, and the shipped font
   renders accented Latin and Cyrillic but not Arabic or Georgian script.
-- [ ] #44 Samples now average **0.86s**, not the 1.08s the cadence floor was tuned
+- [ ] #44 Samples now average **0.81s**, not the 1.08s the cadence floor was tuned
   against (`src/game/levels.js`). RAPID's 600ms minimum therefore slurs the digits less
   than designed — the station comes apart more gently. The comment records the measured
   figure; the tuning is untouched. Decide whether to retune `CADENCE_FLOOR` to restore
@@ -172,6 +176,25 @@ variety is irrelevant — 10 usable clips per language is the whole requirement.
 - Whisper locator built at `scratchpad/find_digits.mjs` (reuses cyber_synth's
   `@xenova/transformers`); Commons survey at `scratchpad/discover_digits.py`.
 
+**Re-picking voices, if it is ever needed.** The corpus tarball is
+`~/Downloads/1769605134856-cv-corpus-7.0-singleword.tar.gz` (3.77 GB, CC0). Rules the
+current set was built on, learned the hard way after a clip labelled "three" shipped and
+played as "four":
+- **A single downvote disqualifies a clip.** These are one-word recordings, so a
+  validator voting one down is saying it is not the word claimed. Ranking by upvotes with
+  downvotes as a tiebreak let a 6-up/4-down clip win. `validated.tsv` carries
+  `client_id`, `sentence`, `up_votes`, `down_votes`.
+- **One speaker per language**, chosen from those who read all ten digits uncontested.
+  Every language has at least six such speakers; english and german have ~200.
+- **Rank speakers by pace**, not votes: mean distance from ~0.85s plus the spread across
+  their ten. A reader whose digits run 0.4s to 1.5s sounds like ten people again.
+- **Normalise by RMS, not `loudnorm`.** EBU R128 gating wants ~3s; these clips are
+  0.35-1.7s, so it guesses. Target is **-28.8 dB mean RMS with peaks under -8 dB** —
+  the level `drive.gain = 2.2` and `WASH_PEAK` were tuned against. Hotter over-saturates
+  the soft-clipper and buries the noise bed.
+- German's zero reads as `nan` in the TSV (the word "null" parsed as a null literal);
+  Welsh zero is `sero`, not `dim`.
+
 **Tooling.** `.claude/skills/humanized-copy/` — `check.py` measures reading grade,
 sentence spread, bullet length and per-surface word budgets against the `banned.md`
 rulebook; run `--fenced` for `OUTREACH-COPY.md` (each block scored as its own post) and
@@ -198,11 +221,12 @@ Budgets: 200 store, 150 post/email, 50 social, 25 caption, 80 README intro.
 only. Not deleted; flagged.
 
 ## Next Step
-**#36 — post to r/IndieGaming and r/indiegames.** Everything upstream is done: v1.2.0 is
-live, the store page and disclosure match the build, and the devlog is up at
-<https://kleer001.itch.io/finding-numbers/devlog/1626335/the-numbers-are-people-now>.
-r/indiegames needs an image on the post — `clips/out/core-loop.gif` is silent, so it is
-still honest despite #48.
+**#50 — upload the new trailer, then hand over the URL.** Deferred by the author to the
+day after 2026-08-12. `clips/out/trailer.mp4` is cut from the new voices and ready; the
+old video stays up unlisted so nothing breaks. Once the id arrives, five files and the
+itch **Details -> Trailer** field change together, and #51 (re-attaching the jukebox clip
+to a reposted r/numberstations) follows. Everything else in the outreach list is already
+unblocked and can go out before or after.
 
 
 /home/menser/Dropbox/ai/code/finding_numbers
