@@ -1,10 +1,12 @@
 fresh
 
 ## Summary
-The game is live at v1.1.1 and taking player feedback. The code is quiet, every outreach
-channel has paste-ready copy behind it and the store page art matches the title, so what
-is left is sending — three community posts, two curator emails, three Shorts — plus a live Reddit
-title whose authorship claim is still unruled, one stale store image, and the design
+The game is live at v1.2.0, whose whole story is the voice recast: the synthesised digits
+were replaced with CC0 recordings of real people from Mozilla Common Voice, and the lineup
+went from six languages to ten. Build, store page and every repo surface now agree. What
+is left is sending — two wide community posts, two curator emails, three Shorts, a gated
+Discord — against six live posts that all describe the previous build, one of them with a
+title that is now false. Plus one stale checkbox on the store page and the design
 questions below.
 
 ## Todos
