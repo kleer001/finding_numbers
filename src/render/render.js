@@ -6,7 +6,7 @@ import { GRID, CANVAS, GLYPH, PREFS_BTN, CHAR, SCREEN, WATERFALL, INTRO_MESSAGES
 import { RAMP, SUB, stepWaterfall } from "./waterfall.js";
 import { pickInterval, OVERFLOW_FROM, NAMED_LEVELS } from "../game/levels.js";
 import { setGridText, drawGlyph, drawText } from "./chargrid.js";
-import { drawGlitch } from "./glitch.js";
+import { drawGlitch, dialReading } from "./glitch.js";
 
 
 // `tint` is the current phosphor {fg, rgb}; `spectrum` is the live FFT bins.
@@ -53,7 +53,7 @@ function renderHud(ctx, state, showCount, tint, spectrum, now) {
   } else {
     // Idle status field: a number-station dial reading, freq on 18, unit on 19.
     ctx.fillStyle = tint.fg;
-    const freq = String(state.frequency ?? "");
+    const freq = dialReading(state, now);
     drawText(ctx, freq, Math.floor((5 - freq.length) / 2), 18);
     drawText(ctx, "kHz", 1, 19);
   }

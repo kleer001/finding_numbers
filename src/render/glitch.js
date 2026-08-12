@@ -33,6 +33,16 @@ const CEILING = { tileRot: 0.5, dropout: 0.5, clash: 0.22 };
 const CLASH_BLOCK = 4; // cells per side of a reverse-video patch
 const CHURN_MS = 1300; // how often the corrupt set re-rolls; static between ticks
 
+// The dial is the last stable thing on the screen. Walls rot, the waterfall
+// scrolls, rooms move — the frequency holding still is the fixed point all of that
+// is measured against, and a picture where everything degrades reads as nothing
+// degrading. So it gives way late and never completely: past DIAL_ONSET a couple of
+// characters at most fall into the character ROM, and the reading stays legible.
+// Unlike the readout it replaces, this field is on screen for every player, which
+// is the only reason the rot reaches them at all.
+const DIAL_ONSET = 0.55; // corruption depth before the dial moves at all
+const DIAL_MAX_HITS = 2; // characters it will ever lose at once
+
 // Every cell the player can stand on, plus the wall ring that touches one. Keys are
 // "x,y". Exported for the test that pins the masking guarantee.
 export function protectedMask(cell, edgeGuard = true) {
@@ -90,6 +100,28 @@ export function glitchPlan(state, now) {
     }
   }
   return plan;
+}
+
+// What the frequency field reads this frame. Pure given (state, now), like
+// glitchPlan, so the damage ceiling is testable without a canvas.
+export function dialReading(state, now) {
+  const freq = String(state.frequency ?? "");
+  const depth = state.spec.corruption ?? 0;
+  if (!freq || depth <= DIAL_ONSET) return freq;
+
+  const past = (depth - DIAL_ONSET) / (1 - DIAL_ONSET); // 0..1 across the tail
+  const hits = Math.min(DIAL_MAX_HITS, Math.round(past * DIAL_MAX_HITS));
+  if (hits <= 0) return freq;
+
+  const rng = roomRng(state, `dial${Math.floor(now / CHURN_MS)}:`);
+  const out = [...freq];
+  const spare = [...out.keys()];
+  for (let i = 0; i < hits && spare.length; i++) {
+    const at = rng.pick(spare);
+    spare.splice(spare.indexOf(at), 1); // one hit per character, so the ceiling holds
+    out[at] = rng.pick(GLYPH_POOL);
+  }
+  return out.join("");
 }
 
 export function drawGlitch(ctx, state, tint, now) {

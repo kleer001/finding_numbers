@@ -1,7 +1,7 @@
 import test from "node:test";
 import assert from "node:assert/strict";
 
-import { glitchPlan, protectedMask } from "../src/render/glitch.js";
+import { glitchPlan, protectedMask, dialReading } from "../src/render/glitch.js";
 import { corruptionAt, OVERFLOW_FROM, NAMED_LEVELS, WALL_RAMP } from "../src/game/levels.js";
 import { createState, setLevel } from "../src/game/state.js";
 import { GRID, GLYPH } from "../src/game/config.js";
@@ -117,11 +117,52 @@ test("the deepest levels corrupt more than the first overflow level", () => {
     "the ramp has to be visible or the depth dial does nothing");
 });
 
-test("corruption stays out of the HUD band", () => {
+test("the maze corruption plan stays out of the HUD band", () => {
   const s = at(createState(6161, 1), NAMED_LEVELS);
   const plan = glitchPlan(s, 0);
   for (const c of [...plan.rot, ...plan.drop, ...plan.clash]) {
     assert.ok(c.y < GRID.H, `corruption at row ${c.y} reaches the HUD`);
   }
   assert.equal(GLYPH.WALL, "#"); // the grid convention the mask reads
+});
+
+// The dial is the one thing on screen that does not move: walls rot, the waterfall
+// scrolls, rooms relocate, and the frequency holding still is what all of that is
+// read against. These pin that it gives way late and only partially.
+test("the dial holds exactly until the rot is deep", () => {
+  for (const level of [OVERFLOW_FROM, 20, 30]) {
+    const s = at(createState(6161, 1), level);
+    assert.equal(dialReading(s, 0), String(s.frequency), `level ${level} moved the dial`);
+  }
+});
+
+test("the deepest levels move the dial, but never lose more than a couple of characters", () => {
+  const deep = at(createState(6161, 1), 100000);
+  const freq = [...String(deep.frequency)];
+  let sawDamage = false;
+  for (let t = 0; t < 40; t++) {
+    // Counted in code points, not code units: the wall ramp carries a non-BMP
+    // glyph, so String.length would read one substitution as two characters.
+    const shown = [...dialReading(deep, t * 2000)];
+    assert.equal(shown.length, freq.length, "the field keeps its width");
+    const lost = shown.filter((c, i) => c !== freq[i]).length;
+    assert.ok(lost <= 2, `lost ${lost} of ${freq.length} characters`);
+    if (lost > 0) sawDamage = true;
+  }
+  assert.ok(sawDamage, "the dial never gave way at full depth");
+});
+
+test("dial damage is drawn from the machine's own character ROM, never invented", () => {
+  const pool = new Set([...WALL_RAMP, ..."0123456789"]);
+  const deep = at(createState(99, 1), 100000);
+  for (let t = 0; t < 20; t++) {
+    for (const ch of dialReading(deep, t * 2000)) {
+      assert.ok(pool.has(ch), `invented glyph ${ch}`);
+    }
+  }
+});
+
+test("the dial reading is static between churn ticks", () => {
+  const s = at(createState(4242, 1), 100000);
+  assert.equal(dialReading(s, 100), dialReading(s, 200));
 });
