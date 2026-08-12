@@ -51,15 +51,11 @@ questions below.
   than designed — the station comes apart more gently. The comment records the measured
   figure; the tuning is untouched. Decide whether to retune `CADENCE_FLOOR` to restore
   the original slur.
-- [ ] #48 **Every clip in `clips/` still carries the old synthesised voices.** Silent
-  GIFs are still visually honest, but any video with sound misrepresents the build.
-  This gates the three Shorts (#6) and any post using a video. **Deferred by the author
-  — do not re-shoot until they say go.** When they do: `./capture.sh <clip> clips/`
-  then `./post.sh`; retiming lives in the two tables at the top of `post.sh`.
-- [ ] #45 The jukebox demo take got longer: covering eleven voices needs ten presses at
-  a 4200ms hold (a shorter hold would let a language pass without speaking, which
-  `tests/demo-path.test.js` pins). Re-shoot with `./capture.sh jukebox clips/` if the
-  clip is still wanted at its old length.
+- [ ] #49 `clips/out/voice-before-after.mp4` is stale (predates the recast) and nothing
+  in the repo generates or references it — not `post.sh`, not `video_shot_list.md`. Its
+  "after" is the old synthesised audio, so posting it would show the wrong thing. Delete
+  it or regenerate it deliberately.
+
 
 ### Design calls — the author's to make
 - [ ] #8 Badge garble is OFF. The approved profile had it on, but at severity 0.6 it rots
