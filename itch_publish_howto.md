@@ -76,6 +76,19 @@ tagline.
   don't want to moderate.
 - **Pricing**: "No payments" for free, or set a minimum / suggested price.
 
+### 5b. Never fetch a build's assets before it finishes processing
+
+`butler push` returns before the build is live. Requesting a file under
+`html-classic.itch.zone/html/<upload>-<build>/…` while it is still processing gets a
+404 — **and the CDN caches that 404**. Those paths then keep serving 404 to players
+even once the build is up, and the game fails on exactly the files that were probed.
+
+There is no cache purge. The fix is to push again: a new build id is a new URL prefix,
+so nothing is cached against it.
+
+Verify a build by loading the game page and watching the console for failed requests,
+which is the path a player takes. Do not curl the CDN directly.
+
 ### 6. Cover image and screenshots — the right-hand column
 
 These are **not** in the Details flow. They sit in a separate column on the right side of
