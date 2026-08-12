@@ -26,13 +26,7 @@ questions below.
   off by default. Fold what players say into the next pass rather than into the copy.
   Repost windows: `r/WebGames` not before 2026-11-01, `r/playmygame` not before
   2026-09-01. Both are recorded on the board `scratchpad/build_submit_links.py` builds.
-- [ ] #33 The live `r/numberstations` post is titled "I built a number station in
-  WebAudio". That is the same shape of claim struck from the r/playmygame Involvement
-  field, where the audio engine turned out not to be the author's work. The post is
-  already up, so the call is whether the title overstates it and whether to edit or
-  delete. Only the author knows where the line sits between their work and `voice_loom`.
-  Note the store page already discloses Code publicly, so the Reddit title is the only
-  surface where a first-person build claim stands unqualified.
+
 - [ ] #6 Post the three `clips/out/*-9x16.mp4` verticals as Shorts on the channel that
   already hosts the trailer. Never the itch trailer slot.
 - [ ] #27 Pitch the curators, in reach × fit order — Alpha Beta Gamer, then Warp Door.
@@ -40,17 +34,30 @@ questions below.
 - [ ] #37 Post to the Haunted PS1 Discord once initiation clears, copy in
   `OUTREACH-COPY.md`. Names the Kokoro-82M voices, and does not argue the case for the
   tooling — rule 12 bans that separately from disclosure.
-- [ ] #30 `docs/img/cover.png` shows the digit readout (`01`, `2 / 3`) — a real option,
-  but no longer the default look, so the store page leads with a HUD new players will not
-  see. Author's call whether to re-shoot.
+
+
+### Voice recast — real human digits replacing the Kokoro synth voices
+- [ ] #38 Source 80 digit clips (8 languages x 0-9). **Lineup is settled:**
+  `english spanish german russian polish turkish arabic mandarin`. Welsh was ruled
+  out — absent from FSI entirely and 2/10 on Wikimedia Commons. Turkish replaced it
+  for having no confusable adjacent-digit pair, unlike Hungarian (`hat`/`hét`) and
+  Finnish (`yksi`/`kaksi`, `viisi`/`kuusi`, `kahdeksan`/`yhdeksän`).
+- [ ] #39 (needs: #38) Swap the files and recast the level table. Filenames are the
+  whole contract: `assets/audio/<lang>_0<n>.wav`, n=0-9, loaded at
+  `src/audio/station.js:397`. Then `LANGUAGES` at `src/game/config.js:101` and the
+  seven `language:` rows in the `TABLE` at `src/game/levels.js:139` that name
+  italian/japanese/hindi/chinese. `tests/levels.test.js` asserts every level's
+  language is in `LANGUAGES`, so a mismatch fails loudly.
+- [ ] #40 (needs: #39) Re-measure average clip length against the **1.08 s** the
+  cadence tuning assumes (`src/game/levels.js:159-166`) — `RAPID`'s 600 ms floor is
+  set relative to it. Isolated single words will likely run shorter; report the drift
+  rather than silently retuning.
 
 ### Design calls — the author's to make
 - [ ] #8 Badge garble is OFF. The approved profile had it on, but at severity 0.6 it rots
   the characters and destroys the hex notation (`5V 5▓` instead of `LV 28`). The notation
   shipped as the treatment instead.
-- [ ] #9 The readout-overrun effect is invisible to the default player, who sees `kHz`.
-  Corrupting the frequency field would reach everyone. `src/render/render.js:53-59`, the
-  `else` branch that draws the dial, using the existing severity ramp.
+
 - [ ] #24 The Critic's two open items from `REVIEW-LOG.md` Session 2: a room only moves on
   **re-entry**, so a careful player may never meet the mechanic; and `LV???` forever is
   authored now, but nobody has reached it to say whether it reads as a statement.
@@ -59,9 +66,7 @@ questions below.
   `makeCell`'s contract and rewrites a test asserting a real invariant, for no gain.
 
 ### Studio paperwork
-- [ ] #17 Rule on test naming: `*.test.mjs` here vs `*.test.js` in the studio. **Both**
-  `package.json` files are `"type": "module"`, so `.mjs` buys nothing. 22 renames plus the
-  `package.json` glob.
+
 - [ ] #15 Decide who writes `GAME-SHEET.md` — the pitch should be the author's intent, and
   this repo has never had one. (The spec sheet half of this is retired: studio 0.16.0 ends
   `SPEC-SHEET.md` entirely, and there is none here.)
@@ -132,6 +137,30 @@ burst: 1}` verbatim, and `honestyCurve` hits its 0.5 coverage cap there too. Com
 qualified sentence drops the qualifier first — which is why `honest-copy` runs *after* a
 length pass, never before.
 
+**Digit-audio sources, researched and ruled.** The game holds exactly ONE recording
+per digit per language (`buffers[lang] = new Array(10)`, `station.js:398`), so speaker
+variety is irrelevant — 10 usable clips per language is the whole requirement.
+- **Common Voice "Single Word Target Segment"** — CC0-1.0, covers all eight of the
+  lineup, digits collected as isolated single words. Needs a Mozilla Data Collective
+  account: the download returns `{"message":"no user"}` / 401 without one. The clips
+  are CC0 (ship derived audio freely); only re-hosting the dataset is barred.
+  Locale list with hours/speakers is in `cv-dataset/datasets/scripted-speech/cv-corpus-7.0-singleword.json`.
+- **Wikimedia Commons / Lingua Libre** — CC0 per-file with `AttributionRequired: false`,
+  individually downloadable, no account. Purpose-recorded isolated words, not extracted
+  speech. But coverage is patchy: english/russian/arabic 10/10, german 9/10, mandarin
+  8/10, spanish 6/10, polish 3/10. Of 366 candidates found, 231 were CC BY-SA 4.0 —
+  **ShareAlike, which would propagate onto the game** and must be refused.
+- **FSI / DLI / Peace Corps** — US-government public domain (17 U.S.C. §105), hosted at
+  `fsi-languages.yojik.eu` and `livelingua.com`. Covers seven of eight (no Welsh). One
+  consistent voice per language, which is better material than mixed Commons speakers.
+  **Unproven:** FSI German Basic Unit 1 lists "Numbers 1-12" in the student text, but
+  46 min of Unit 1 audio (files 1.1 and 1.2) contains no counting drill — the numbers
+  may be a text-only appendix. File 1.3 unchecked.
+- **Zero is the hard digit everywhere.** Courses start counting at one; Commons has the
+  fewest candidates for it in every language. It needs solving separately.
+- Whisper locator built at `scratchpad/find_digits.mjs` (reuses cyber_synth's
+  `@xenova/transformers`); Commons survey at `scratchpad/discover_digits.py`.
+
 **Tooling.** `.claude/skills/humanized-copy/` — `check.py` measures reading grade,
 sentence spread, bullet length and per-surface word budgets against the `banned.md`
 rulebook; run `--fenced` for `OUTREACH-COPY.md` (each block scored as its own post) and
@@ -154,11 +183,15 @@ Budgets: 200 store, 150 post/email, 50 social, 25 caption, 80 README intro.
   parameter, which is why bodies stay copy buttons.
 - Tests: 118, green.
 
+**Stray file.** `assets/audio/english_10.wav` is unused — the loader reads `_00`..`_09`
+only. Not deleted; flagged.
+
 ## Next Step
-**#36 — post to r/IndieGaming and r/indiegames.** Nothing is blocking it: copy written,
-gates open, `clips/out/core-loop.gif` on disk for the one that requires an image. Serve
-the board with `python3 scratchpad/serve.py` (first free port from 8300) and paste from
-`copy-review.html`; `submit-links.html` prefills each composer's title and URL, and the
-bodies stay copy buttons because Reddit's composer takes no body parameter.
+**#38 — decide the digit-audio source, then pull 80 clips.** The lineup is settled and
+the code path is a filename contract, so sourcing is the only thing blocking the recast.
+Common Voice is the cleanest (CC0, all eight, isolated words) and costs one free account
+signup; Commons needs no account but leaves five languages short; FSI is public domain
+with one voice per language but its numbers drills have not been found on tape yet.
+
 
 /home/menser/Dropbox/ai/code/finding_numbers
