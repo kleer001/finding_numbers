@@ -30,7 +30,7 @@ quiet is the only way to lose.
 - No map, and nothing marks the right door.
 - A correct turn adds a number. A wrong one adds nothing.
 - Rooms that move their exit before settling.
-- Spoken digits in six languages.
+- Spoken digits in ten languages, read by real people.
 - Jukebox mode: the transmitter, no maze.
 - A character-mode CRT through a WebGL filter.
 - 16 levels. What's past the sixteenth isn't documented.
@@ -45,6 +45,6 @@ The game can't be played without sound.
 
 ## Credits
 
-- Voices: Kokoro-82M via the `voice_loom` project.
+- Voices: CC0 single-word recordings from [Mozilla Common Voice](https://commonvoice.mozilla.org/).
 - CRT effect: [CRTFilterWebGL](https://github.com/Ichiaka/CRTFilterWebGL) (MIT).
 - Source: [github.com/kleer001/finding_numbers](https://github.com/kleer001/finding_numbers) · MIT licensed.

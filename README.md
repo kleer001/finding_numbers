@@ -36,8 +36,8 @@ still and can be learned; some move their exit before settling.
 
 ### A station of its own
 
-Built in WebAudio — spoken digits in six languages over a brown-noise bed that
-circles the signal without swallowing it. A tribute, not a recording.
+Built in WebAudio — spoken digits in ten languages over a brown-noise bed that
+circles the signal without swallowing it. A tribute — nothing captured off the air.
 
 **Jukebox mode** plays it on its own, no maze.
 
@@ -129,8 +129,9 @@ step**, so any static file server works too.
 
 ## Credits
 
-- Number-station voices rendered with Kokoro-82M, one voicepack per language, via
-  the `voice_loom` project.
+- Number-station voices: single-word recordings by volunteer contributors to
+  [Mozilla Common Voice](https://commonvoice.mozilla.org/), released CC0 — ten
+  languages, one recording per digit.
 - CRT effect: [CRTFilterWebGL](https://github.com/Ichiaka/CRTFilterWebGL) (MIT).
 
 MIT licensed.

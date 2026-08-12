@@ -78,12 +78,12 @@ reviewed without opening it:
   Horror and that tag promises a threat this game does not have.
 - Some stretches of a level move their exit a few times before settling; most of the
   maze holds still and can be learned.
-- The station is built in WebAudio: spoken digits in six languages. A tribute, not a
-  recording — the page does not name real stations or dial frequencies.
+- The station is built in WebAudio: spoken digits in ten languages. A tribute —
+  nothing captured off the air, and the page names no real stations or frequencies.
 - Jukebox mode: the transmitter with no maze.
 - A character-mode CRT through a WebGL filter, with the signal as a live spectrogram.
 - Walls change under you: the early levels each wear their own surface, deeper ones mix.
-- **16 levels of decay** — six languages, a longer message and a faster readout the
+- **16 levels of decay** — ten languages, a longer message and a faster readout the
   deeper you go. Whether anything is under the sixteenth is not documented.
 
 ---
@@ -99,7 +99,7 @@ are in `itch_publish_howto.md`. Read it before every update, not just the first.
       a claim true of the authored levels and false of the generated tail)
 - [ ] No superlatives the game can't earn
 - [ ] Screenshots and trailer are from the current build
-- [ ] Credits and licenses complete: `voice_loom` for the voice samples and sound-design
-      reference, CRTFilterWebGL (MIT), MIT for the game itself
+- [ ] Credits and licenses complete: Mozilla Common Voice (CC0) for the digit
+      recordings, CRTFilterWebGL (MIT), MIT for the game itself
 - [ ] The uploaded zip runs from a fresh unzip
 - [ ] Uploads API reports `type=html` and a `size` equal to the local archive's bytes

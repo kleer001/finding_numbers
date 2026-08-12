@@ -24,9 +24,9 @@ What the build keeps, and therefore what any post may say:
   wrong one adds nothing. Nothing buzzes, nothing turns red, and there is no fail state.
 - Most of the maze holds still and can be learned. Some stretches move their exit a few
   times before settling.
-- The station is built in WebAudio — digit samples in six languages over a synthesized
-  noise bed, rendered with Kokoro-82M, one voicepack per language. A tribute, not a
-  recording.
+- The station is built in WebAudio: a synthesized noise bed under digit recordings in
+  ten languages, read by volunteer contributors to Mozilla Common Voice and released
+  CC0. The station is a tribute — none of this audio was captured off the air.
 - Jukebox mode is the transmitter with no maze.
 - One character grid, one phosphor color, bent through a WebGL CRT filter, with the
   signal drawn as a live spectrogram.
@@ -116,9 +116,9 @@ near-identical rooms. A correct turn adds a number to the broadcast; a wrong one
 nothing, and nothing else tells you. Nothing is hunting you and nothing can kill you —
 the only thing the game does to you is stop acknowledging you.
 
-Vanilla ES modules, no build step. The whole station is WebAudio: digits in six
-languages over a synthesized noise bed, rendered with Kokoro-82M, one voicepack per
-language.
+Vanilla ES modules, no build step. The whole station is WebAudio: a synthesized noise
+bed under digit recordings in ten languages, read by volunteers for Mozilla Common
+Voice and released CC0.
 
 Source is MIT: https://github.com/kleer001/finding_numbers
 
@@ -164,10 +164,11 @@ It is tagged horror, but nothing chases you, nothing can kill you and there is n
 state. The dread is that the station stops counting you.
 
 Most of the maze holds still and can be learned. Some stretches move their exit a few
-times before settling. The station is built in WebAudio — digit samples in six
-languages over a synthesized noise bed, rendered with Kokoro-82M, one voicepack per
-language. A tribute, not a recording. The picture is one character grid in one phosphor
-color, bent through a WebGL CRT filter, with the signal drawn as a live spectrogram. A
+times before settling. The station is built in WebAudio: a synthesized noise bed under
+digit recordings in ten languages, read by volunteers for Mozilla Common Voice and
+released CC0. Nothing here was captured off the air. The picture is one character grid
+in one phosphor color, bent through a WebGL CRT filter, with the signal drawn as a live
+spectrogram. A
 jukebox mode comes with it: the transmitter alone, no maze.
 
 Arrows / WASD / HJKL, or tap the screen edges. P opens preferences. It cannot be played
@@ -183,8 +184,8 @@ on-screen digit count, which is off by default.
 [ ] Paid (Allowed only on Tuesdays with [TT] in the title)
 
 **Involvement:** Solo developer. Borrowed pieces are credited in the README and on the
-store page: the CRT shader is CRTFilterWebGL, and the digit voices are rendered with
-Kokoro-82M via the voice_loom project. Source is MIT.
+store page: the CRT shader is CRTFilterWebGL, and the digit voices are CC0 recordings
+from Mozilla Common Voice. Source is MIT.
 ```
 
 ---
@@ -227,7 +228,7 @@ in the title, so nobody arrives expecting recordings. Lead with how it was built
 **Title:**
 
 ```
-I built a number station in WebAudio — synthesized, not recorded — and made a game you play by listening to it
+I built a number station in WebAudio out of CC0 voice recordings — none of it off the air — and made a game you play by listening to it
 ```
 
 **Body:** attach or link `clips/out/jukebox.mp4`.
@@ -237,10 +238,11 @@ https://kleer001.itch.io/finding-numbers — free, runs in a browser.
 
 Up front: this is a tribute, not a recording. Nothing in it came off the air.
 
-The voices are Kokoro-82M, one voicepack per language, reading number words rather
-than digits — yon for 4, nana for 7, kyuu for 9. German and Russian were on the
-original list; Kokoro has voices for neither, so it runs English, Spanish, Italian,
-Japanese, Chinese and Hindi.
+The voices are real people: volunteer contributors to Mozilla Common Voice, whose
+single-word recordings are released CC0. Ten languages — English, Spanish, German,
+Russian, Polish, Turkish, Arabic, Mandarin, Welsh and Georgian. One recording per
+digit per language, trimmed and level-matched, then run through a 300–3000 Hz band
+so they sit where a shortwave voice sits.
 
 Under them is a synthesized noise bed, lowpassed below the voice and ducked whenever a
 digit speaks, so it crowds the signal without ever burying it.
@@ -381,9 +383,9 @@ so the route is learned by what never arrives.
 
 Nothing chases you, nothing can kill you, and there is no fail state.
 
-The station is WebAudio — digits in six languages over a synthesized noise bed, rendered
-with Kokoro-82M. A tribute, not a recording. The picture is one character grid in one
-phosphor color, bent through a WebGL CRT filter.
+The station is WebAudio — CC0 digit recordings in ten languages over a synthesized
+noise bed. A tribute; none of it came off the air. The picture is one character grid in
+one phosphor color, bent through a WebGL CRT filter.
 
 It cannot be played without sound.
 ```
@@ -396,26 +398,28 @@ Retro-inspired games, fans and developers. Self-promotion is welcome outright as
 it is on topic, which this is — but two rules shape the post and one of them is not
 optional here.
 
-**Rule 15 requires a genAI disclaimer.** The spoken digits are rendered with Kokoro-82M,
-so the post carries a disclosure naming what the model did and what it did not touch, and
-any media posted alongside it is spoiler-tagged. Under-disclosing in a room that asks
+**Rule 15 requires a genAI disclaimer.** No generated *audio* ships any more — the
+spoken digits are CC0 recordings of volunteer speakers, and the picture is renderer
+output. What stays disclosable is the code, written in Claude Code sessions across the
+whole history, and the text, which the store page already declares. The post names both
+plainly and spoiler-tags any media alongside it. Under-disclosing in a room that asks
 directly is worse than not posting.
 
 **Rule 12 forbids arguing for AI.** Disclose and stop. No defence of the choice, no case
-for the tooling, no comparison to hand-recorded voices — that is a separate rule from the
-disclosure one and it is broken by explaining rather than by using.
+for the tooling, and no pointing at the human voices as though they settle the question —
+that is a separate rule from the disclosure one and it is broken by explaining rather
+than by using.
 
 There is an initiation step before posting, and mods are not to be pinged while it is
 pending. Read the channel list once inside; this goes wherever self-promotion belongs.
 
 **What rule 15 reaches, and what it does not.** Its subject is *art posted in the server*
 — the screenshots and GIFs. Those are captures of a renderer, not model output, so they do
-not trip it. What does sit inside the artifact is the spoken digits, rendered with
-Kokoro-82M, and the post names them exactly as the README and the store page do. The code
-was written in Claude Code sessions across the whole history; that is disclosable under
+not trip it. The voices no longer sit inside it either, now that they are human
+recordings. What is left to name is the code and the text, both disclosable under
 itch.io's own taxonomy, which lists Code beside Graphics, Sound and Text as separate
-categories, and it is not what this rule is asking about. Never claim the game is
-hand-written — it is not, and the git history says so in every commit trailer.
+categories. Never claim the game is hand-written — it is not, and the git history says so
+in every commit trailer.
 
 If certainty is wanted before posting, rule 16 points at ModMail and one question costs
 nothing. Asking reads better in that room than guessing does.
@@ -438,9 +442,9 @@ played without sound.
 
 https://kleer001.itch.io/finding-numbers
 
-Provenance: the spoken digits are synthesized rather than recorded — rendered with
-Kokoro-82M, one voicepack per language, over a noise bed built in WebAudio. The CRT
-shader is CRTFilterWebGL (MIT).
+Provenance: the spoken digits are CC0 recordings from Mozilla Common Voice, over a
+noise bed built in WebAudio. Nothing was captured off the air. The CRT shader is
+CRTFilterWebGL (MIT).
 ```
 
 ---
@@ -528,9 +532,9 @@ mistake is silence rather than a signal.
 
 It sits on the liminal-horror shelf, but there's no monster in it and no way to die.
 
-One character grid bent through a WebGL CRT filter. Underneath is WebAudio: digit
-samples in six languages rendered with Kokoro-82M, over a synthesized noise bed. A
-tribute to the real thing, not a recording of it. A jukebox mode ships with it — the
+One character grid bent through a WebGL CRT filter. Underneath is WebAudio: CC0 digit
+recordings in ten languages over a synthesized noise bed. A tribute to the real thing,
+not a recording of it. A jukebox mode ships with it — the
 transmitter alone, no maze.
 
 Free, no signup, runs in one click: https://kleer001.itch.io/finding-numbers

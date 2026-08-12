@@ -63,9 +63,9 @@ means during a walk the thumb is parked over the picture continuously. On a
 desktop the mouse does not occlude anything; on a phone it is the primary
 interaction and it hides the primary information.
 
-### The station is silent until 3.1 MB arrives
+### The station is silent until 4.1 MB arrives
 
-`station.js: loadDigits()` fetches **all 60 WAV files across all six languages**
+`station.js: loadDigits()` fetches **all 100 WAV files across all ten languages**
 and `await`s every one before `scheduleNext()` runs:
 
 ```js
@@ -73,8 +73,8 @@ await Promise.all(jobs);   // 60 fetches
 scheduleNext();            // first digit only after ALL of them land
 ```
 
-The files are mono 24 kHz 16-bit, 1.43 s, ~68 KB each — **3.1 MB total**. Levels
-1–3 are `english` only (`levels.js`), so 50 of those 60 files are for content the
+The files are mono 24 kHz 16-bit, 0.86 s, ~40 KB each — **4.1 MB total**. Levels
+1–3 are `english` only (`levels.js`), so 90 of those 100 files are for content the
 player cannot reach yet. On a cellular connection the cold open — the banner that
 says `MOVE TO BEGIN` over a station that is supposed to already be broadcasting —
 plays over silence for several seconds. The one beat the game cannot afford to
@@ -208,7 +208,7 @@ Nothing here alters a single drawn pixel. It is the budget the rest is spent fro
    snow reads coarser, which the existing comment already says is the intent.
 6. **Transcode the voice bank** to AAC-LC mono (`.m4a`), 24–32 kbps. AAC, not Opus:
    Safari's `decodeAudioData` history with Opus is uneven, and the chain lowpasses
-   at 2.7 kHz so the bitrate costs nothing audible. 3.1 MB → **~300 KB**.
+   at 2.7 kHz so the bitrate costs nothing audible. 4.1 MB → **~400 KB**.
 7. **Load `english` first.** `await` the 10 files level 1 needs, start the station,
    then background-load the rest. The cold open plays on time on cellular.
 8. **Trim the zip.** Restrict `package.sh` to the assets the game loads, or move

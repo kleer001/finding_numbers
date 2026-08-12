@@ -18,9 +18,9 @@ questions in `MOBILE-PLAN.md` §4. No item below depends on how you answer them.
 | Canvas buffer | fixed `800 x 600`, 4:3 |
 | Character grid | `23 x 20` (`GRID` 23 x 17 maze + `HUD_ROWS` 3) |
 | Cell size | `CHAR.W` 34.78 px, `CHAR.H` 30 px, `CHAR.FONT` 28 px |
-| Voice bank | 60 files, mono 24 kHz 16-bit, 1.43 s, ~68.4 KB each — **3.1 MB** |
+| Voice bank | 100 files, mono 24 kHz 16-bit, 0.86 s, ~40.3 KB each — **4.1 MB** |
 | Authored levels | `TABLE.length` = 12; levels 13+ generated |
-| Language schedule | L1–3 `english`, L4 `spanish`, L5 `italian`, L6 `japanese`, L7 `chinese`, L8 `hindi`, L9 `spanish`, L10 `italian`, L11 `chinese`, **L12+ `babel`** |
+| Language schedule | L1–3 `english`, L4 `spanish`, L5 `german`, L6 `turkish`, L7 `russian`, L8 `welsh`, L9 `arabic`, L10 `mandarin`, L11 `georgian`, **L12+ `babel`** |
 | Per-frame CPU readback | `800 x 600 x 4` = **1.92 MB** |
 | rAF loops | **2** (`main.js: frame()`, `CRTFilter.js: renderCRT()`) |
 
@@ -372,7 +372,7 @@ comment so the next reader does not have to re-derive it.
 
 ### Now
 
-Mono 24 kHz 16-bit WAV, 1.43 s, ~68.4 KB each. **3.1 MB total.**
+Mono 24 kHz 16-bit WAV, 0.86 s, ~40.3 KB each. **4.1 MB total.**
 
 ### Target
 
@@ -416,7 +416,7 @@ the game working correctly. A listen test cannot catch this.
 ### Acceptance
 
 - Transcode is scripted and reproducible from the WAV masters.
-- **All 60 files verified to decode** via `decodeAudioData` on iOS Safari, Android
+- **All 100 files verified to decode** via `decodeAudioData` on iOS Safari, Android
   Chrome, and desktop Firefox — assert the returned `AudioBuffer` for each, do not
   listen for it.
 - `debug().langsLoaded === 6`.
@@ -434,11 +434,11 @@ the game working correctly. A listen test cannot catch this.
 ### Now
 
 ```js
-await loadDigits();   // all 60 files, all six languages
+await loadDigits();   // all 100 files, all ten languages
 scheduleNext();       // first digit only after every one lands
 ```
 
-Levels 1–3 are `english`. 50 of the 60 files are for content the player cannot
+Levels 1–3 are `english`. 90 of the 100 files are for content the player cannot
 reach, and the cold open — `MOVE TO BEGIN` over a station meant to be already
 transmitting — plays over silence for as long as the network takes.
 
@@ -484,9 +484,9 @@ This costs nothing in fiction and turns a silent bug into a diegetic beat.
 
 ### Acceptance
 
-- Time-to-first-digit on a throttled *Fast 3G* profile drops from all 3.1 MB to the
-  English bank alone — with S-06, ~57 KB.
-- `debug().langsLoaded` reaches 6 without a reload.
+- Time-to-first-digit on a throttled *Fast 3G* profile drops from all 4.1 MB to the
+  English bank alone — with S-06, ~40 KB.
+- `debug().langsLoaded` reaches 10 without a reload.
 - **Level 4 before background load completes** → banner shows, then digits speak.
   Never silence with a live spectrogram.
 - **Jukebox `hindi` selected from the title splash at t=0** → same.
@@ -499,7 +499,7 @@ Pure, against an injected fetch stub; no `AudioContext`.
 1. `english resolves before the other five settle`
 2. `scheduleNext fires once english is ready, not after all six`
 3. `requestLanguage dedupes an in-flight request`
-4. `babel requests all six languages`
+4. `babel requests all ten languages`
 5. `languageReady is false for a bank still in flight`
 
 Fails before, passes after, per `CLAUDE.md`.
@@ -521,7 +521,7 @@ RUNTIME=(index.html styles.css src assets)
 Zips all of `assets/`, including `VT323-Regular.ttf` (153 KB) and
 `vt323-subset.woff2` (7.9 KB). Neither is referenced by the game — `styles.css`
 loads `station-grid.woff2`; those two serve `promo.html` and `docs/` only.
-**161 KB shipped to every player for nothing**, plus (after S-06) 3.1 MB of WAV
+**161 KB shipped to every player for nothing**, plus (after S-06) 4.1 MB of WAV
 masters.
 
 ### Target
@@ -545,7 +545,7 @@ Listed above as a placeholder to force that decision, not as a recommendation.
 - Fresh unzip, served statically: **zero 404s** in the network log across a full
   level-1 run with the jukebox opened.
 - `zip -sf dist/finding_numbers.zip` lists no file the game does not fetch.
-- Size drops by 161 KB (fonts) + ~3.1 MB (WAVs).
+- Size drops by 161 KB (fonts) + ~4.1 MB (WAVs).
 
 **Risk:** low, but this is the class of change that fails only in the artifact —
 the Shipper's heartbeat finding in `REVIEW-LOG.md` is the precedent. **Verify in a
