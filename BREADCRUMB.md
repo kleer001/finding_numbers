@@ -40,6 +40,18 @@ questions below.
 
 
 ### The voice recast landed — these follow from it
+- [ ] #50 **Re-upload the trailer, keep the old one unlisted.** `clips/out/trailer.mp4`
+  (45.4s, 800x600, AAC) is cut from the new voices; the live one at `3_maIo0cYAk` is
+  synth and is embedded on the store page. YouTube cannot swap a file on an existing
+  upload, so this is a new video at a new id. Author uploads and sets the old one
+  unlisted, which keeps every existing link resolving. Then the id changes in
+  `ITCH-PAGE.md`, `OUTREACH-COPY.md` (x2), `MARKETING-PLAN.md`, this file, and the itch
+  **Details -> Trailer** field. The three Test & Compare title+thumbnail packages in
+  `OUTREACH-COPY.md` have to be re-staged on the new video; the thumbnails themselves
+  are still accurate because the picture did not change.
+- [ ] #51 (needs: #50) Re-attach `clips/out/jukebox.mp4` when the r/numberstations post
+  is deleted and reposted — the copy there already has to change because its title says
+  "synthesized, not recorded". The old attachment is synth audio.
 - [ ] #43 `INTRO_MESSAGES` in `src/game/config.js` still carries station patter in
   languages the station no longer voices — `MUOVITI`/`ASCOLTA` (italian),
   `UGOKE`/`KIKE`/`HAJIME` (japanese), `CHALO`/`SUNO`/`SHURU` (hindi). Its own comment
