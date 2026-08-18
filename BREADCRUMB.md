@@ -1,4 +1,4 @@
-stale
+fresh
 
 ## Summary
 The game is live at v1.2.0. Its story is the voice recast: synthesised digits replaced
@@ -6,9 +6,10 @@ with CC0 recordings of real people from Mozilla Common Voice, six languages up t
 one speaker per language reading all ten digits. Every repo surface, the store page and
 every video asset agree.
 
-The recast trailer is published and wired everywhere, and the wide community channels are
-all sent and corrected. What is left is the narrow ones — two curator emails, three Shorts,
-a gated Discord — plus a handful of design calls the author has to make.
+The recast trailer is published and wired everywhere, and every community channel is sent
+and corrected. The launch's listening pass is done and came back thin; what it found is in
+`## Context`. What is left is the narrow channels — two curator pitches, three Shorts, a
+gated Discord — plus a handful of design calls the author has to make.
 
 ## Todos
 
@@ -90,6 +91,11 @@ and not a channel. **Nobody said anything about the loop**, so the question the 
 meant to answer — whether navigate-by-ear reads with the digit count off — is still open,
 and reposting into the same subs will not answer it. It needs players who talk, which is
 what the curator pitches and the Discord are for.
+
+**`honest-copy` now lives at user scope.** `.claude/skills/honest-copy/SKILL.md` is
+deleted in the working tree and that deletion is uncommitted; the live copy is
+`~/.claude/skills/honest-copy/SKILL.md`. The skill still resolves. Whether to commit the
+deletion is an open call.
 
 **Subagents share one browser.** Agents spawned with the Agent tool inherit the *same*
 Playwright MCP instance as the parent. Dispatching browser-capable agents while holding an
@@ -173,9 +179,13 @@ TSV ("null" parsed as a null literal); Welsh zero is `sero`, not `dim`.
 - Tests: 122, green.
 
 ## Next Step
-**#27 — the curator emails, Alpha Beta Gamer then Warp Door.** Both bodies are final in
-`OUTREACH-COPY.md` and both carry the trailer link, which resolves to the recast cut. The
-wide community channels are all sent and corrected; what remains unsent is the two emails,
-the three Shorts (#6), and the Discord post once initiation clears (#37).
+**#27 — the curator pitches.** Warp Door's body is final in `OUTREACH-COPY.md` and carries
+the recast trailer link, but it has to be sent from a mail client: the Gmail connector in
+this harness is read-only and cannot even build the draft. Alpha Beta Gamer is the same
+body through a web form, not an address.
+
+They matter more than the repost windows do. Eight launch posts produced one human reply
+and nothing at all about the loop, so the curators and the Discord (#37) are the only
+channels left that could answer the question the launch was meant to answer.
 
 /home/menser/Dropbox/ai/code/finding_numbers
