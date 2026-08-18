@@ -49,7 +49,7 @@ Each has to be demonstrable in a clip or a screenshot.
 - [x] Four screenshots of the current build (`docs/img/`) — 800×600, the canvas's native
       buffer, showing the defaults a new player meets
 - [x] One animated GIF of the core loop (`clips/out/core-loop.gif`)
-- [x] Trailer hosted: <https://youtu.be/3_maIo0cYAk> — cut from the current build
+- [x] Trailer hosted: <https://youtu.be/343tkOkHT0g> — cut from the current build
 - [x] Three title + thumbnail packages testing *different* hypotheses for YouTube
       Test & Compare — thumbnails in `clips/out/thumbs/` at 1280×720, titles and the
       bet behind each in `OUTREACH-COPY.md`

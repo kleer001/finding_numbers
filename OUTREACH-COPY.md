@@ -10,7 +10,7 @@ is the shared source — say less than it, never more — and
 Links used throughout:
 
 - Game: <https://kleer001.itch.io/finding-numbers>
-- Trailer: <https://youtu.be/3_maIo0cYAk>
+- Trailer: <https://youtu.be/343tkOkHT0g>
 - Source: <https://github.com/kleer001/finding_numbers>
 
 ---
@@ -21,7 +21,8 @@ What the build keeps, and therefore what any post may say:
 
 - Free, runs in a browser, no signup, no download. Keyboard or touch.
 - The station is the only compass: a correct turn adds a number to the broadcast, a
-  wrong one adds nothing. Nothing buzzes, nothing turns red, and there is no fail state.
+  wrong one adds nothing, and a second wrong turn in a row costs a number. Nothing
+  buzzes, nothing turns red, and there is no fail state.
 - Most of the maze holds still and can be learned. Some stretches move their exit a few
   times before settling.
 - The station is built in WebAudio: a synthesized noise bed under digit recordings in
@@ -32,7 +33,8 @@ What the build keeps, and therefore what any post may say:
   signal drawn as a live spectrogram.
 - The game was designed as sixteen levels. Whether anything lies beyond the sixteenth
   isn't documented, and no post answers it.
-- It cannot be played without sound.
+- It is meant to be played with sound. A display option shows the digits on screen;
+  it is off by default.
 
 Not claimable: any "first" or "only", any comparison to another game's quality, any
 length of playtime beyond "a few minutes a run", and anything about what players feel.
@@ -77,15 +79,16 @@ link to the game, no repost inside three months.
 **First comment:**
 
 ```
-Free, browser, no signup. The game cannot be played without sound.
+Free, browser, no signup. It's meant to be played with sound, though a display
+option will show you the digits.
 
 You are @ in a maze of near-identical rooms while a shortwave number station reads
 digits through the static. The station is the only compass: take the correct door
-and a number is added to the broadcast, take a wrong one and nothing is added. There
-is no buzzer and nothing turns red — you find out by what never arrives.
+and a number is added to the broadcast, take a wrong one and nothing is added. Take
+another wrong turn and you lose a number. There is no buzzer and nothing turns red.
 
 Nothing chases you and nothing can kill you. The worst the game does is stop counting
-you.
+for you.
 
 Most of the maze holds still and can be learned. Some stretches move their exit a
 few times before settling.
@@ -113,8 +116,9 @@ https://kleer001.itch.io/finding-numbers — free, HTML5, no signup.
 
 A shortwave station reads digits through the static while you walk a maze of
 near-identical rooms. A correct turn adds a number to the broadcast; a wrong one adds
-nothing, and nothing else tells you. Nothing is hunting you and nothing can kill you —
-the only thing the game does to you is stop acknowledging you.
+nothing, and a second wrong turn takes one away. Nothing else tells you. Nothing is
+hunting you and nothing can kill you — the only thing the game does to you is stop
+acknowledging you.
 
 Vanilla ES modules, no build step. The whole station is WebAudio: a synthesized noise
 bed under digit recordings in ten languages, read by volunteers for Mozilla Common
@@ -122,7 +126,7 @@ Voice and released CC0.
 
 Source is MIT: https://github.com/kleer001/finding_numbers
 
-It cannot be played without sound.
+It's meant to be played with sound, but there's a display option for the digits.
 ```
 
 ---
@@ -157,11 +161,11 @@ order is fixed; keep it.
 You are one character in a maze of near-identical rooms. No map, no minimap, nothing
 marking the right door. A shortwave number station reads digits through the static,
 and it is the only feedback the game gives you. Take the correct door and a number is
-added to the broadcast. Take a wrong one and nothing is added. There is no buzzer and
-nothing turns red, so you learn the route by what never arrives.
+added to the broadcast. Take a wrong one and nothing is added. Take another wrong turn
+and you lose a number. There is no buzzer and nothing turns red.
 
 It is tagged horror, but nothing chases you, nothing can kill you and there is no fail
-state. The dread is that the station stops counting you.
+state. The dread is that the station stops counting for you.
 
 Most of the maze holds still and can be learned. Some stretches move their exit a few
 times before settling. The station is built in WebAudio: a synthesized noise bed under
@@ -171,8 +175,8 @@ in one phosphor color, bent through a WebGL CRT filter, with the signal drawn as
 spectrogram. A
 jukebox mode comes with it: the transmitter alone, no maze.
 
-Arrows / WASD / HJKL, or tap the screen edges. P opens preferences. It cannot be played
-without sound.
+Arrows / WASD / HJKL, or tap the screen edges. P opens preferences. It's meant to be
+played with sound, but there's a display option for the digits.
 
 What I'd most like to know is whether the navigate-by-ear loop reads without the
 on-screen digit count, which is off by default.
@@ -208,14 +212,14 @@ Free and in the browser: https://kleer001.itch.io/finding-numbers
 
 It's a maze of near-identical rooms rendered as one character grid through a WebGL CRT
 filter. A shortwave station reads digits through the noise while you walk. A correct
-turn adds a number to the broadcast; a wrong one adds nothing. There's no buzzer and no
-red flash, so the only way to know you've gone wrong is a number that never comes.
+turn adds a number to the broadcast; a wrong one adds nothing, and a second wrong turn
+takes one away. There's no buzzer and no red flash — a mistake is heard, not shown.
 
 Wander far enough and the broadcast empties — the station stops reading numbers at all
 and you're alone in the hiss with nothing to steer by. Nothing kills you and nothing is
 timing you. The game's only move is to stop acknowledging you.
 
-Sound is not optional; it's the whole interface.
+Sound is the interface. There's a display option for the digits, off by default.
 ```
 
 ---
@@ -274,7 +278,8 @@ https://kleer001.itch.io/finding-numbers
 
 Free, browser, no signup. A shortwave number station reads digits through the static
 while you walk a maze of near-identical rooms. A correct turn adds a number to the
-broadcast; a wrong one adds nothing. No buzzer and no red flash.
+broadcast; a wrong one adds nothing, and a second wrong turn costs you one. No buzzer
+and no red flash.
 
 There is no monster here, nothing pursuing you and no way to die. The station going
 quiet is the whole of it.
@@ -285,7 +290,8 @@ times before settling. Sixteen levels — the message grows and the gaps tighten
 Also in there: a jukebox mode that's just the transmitter, and a CRT decay dial you can
 turn up until the picture barely holds.
 
-It cannot be played without sound. Source is MIT.
+It's meant to be played with sound, but there's a display option for the digits.
+Source is MIT.
 ```
 
 ---
@@ -325,6 +331,22 @@ like to hear what you make of what's on the other side of it.
 
 ---
 
+## r/mazes
+
+A small, on-topic audience: the sub is about mazes themselves, not about game promotion,
+so the maze is the hook and the horror framing is incidental. A link post to the game
+carries it; no body is needed, and none was used.
+
+**Link:** <https://kleer001.itch.io/finding-numbers>
+
+**Title:**
+
+```
+[HORROR][HTML5] finding_numbers — a numbers stations (tribute) maze with no map, navigated by ear
+```
+
+---
+
 ## r/IndieGaming
 
 512K subscribers, and itch.io links there draw real discussion. One submission every two
@@ -345,25 +367,33 @@ Free, in a browser, no signup: https://kleer001.itch.io/finding-numbers
 You are one character in a maze of near-identical rooms. There is no map, and nothing
 marks the right door. A shortwave number station reads digits through the static, and
 that is the only feedback the game gives you. Take the correct door and a number is
-added to the broadcast. Take a wrong one and nothing is added. No buzzer, nothing turns
-red. You learn the route by what never arrives.
+added to the broadcast. Take a wrong one and nothing is added. Take another wrong turn
+and you lose a number. No buzzer, nothing turns red.
 
 It is tagged horror, but nothing chases you, nothing can kill you, and there is no fail
-state. The dread is that the station stops counting you.
+state. The dread is that the station stops counting for you.
 
 Most of the maze holds still and can be learned. Some stretches move their exit a few
 times before settling.
 
-It cannot be played without sound.
+It's meant to be played with sound, but there's a display option for the digits.
 ```
 
 ---
 
 ## r/indiegames
 
-326K subscribers. Rule 1: a promotion post **must** carry an image, GIF or video of the
-game — attach `clips/out/core-loop.gif`. Two posts a week is the ceiling, and framing a
-promo as a request for feedback is against the rules, so this one does not ask a question.
+326K subscribers. Two posts a week is the ceiling, and framing a promo as a request for
+feedback is against the rules, so this one does not ask a question.
+
+**Rule 1 is enforced by automod, and more narrowly than the rule text reads.** An image
+attached to the post is not enough. Automod requires the *post itself* to be a link to
+imgur (gifv), gfycat (gfy), or YouTube showing gameplay, and it removes any post that
+links to the game's store page in the body. Its own instruction: "You can link to the app
+page/etc in the comments of the post." So the shape is a link post pointing at gameplay
+footage, with the body copy and the itch link posted as the author's first comment. An
+image post carrying `clips/out/core-loop.gif` with the store link in the body is removed
+within minutes, and Reddit's pre-submit rule check flags it before sending.
 
 **Title:**
 
@@ -371,15 +401,18 @@ promo as a request for feedback is against the rules, so this one does not ask a
 A maze of identical rooms where a number station is the only thing telling you which way is right
 ```
 
-**Body:** — attach `clips/out/core-loop.gif`
+**Link:** gameplay footage — the trailer <https://youtu.be/343tkOkHT0g>, or
+`clips/out/core-loop.gif` rehosted on imgur. Not the itch page.
+
+**First comment:** — the store link belongs here, not in the post
 
 ```
 Free, in a browser, no signup: https://kleer001.itch.io/finding-numbers
 
 No map, no minimap, nothing marking the right door. A shortwave number station reads
-digits through the static, and that is the whole of the feedback: a correct turn adds a
-number to the broadcast, a wrong one adds nothing. Nothing buzzes and nothing turns red,
-so the route is learned by what never arrives.
+digits through the static, and that is the whole of the feedback. A correct turn adds
+a number to the broadcast. A wrong one adds nothing, and a second wrong turn costs you
+a number. Nothing buzzes and nothing turns red.
 
 Nothing chases you, nothing can kill you, and there is no fail state.
 
@@ -387,7 +420,7 @@ The station is WebAudio — CC0 digit recordings in ten languages over a synthes
 noise bed. A tribute; none of it came off the air. The picture is one character grid in
 one phosphor color, bent through a WebGL CRT filter.
 
-It cannot be played without sound.
+It's meant to be played with sound, but there's a display option for the digits.
 ```
 
 ---
@@ -431,14 +464,14 @@ finding_numbers — a free browser maze you navigate by ear.
 
 No map, and nothing marks the right door. A shortwave number station reads digits
 through the static, and that is the only feedback you get. A correct turn adds a number
-to the broadcast; a wrong one adds nothing. Nothing buzzes and nothing
-turns red, so the route is learned by what never arrives.
+to the broadcast; a wrong one adds nothing, and a second wrong turn costs you one.
+Nothing buzzes and nothing turns red.
 
 Nothing chases you. Nothing can kill you. There is no fail state.
 
 One character grid in one phosphor colour, bent through a WebGL CRT filter, with the
-signal drawn as a live spectrogram over a station built in WebAudio. It cannot be
-played without sound.
+signal drawn as a live spectrogram over a station built in WebAudio. It's meant to be
+played with sound, but there's a display option for the digits.
 
 https://kleer001.itch.io/finding-numbers
 
@@ -527,8 +560,8 @@ Hello,
 
 finding_numbers is a free browser game about walking a maze of near-identical rooms
 while a shortwave number station reads digits through the static. A correct turn adds
-a number to the broadcast, a wrong one adds nothing. No buzzer, no red flash — a
-mistake is silence rather than a signal.
+a number to the broadcast, a wrong one adds nothing, and a second wrong turn costs one.
+No buzzer, no red flash — a mistake is silence rather than a signal.
 
 It sits on the liminal-horror shelf, but there's no monster in it and no way to die.
 
@@ -538,10 +571,10 @@ not a recording of it. A jukebox mode ships with it — the
 transmitter alone, no maze.
 
 Free, no signup, runs in one click: https://kleer001.itch.io/finding-numbers
-Trailer: https://youtu.be/3_maIo0cYAk
+Trailer: https://youtu.be/343tkOkHT0g
 Source, MIT: https://github.com/kleer001/finding_numbers
 
-It cannot be played without sound.
+It's meant to be played with sound, but there's a display option for the digits.
 
 — kleer001
 ```

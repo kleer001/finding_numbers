@@ -28,7 +28,8 @@ CHANNELS = [
         "section": "r/WebGames",
         "sub": "WebGames",
         "kind": "link",
-        "posted": "2026-08-01",
+        "posted": "2026-08-02",
+        "permalink": "https://www.reddit.com/r/WebGames/comments/1vd3ck8/",
         "checks": ["Title must still BEGIN with finding_numbers",
                    "No repost inside three months — next window opens 2026-11-01"],
     },
@@ -36,24 +37,60 @@ CHANNELS = [
         "section": "r/itchio",
         "sub": "itchio",
         "kind": "text",
-        "posted": "2026-08-01",
+        "posted": "2026-08-02",
+        "permalink": "https://www.reddit.com/r/itchio/comments/1vd3ek2/",
         "checks": ["No NSFW flag needed here"],
     },
     {
         "section": "r/playmygame",
         "sub": "playmygame",
         "kind": "text",
-        "posted": "2026-08-01",
+        "posted": "2026-08-02",
+        "permalink": "https://www.reddit.com/r/playmygame/comments/1vd7woo/",
         "checks": ["Set flair: [Web] / PC (Web)",
                    "NSFW-flag it as horror",
                    "Game link stays above every other link",
                    "One post per game per month — next window opens 2026-09-01"],
     },
     {
+        "section": "r/mazes",
+        "sub": "mazes",
+        "kind": "link",
+        "posted": "2026-08-03",
+        "permalink": "https://www.reddit.com/r/mazes/comments/1veobqr/",
+        "checks": ["Lead with the maze, not the horror framing — the sub is about mazes",
+                   "Link post; no body was used"],
+    },
+    {
+        "section": "r/IndieGaming",
+        "sub": "IndieGaming",
+        "kind": "text",
+        "posted": "2026-08-17",
+        "permalink": "https://www.reddit.com/r/IndieGaming/comments/1vr6tsu/",
+        "checks": ["One submission every two weeks",
+                   "Account needs ordinary comment history — Reddit shadowbans accounts "
+                   "whose first posts are links, and a shadowbanned post looks exactly "
+                   "like one nobody upvoted"],
+    },
+    {
+        "section": "r/indiegames",
+        "sub": "indiegames",
+        "kind": "link",
+        "posted": "2026-08-17",
+        "permalink": "https://www.reddit.com/r/indiegames/comments/1vrf17c/",
+        "checks": ["Link the post at gameplay footage on YouTube, imgur or gfycat — NOT "
+                   "the store page. Automod removes any post carrying the store link in "
+                   "its body, whatever image is attached.",
+                   "Store link and body copy go in the author's first comment",
+                   "Flair is required; Promotion is the honest one for a release",
+                   "Two posts a week is the ceiling"],
+    },
+    {
         "section": "r/analoghorror",
         "sub": "analoghorror",
         "kind": "image",
-        "posted": "2026-08-01",
+        "posted": "2026-08-02",
+        "permalink": "https://www.reddit.com/r/analoghorror/comments/1vd7j4a/",
         "checks": ["Switch the composer to Images & Video and drag the GIF in",
                    "Own the post as the dev — stealth promo is banned"],
     },
@@ -61,18 +98,20 @@ CHANNELS = [
         "section": "r/numberstations",
         "sub": "numberstations",
         "kind": "image",
-        "posted": "2026-08-01",
+        "posted": "2026-08-02",
+        "permalink": "https://www.reddit.com/r/numberstations/comments/1vd7r0w/",
         "checks": ["Attach or link the jukebox clip",
-                   "The live post's title says 'synthesized, not recorded' — true of the "
-                   "build it was posted against, false since the voice recast. Correcting "
-                   "it means deleting and reposting; Reddit cannot edit a title."],
+                   "The title claims nothing about how the audio was made, so it survives "
+                   "the voice recast. The body does not: it names the retired speech model "
+                   "and the old six-language lineup, and needs an edit, not a repost."],
     },
 ]
 
 BOARD = {
     "section": "itch.io Release Announcements board",
     "url": "https://itch.io/board/10022/release-announcements",
-    "posted": "2026-08-01",
+    "posted": "2026-08-02",
+    "permalink": "https://itch.io/t/6734813/finding-numbers-a-maze-you-navigate-by-ear-with-a-number-station-for-a-compass-free-html5",
     "checks": ["Needs the page link, a summary, and one embedded image or video",
                "Embed clips/out/core-loop.gif"],
 }

@@ -47,6 +47,10 @@ CHANNELS = [
         "This audience knows real station audio — say tribute-not-recording in the title",
         "Small and slow (~18k); no self-promo rule stated",
     ]),
+    ("r/mazes", "Genre communities", [
+        "Lead with the maze — the sub is about mazes, not game promotion",
+        "Link post; no body",
+    ]),
     ("r/IndieGaming", "Genre communities", [
         "One submission every two weeks",
         "Account must be a week old with ordinary posting history",

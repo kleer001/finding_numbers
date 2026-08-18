@@ -47,7 +47,7 @@ Live: <https://kleer001.itch.io/finding-numbers>
 - **Cover image:** `docs/img/cover.png`, 630×500.
 - **Screenshots:** `docs/img/gameplay.png`, `jukebox.png`, `light-mode.png`,
   `preferences.png`. All from the real build.
-- **Trailer:** <https://youtu.be/3_maIo0cYAk> — itch takes a hosted link, not a file,
+- **Trailer:** <https://youtu.be/343tkOkHT0g> — itch takes a hosted link, not a file,
   so the video has to be up before this field can be filled. YouTube cannot swap a
   file on an existing upload, so a corrected trailer is always a new video and a new
   URL: re-point this field, and expect any A/B test on the old upload to end with it.
