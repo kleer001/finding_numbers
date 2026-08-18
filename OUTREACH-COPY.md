@@ -346,6 +346,80 @@ carries it; no body is needed, and none was used.
 ```
 
 ---
+## r/puzzlevideogames
+
+Fit is the deduction, not the genre: the loop is working out where you are from what the
+station does when you move, and that is what this sub is for. Lead with the puzzle and
+give the horror shelf one line of context, not the hook. The gate is unverified — the
+rules and the top posts of the year still need reading before this goes out, and neither
+could be checked from the session that wrote it.
+
+**Title:**
+
+```
+A maze of identical rooms with no map — a number station reading digits is the only clue you get
+```
+
+**Body:**
+
+```
+Free, in a browser, no signup: https://kleer001.itch.io/finding-numbers
+
+You're one character in a maze of near-identical rooms. No map, nothing marking the right
+door. A shortwave number station reads digits through the static, and that's the whole of
+the feedback. A correct turn adds a number to the broadcast, a wrong one adds nothing, and
+a second wrong turn costs you one. Nothing buzzes, nothing turns red.
+
+So the puzzle is the broadcast: you work out where you are from what it does when you
+move. Most of the maze holds still and can be learned, though some stretches move their
+exit a few times before settling.
+
+It's tagged horror, but nothing chases you, nothing kills you, and there's no fail state
+and no timer. What the game does instead is stop counting for you.
+
+Play it with sound. There's a display option for the digits, off by default.
+```
+
+---
+
+## r/creepygaming
+
+`MARKETING-PLAN.md` rules this sub out on audience — it is a feed of unsettling things
+found inside other people's games, not a place games get announced — and nothing has
+changed that. This copy exists only for the author to override that call knowingly. Two
+things to check first, neither verifiable from the session that wrote it: whether the
+sidebar bans self-promotion outright, and whether anything that is not a screenshot from
+a released commercial game has ever done well there. Own the post; do not "find" it. Lead
+with the artifact, not the store link.
+
+**Title:**
+
+```
+[OC] The broadcast in my own game can empty out and leave you alone in the hiss
+```
+
+**Body:** attach `clips/out/core-loop.gif`.
+
+```
+It's my own game, free and in the browser: https://kleer001.itch.io/finding-numbers
+
+The rooms are near-identical, drawn as one character grid in one phosphor color and bent
+through a WebGL CRT filter. A shortwave station reads digits through the static while you
+walk. A correct turn adds a number to the broadcast; a wrong one adds nothing, and a
+second wrong turn takes one away. No buzzer and no red flash — a mistake is heard, not
+shown.
+
+Wander far enough and the broadcast empties. The station stops reading numbers at all and
+you're alone in the hiss with nothing to steer by.
+
+Nothing chases you, nothing can kill you and nothing is timing you. The game's only move
+is to stop acknowledging you.
+
+The voices are real people: CC0 recordings from Mozilla Common Voice in ten languages,
+over a synthesized noise bed. None of it came off the air.
+```
+
+---
 
 ## r/IndieGaming
 

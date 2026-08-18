@@ -112,7 +112,19 @@ audience wants *this*, because a sub can be on-genre by name and off-genre by ta
     — "announce and promote your own projects here". A post needs the page link, a summary
     and at least one embedded image or video.
 
+  *Fit checks out, gate unread — copy is written and must not go out before the rules are:*
+  - `r/puzzlevideogames` — the deduction is the fit: no map, and the only way to learn one
+    is what the station does when you move. Nothing about it was verified, because
+    reddit.com is blocked by the egress policy of the session that wrote the copy — size,
+    self-promotion rule, flair requirement and the top posts of the year are all still to
+    read. Lead with the puzzle and give the horror shelf one line, or the sub reads it as
+    a genre post that wandered in.
+
   *Ruled out — the audience is wrong, not the gate:*
+  - `r/HiddenObjectGames` — proposed and refused on the claim floor rather than on taste.
+    There is nothing hidden to find here: no scene to scan, no object list, no pointing at
+    clutter. Posting there means either calling this a hidden object game, which is false,
+    or posting a game the sub is not for. No copy exists for it and none should.
   - `r/HorrorGames` (~82k) — cut deliberately, and not because of its rule 4 (three months
     as an active member, nine comments or submissions per self-promotion post, manual
     approval). Its top posts over a year are actual-horror — monsters, gore, jump scares —
@@ -124,6 +136,10 @@ audience wants *this*, because a sub can be on-genre by name and off-genre by ta
     overlap is not a channel. The traffic agrees: one itch.io link in a year, zero
     comments on it. `r/dreamcore` (4.5k) and `r/creepygaming` (178k) read the same way —
     a photograph feed has nothing to do with a game, whatever it is a feed of.
+    `r/creepygaming` was proposed a second time and stays cut: it collects unsettling
+    things found inside other people's shipped games, so a dev announcement is off-format
+    there even where it is on-mood. Copy for it sits in `OUTREACH-COPY.md` under a warning
+    rather than nowhere, so that overriding this is a decision and not a rewrite.
 
   *Open, with a disclosure condition:*
   - **Haunted PS1** Discord (`discord.gg/YpBQZdeXxP`, ~5k members, ~1.8k online) — the
